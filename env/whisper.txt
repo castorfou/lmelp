@@ -1,0 +1,8 @@
+mamba remove --name whisper --all
+mamba create -n whisper python==3.11 --yes
+mamba activate whisper
+
+pip install --upgrade pip
+pip install --upgrade transformers 'datasets[audio]' accelerate
+mamba install ipykernel ipywidgets
+pip install pre-commit
