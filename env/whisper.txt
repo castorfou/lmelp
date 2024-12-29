@@ -6,3 +6,6 @@ pip install --upgrade pip
 pip install --upgrade transformers 'datasets[audio]' accelerate
 mamba install ipykernel ipywidgets
 pip install pre-commit
+mamba install nb_conda_kernels --yes  
+
+mamba install feedparser
