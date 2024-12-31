@@ -11,3 +11,5 @@ mamba install nb_conda_kernels --yes
 mamba install feedparser
 
 mamba install pymongo
+
+mamba install gitpython
