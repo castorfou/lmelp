@@ -13,3 +13,5 @@ mamba install feedparser
 mamba install pymongo
 
 mamba install gitpython
+
+mamba install nbdev
