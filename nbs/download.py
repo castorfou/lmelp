@@ -6,6 +6,7 @@ __all__ = [
     "get_audio_path",
     "download_mp3_livres",
     "download_all_mp3_livres",
+    "get_oid_from_mp3_filename",
 ]
 
 # %% 08 download mp3 from db info.ipynb 2
@@ -138,3 +139,23 @@ def download_all_mp3_livres(collection, audio_path=AUDIO_PATH, verbose=False):
             print(oid)
 
         download_mp3_livres(collection, oid, audio_path, verbose)
+
+
+# %% 08 download mp3 from db info.ipynb 16
+def get_oid_from_mp3_filename(collection, full_mp3_filename):
+    """
+    on retourne l oid du document qui a le champ url contenant un abreviated full_mp3_filename
+    collection: pymongo collection
+    full_mp3_filename: str, nom du fichier mp3 complet
+    return oidm None si non trouve
+    """
+    # Extraire le nom de fichier abrégé à partir du chemin complet
+    mp3_filename = os.path.basename(full_mp3_filename)
+
+    # Rechercher le document avec le champ url contenant le nom de fichier MP3 abrégé
+    document = collection.find_one({"url": {"$regex": mp3_filename}})
+
+    if document:
+        return document["_id"]
+    else:
+        return None
