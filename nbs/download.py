@@ -18,6 +18,8 @@ from git import Repo
 
 def get_audio_path(audio_path=AUDIO_PATH):
     """
+    audio_path: str
+        relative path to audio files
     return full audio path and create dir if it doesn t exist
     """
 
