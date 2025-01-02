@@ -1,0 +1,10 @@
+mamba remove --name gemini --all
+mamba create -n gemini python==3.11 --yes
+mamba activate gemini
+
+mamba install ipykernel ipywidgets --yes
+pip install pre-commit
+mamba install nb_conda_kernels pymongo gitpython nbdev --yes  
+
+pip install -q -U google-generativeai python-dotenv
+
