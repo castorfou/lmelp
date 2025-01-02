@@ -6,5 +6,5 @@ mamba install ipykernel ipywidgets --yes
 pip install pre-commit
 mamba install nb_conda_kernels pymongo gitpython nbdev --yes  
 
-pip install -q -U google-generativeai python-dotenv
+pip install -q -U google-generativeai python-dotenv pandas
 
