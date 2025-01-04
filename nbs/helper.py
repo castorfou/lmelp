@@ -4,6 +4,7 @@
 __all__ = [
     "load_env",
     "get_gemini_api_key",
+    "get_openai_api_key",
     "get_gemini_llm",
     "get_gemini_llamaindex_llm",
 ]
@@ -21,6 +22,12 @@ def get_gemini_api_key():
     load_env()
     gemini_api_key = os.getenv("GEMINI_API_KEY")
     return gemini_api_key
+
+
+def get_openai_api_key():
+    load_env()
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    return openai_api_key
 
 
 # %% helper.ipynb 3
