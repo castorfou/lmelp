@@ -26,6 +26,12 @@ GEMINI_API_KEY=<your api key>
 
 from https://console.cloud.google.com/apis/credentials
 
+et pour gemini llamaindex
+
+GOOGLE_PROJECT_ID
+
+from https://console.cloud.google.com
+
 ## db host, db name
 
 creer .env a la racine du repo avec
