@@ -5,8 +5,10 @@ __all__ = [
     "load_env",
     "get_gemini_api_key",
     "get_openai_api_key",
+    "get_google_projectID",
     "get_gemini_llm",
     "get_gemini_llamaindex_llm",
+    "get_vertex_llm",
 ]
 
 # %% helper.ipynb 1
@@ -30,7 +32,13 @@ def get_openai_api_key():
     return openai_api_key
 
 
-# %% helper.ipynb 3
+def get_google_projectID():
+    load_env()
+    google_projectID = os.getenv("GOOGLE_PROJECT_ID")
+    return google_projectID
+
+
+# %% helper.ipynb 4
 import google.generativeai as genai
 
 
@@ -40,7 +48,7 @@ def get_gemini_llm(model="gemini-1.5-flash"):
     return llm
 
 
-# %% helper.ipynb 6
+# %% helper.ipynb 7
 from llama_index.llms.gemini import Gemini
 from llama_index.core import Settings
 
@@ -48,5 +56,29 @@ from llama_index.core import Settings
 def get_gemini_llamaindex_llm(model="models/gemini-1.5-flash"):
     genai.configure(api_key=get_gemini_api_key())
     llm = Gemini(model=model, api_key=get_gemini_api_key())
+    Settings.llm = llm
+    return llm
+
+
+# %% helper.ipynb 10
+from llama_index.core import Settings
+from llama_index.llms.vertex import Vertex
+
+
+def get_vertex_llm(model="models/gemini-1.5-flash"):
+
+    # Set up necessary variables
+    credentials = {
+        "project_id": get_google_projectID(),
+        "api_key": get_gemini_api_key(),
+    }
+
+    # Create an instance of the Vertex class
+    llm = Vertex(
+        model=model,
+        project=credentials["project_id"],
+        credentials=credentials,
+        context_window=4096,
+    )
     Settings.llm = llm
     return llm
