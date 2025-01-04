@@ -324,6 +324,9 @@
         <mxCell id="pBmC4cjrBXADn1-BzcK7-88" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.555;entryY=1.025;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="pBmC4cjrBXADn1-BzcK7-37" target="pBmC4cjrBXADn1-BzcK7-12">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="pBmC4cjrBXADn1-BzcK7-91" value="les critiques et oeuvres se recuperent depuis les avis" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillWeight=4;hachureGap=8;hachureAngle=45;fillColor=#1ba1e2;sketch=1;opacity=30;" vertex="1" parent="1">
+          <mxGeometry x="20" y="560" width="170" height="60" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
