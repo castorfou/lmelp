@@ -16,9 +16,9 @@ qui contient ce qu il faut pour gemini, dotenv, llamaindex, llm, mongo
 
 ## ffmpeg
 
-ffmpeg is required to load audio files from filename
+ffmpeg is required to load audio files from filename for whisper use (transcription d'un mp3)
 
-available in snap (4.3.1)
+install, it is available in snap (4.3.1)
 
 ## `.env`
 
@@ -27,6 +27,15 @@ https://pypi.org/project/python-dotenv/
 > Python-dotenv reads key-value pairs from a .env file and can set them as environment variables. It helps in the development of applications following the 12-factor principles.
 
 creer `.env` à la racine du repo avec
+
+### rss info
+
+L'adresse du flux RSS du podcast du Masque et la Plume
+
+si absent `https://radiofrance-podcast.net/podcast09/rss_14007.xml` est utilisé par defaut
+```
+RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml
+```
 
 ### db info
 
