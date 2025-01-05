@@ -15,3 +15,5 @@ mamba install pymongo
 mamba install gitpython
 
 mamba install nbdev
+
+pip install python-dotenv
