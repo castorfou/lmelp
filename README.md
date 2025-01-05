@@ -1,17 +1,18 @@
 # pour developper
 
-## envs python
+## environnements de dev python
 
 creer l'environnement whisper depuis `envs/whisper.txt`
-qui contient ce qu il faut pour whisper, feedparser, transformers (huggingface)
+qui contient ce qu il faut pour whisper, feedparser, transformers (huggingface), dotenv, mongo
 
 creer l'environnement whisper depuis `envs/gemini.txt`
-qui contient ce qu il faut pour gemini, dotenv, llamaindex
+qui contient ce qu il faut pour gemini, dotenv, llamaindex, llm, mongo
 
 ## pre-commit
 
 `pre-commit install`
 
+# pour utiliser
 
 ## ffmpeg
 
@@ -19,22 +20,52 @@ ffmpeg is required to load audio files from filename
 
 available in snap (4.3.1)
 
-## gemini api key
+## `.env`
 
-creer .env a la racine du repo avec
-GEMINI_API_KEY=<your api key>
+https://pypi.org/project/python-dotenv/ 
+
+> Python-dotenv reads key-value pairs from a .env file and can set them as environment variables. It helps in the development of applications following the 12-factor principles.
+
+creer `.env` à la racine du repo avec
+
+### db info
+
+pour tout ce qui concerne la base mongo
+
+```
+DB_HOST=localhost # à changer avec nas923 par exemple
+DB_NAME="masque_et_la_plume"
+DB_LOGS=true # si présent et valant true, va enregistrer toutes les operations dans la collection logs
+```
+
+### llm, llamaindex
+
+```
+# gemini 
+GEMINI_API_KEY=
+# gemini vertex
+GOOGLE_PROJECT_ID=
+GOOGLE_AUTH_FILE=
+
+# openai
+OPENAI_API_KEY=
+
+# azure openai
+AZURE_API_KEY=
+AZURE_ENDPOINT=
+AZURE_API_VERSION=
+```
+
+gemini llm, GEMINI_API_KEY dispo à
 
 from https://console.cloud.google.com/apis/credentials
 
-et pour gemini llamaindex
-
-GOOGLE_PROJECT_ID
+gemini vertex (llamaindex), GOOGLE_PROJECT_ID
 
 from https://console.cloud.google.com
 
-## db host, db name
+gemini vertex (llamaindex), GOOGLE_AUTH_FILE
 
-creer .env a la racine du repo avec
-DB_HOST=localhost # à changer avec nas923 par exemple
-DB_NAME="masque_et_la_plume"
-DB_LOGS=true # va enregistrer toutes les operations dans la collection logs
+follow instructions at https://stackoverflow.com/a/69941050
+
+
