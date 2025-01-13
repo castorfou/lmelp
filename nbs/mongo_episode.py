@@ -61,7 +61,7 @@ class Episode:
         self.collection = get_collection(
             target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
         )
-        self.date = date
+        self.date = Episode.get_date_from_string(date)
         self.titre = titre
         self.description = None
         self.url_telechargement = None
@@ -82,10 +82,13 @@ class Episode:
 
     def keep(self):
         """
-        Keep the episode in the database.
+        download the audio file if needed
+        Keep the episode in the database
         """
+        date_format = "%d %b %Y %H:%M"
+        message_log = f"{Episode.get_string_from_date(self.date, format=date_format)} - {self.titre}"
         if not self.exists():
-            mongolog("insert", self.collection.name, f"{self.date} - {self.titre}")
+            mongolog("insert", self.collection.name, message_log)
             self.download_audio(verbose=True)
             self.collection.insert_one(
                 {
@@ -100,14 +103,16 @@ class Episode:
                 }
             )
         else:
-            mongolog("update", self.collection.name, f"{self.date} - {self.titre}")
+            mongolog("update", self.collection.name, message_log)
 
     def remove(self):
         """
         Remove the episode from the database.
         """
+        date_format = "%d %b %Y %H:%M"
+        message_log = f"{Episode.get_string_from_date(self.date, format=date_format)} - {self.titre}"
         self.collection.delete_one({"titre": self.titre, "date": self.date})
-        mongolog("delete", self.collection.name, f"{self.date} - {self.titre}")
+        mongolog("delete", self.collection.name, message_log)
 
     def get_oid(self) -> ObjectId:
         """
@@ -144,15 +149,15 @@ class Episode:
             return date.strftime(DATE_FORMAT)
 
     def __str__(self):
-        date_format = "%d/%m/%y %H:%M"
+        date_format = "%d %b %Y %H:%M"
 
         return f"""
-        Date: {self.get_date_from_string(self.date).strftime(date_format)}
+        Date: {Episode.get_string_from_date(self.date, format=date_format)}
         Titre: {self.titre}
         Description: {self.description}
         URL de téléchargement: {self.url_telechargement}
         Fichier audio: {self.audio_rel_filename}
-        Duree: {self.duree}
+        Duree: {self.duree} en secondes 
         """
 
     def __repr__(self):
@@ -165,7 +170,7 @@ class Episode:
         """
         if self.url_telechargement is None:
             return
-        year = str(self.get_date_from_string(self.date).year)
+        year = str(self.date.year)
         full_audio_path = get_audio_path(AUDIO_PATH, year)
         full_filename = os.path.join(
             full_audio_path, os.path.basename(self.url_telechargement)
@@ -212,9 +217,10 @@ class RSS_episode(Episode):
         :return: The RSS episode.
         """
 
-        date_rss = datetime.strptime(feed_entry.published, "%a, %d %b %Y %H:%M:%S %z")
+        date_rss = datetime.strptime(feed_entry.published, RSS_DATE_FORMAT)
+        date_rss_str = cls.get_string_from_date(date_rss, DATE_FORMAT)
         inst = cls(
-            date=cls.get_string_from_date(date_rss),
+            date=date_rss_str,
             titre=feed_entry.title,
         )
         inst.description = feed_entry.summary
@@ -235,7 +241,7 @@ class RSS_episode(Episode):
     def get_duree_in_seconds(duree: str) -> int:
         """
         Get the duration in seconds from a string.
-        :param duree: The duration string.
+        :param duree: The duration string at the format "HH:MM:SS" or "HH:MM".
         :return: The duration in seconds.
         """
         duree = duree.split(":")
