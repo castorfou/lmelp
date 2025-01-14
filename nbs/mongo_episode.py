@@ -4,6 +4,7 @@
 __all__ = [
     "AUDIO_PATH",
     "DATE_FORMAT",
+    "LOG_DATE_FORMAT",
     "RSS_DUREE_MINI_MINUTES",
     "RSS_DATE_FORMAT",
     "get_audio_path",
@@ -47,6 +48,7 @@ from datetime import datetime
 import requests
 
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%f%z"
+LOG_DATE_FORMAT = "%d %b %Y %H:%M"
 
 
 class Episode:
@@ -80,14 +82,19 @@ class Episode:
             is not None
         )
 
-    def keep(self):
+    def keep(self) -> int:
         """
         download the audio file if needed
         Keep the episode in the database
+
+        retourne 1 si 1 entree est creee en base
+        0 sinon
         """
-        date_format = "%d %b %Y %H:%M"
-        message_log = f"{Episode.get_string_from_date(self.date, format=date_format)} - {self.titre}"
+        message_log = f"{Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} - {self.titre}"
         if not self.exists():
+            print(
+                f"Episode du {Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} nouveau: Duree: {self.duree}, Type: {self.type}"
+            )
             mongolog("insert", self.collection.name, message_log)
             self.download_audio(verbose=True)
             self.collection.insert_one(
@@ -102,15 +109,19 @@ class Episode:
                     "duree": self.duree,
                 }
             )
+            return 1
         else:
+            print(
+                f"Episode du {Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} deja existant"
+            )
             mongolog("update", self.collection.name, message_log)
+            return 0
 
     def remove(self):
         """
         Remove the episode from the database.
         """
-        date_format = "%d %b %Y %H:%M"
-        message_log = f"{Episode.get_string_from_date(self.date, format=date_format)} - {self.titre}"
+        message_log = f"{Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} - {self.titre}"
         self.collection.delete_one({"titre": self.titre, "date": self.date})
         mongolog("delete", self.collection.name, message_log)
 
@@ -149,10 +160,8 @@ class Episode:
             return date.strftime(DATE_FORMAT)
 
     def __str__(self):
-        date_format = "%d %b %Y %H:%M"
-
         return f"""
-        Date: {Episode.get_string_from_date(self.date, format=date_format)}
+        Date: {Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)}
         Titre: {self.titre}
         Description: {self.description}
         URL de téléchargement: {self.url_telechargement}
@@ -252,16 +261,22 @@ class RSS_episode(Episode):
         else:
             return int(duree[0])
 
-    def keep(self):
+    def keep(self) -> int:
         """
         Keep the episode in the database.
         only if duration > RSS_DUREE_MINI_MINUTES * 60
         only if type == livres
+
+        retourne 1 si 1 entree est creee en base
+        0 sinon
         """
         if (self.duree > RSS_DUREE_MINI_MINUTES * 60) & (self.type == "livres"):
-            super().keep()
+            return super().keep()
         else:
-            print(f"Duree: {self.duree}, Type: {self.type}")
+            print(
+                f"Episode du {Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} ignored: Duree: {self.duree}, Type: {self.type}"
+            )
+            return 0
 
     @staticmethod
     def set_titre(description: str) -> str:
