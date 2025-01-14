@@ -132,8 +132,11 @@ class Podcast:
         """
         loop through list_last_large_episodes
         instantiate RSS_episode and keep them
+        print the nu;ber of successful updates in DB
         """
+        updates = 0
         last_large_episodes = self.list_last_large_episodes(duree_mini_minutes)
         for entry in last_large_episodes:
             rss_entry = RSS_episode.from_feed_entry(entry)
-            rss_entry.keep()
+            updates += rss_entry.keep()
+        print(f"Updated episodes: {updates}")
