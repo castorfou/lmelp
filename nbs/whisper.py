@@ -7,14 +7,14 @@ __all__ = ["AUDIO_PATH", "list_mp3_files", "extract_whisper", "store_whisper_in_
 AUDIO_PATH = "audios"
 
 # %% 09 whisper mp3.ipynb 4
-from download import get_audio_path
+from mongo_episode import get_audio_path
 import os, glob
 
 
 def list_mp3_files(audio_path=AUDIO_PATH):
-    fullpath = get_audio_path(audio_path)
+    fullpath = get_audio_path(audio_path, year="")
 
-    return glob.glob(os.path.join(fullpath, "*.mp3"))
+    return glob.glob(os.path.join(fullpath, "**/*.mp3"), recursive=True)
 
 
 # %% 09 whisper mp3.ipynb 7
