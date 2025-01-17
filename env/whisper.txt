@@ -17,3 +17,7 @@ mamba install gitpython
 mamba install nbdev
 
 pip install python-dotenv
+
+sudo apt update
+sudo apt install libdbus-1-dev libdbus-glib-1-dev cmake
+pip install dbus-python

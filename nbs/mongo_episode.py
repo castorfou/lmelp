@@ -8,6 +8,7 @@ __all__ = [
     "RSS_DUREE_MINI_MINUTES",
     "RSS_DATE_FORMAT",
     "get_audio_path",
+    "extract_whisper",
     "Episode",
     "RSS_episode",
 ]
@@ -41,7 +42,49 @@ def get_audio_path(audio_path=AUDIO_PATH, year: str = "2024"):
     return full_audio_path
 
 
-# %% py mongo helper episodes.ipynb 4
+# %% py mongo helper episodes.ipynb 6
+import torch
+from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+from datasets import load_dataset
+
+
+def extract_whisper(mp3_filename):
+
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+
+    model_id = "openai/whisper-large-v3-turbo"
+
+    model = AutoModelForSpeechSeq2Seq.from_pretrained(
+        model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
+    )
+    model.to(device)
+
+    processor = AutoProcessor.from_pretrained(model_id)
+
+    pipe = pipeline(
+        "automatic-speech-recognition",
+        model=model,
+        tokenizer=processor.tokenizer,
+        feature_extractor=processor.feature_extractor,
+        torch_dtype=torch_dtype,
+        device=device,
+    )
+
+    dataset = load_dataset(
+        "distil-whisper/librispeech_long", "clean", split="validation"
+    )
+    sample = dataset[0]["audio"]
+
+    result = pipe(
+        mp3_filename,
+        return_timestamps=True,
+    )
+
+    return result["text"]
+
+
+# %% py mongo helper episodes.ipynb 7
 from bson import ObjectId
 from mongo import get_collection, get_DB_VARS, mongolog
 from datetime import datetime
@@ -58,6 +101,8 @@ class Episode:
         :param date: The date for this episode at the format "2024-12-22T09:59:39.000+00:00" parsed by "%Y-%m-%dT%H:%M:%S.%f%z".
         :param titre: The title of this episode.
         :param collection_name: The name of the collection. default: "episodes".
+
+        if this episode already exists in DB, loads it
         """
         DB_HOST, DB_NAME, _ = get_DB_VARS()
         self.collection = get_collection(
@@ -65,12 +110,22 @@ class Episode:
         )
         self.date = Episode.get_date_from_string(date)
         self.titre = titre
-        self.description = None
-        self.url_telechargement = None
-        self.audio_rel_filename = None
-        self.transcription = None
-        self.type = None
-        self.duree = -1  # in seconds
+
+        if self.exists():
+            episode = self.collection.find_one({"titre": self.titre, "date": self.date})
+            self.description = episode.get("description")
+            self.url_telechargement = episode.get("url")
+            self.audio_rel_filename = episode.get("audio_rel_filename")
+            self.transcription = episode.get("transcription")
+            self.type = episode.get("type")
+            self.duree = episode.get("duree")
+        else:
+            self.description = None
+            self.url_telechargement = None
+            self.audio_rel_filename = None
+            self.transcription = None
+            self.type = None
+            self.duree = -1  # in seconds
 
     def exists(self) -> bool:
         """
@@ -161,12 +216,14 @@ class Episode:
 
     def __str__(self):
         return f"""
+        _oid: {self.get_oid()}
         Date: {Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)}
         Titre: {self.titre}
         Description: {self.description}
         URL de téléchargement: {self.url_telechargement}
         Fichier audio: {self.audio_rel_filename}
         Duree: {self.duree} en secondes 
+        Transcription: {self.transcription[:100] if self.transcription else 'No transcription yet available'}...
         """
 
     def __repr__(self):
@@ -200,8 +257,25 @@ class Episode:
             if verbose:
                 print(f"Le fichier {full_filename} existe déjà. Ignoré.")
 
+    def set_transcription(self, verbose=False):
+        """
+        based on audio file, use whisper model to get transcription
+        if transcription already exists, do nothing
+        if audio file does not exist, do nothing
+        save transcription in DB
+        """
+        if self.transcription is not None:
+            if verbose:
+                print("Transcription existe deja")
+            return
+        mp3_fullfilename = get_audio_path(AUDIO_PATH, year="") + self.audio_rel_filename
+        self.transcription = extract_whisper(mp3_fullfilename)
+        self.collection.update_one(
+            {"_id": self.get_oid()}, {"$set": {"transcription": self.transcription}}
+        )
 
-# %% py mongo helper episodes.ipynb 6
+
+# %% py mongo helper episodes.ipynb 9
 from feedparser.util import FeedParserDict
 from transformers import pipeline
 
