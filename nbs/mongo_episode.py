@@ -11,6 +11,7 @@ __all__ = [
     "extract_whisper",
     "Episode",
     "RSS_episode",
+    "Episodes",
 ]
 
 # %% py mongo helper episodes.ipynb 3
@@ -367,3 +368,20 @@ class RSS_episode(Episode):
 
         result = classifier(description, labels)
         return result["labels"][0]
+
+
+# %% py mongo helper episodes.ipynb 18
+class Episodes:
+    """
+    This is a class that will allow search on episodes to manage quality of data
+
+    For example get new transcriptions.
+
+
+    """
+
+    def __init__(self, collection_name: str = "episodes"):
+        DB_HOST, DB_NAME, _ = get_DB_VARS()
+        self.collection = get_collection(
+            target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
+        )
