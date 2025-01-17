@@ -91,7 +91,7 @@ from mongo import get_collection, get_DB_VARS, mongolog
 from datetime import datetime
 import requests
 
-DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%f%z"
+DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
 LOG_DATE_FORMAT = "%d %b %Y %H:%M"
 
 
@@ -99,7 +99,7 @@ class Episode:
     def __init__(self, date: str, titre: str, collection_name: str = "episodes"):
         """
         Episode is a class that represents a generic Episode entity in the database.
-        :param date: The date for this episode at the format "2024-12-22T09:59:39.000+00:00" parsed by "%Y-%m-%dT%H:%M:%S.%f%z".
+        :param date: The date for this episode at the format "2024-12-22T09:59:39" parsed by "%Y-%m-%dT%H:%M:%S".
         :param titre: The title of this episode.
         :param collection_name: The name of the collection. default: "episodes".
 
@@ -127,6 +127,25 @@ class Episode:
             self.transcription = None
             self.type = None
             self.duree = -1  # in seconds
+
+    @classmethod
+    def from_oid(cls, oid: ObjectId, collection_name: str = "episodes") -> "Episode":
+        """
+        Create an episode from an oid of a mongo entry.
+        :param oid: oid as ObjectId.
+        :return: The Eepisode.
+        """
+
+        DB_HOST, DB_NAME, _ = get_DB_VARS()
+        collection = get_collection(
+            target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
+        )
+
+        document = collection.find_one({"_id": oid})
+
+        date_doc_str = cls.get_string_from_date(document.get("date"), DATE_FORMAT)
+        inst = cls(date=date_doc_str, titre=document.get("titre"))
+        return inst
 
     def exists(self) -> bool:
         """
@@ -276,7 +295,7 @@ class Episode:
         )
 
 
-# %% py mongo helper episodes.ipynb 9
+# %% py mongo helper episodes.ipynb 11
 from feedparser.util import FeedParserDict
 from transformers import pipeline
 
@@ -370,14 +389,16 @@ class RSS_episode(Episode):
         return result["labels"][0]
 
 
-# %% py mongo helper episodes.ipynb 18
+# %% py mongo helper episodes.ipynb 20
+from typing import List
+import pymongo
+
+
 class Episodes:
     """
     This is a class that will allow search on episodes to manage quality of data
 
     For example get new transcriptions.
-
-
     """
 
     def __init__(self, collection_name: str = "episodes"):
@@ -385,3 +406,30 @@ class Episodes:
         self.collection = get_collection(
             target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
         )
+
+    def get_entries(self, request="") -> List[Episode]:
+        """'
+        retourne le resultat de la requete sous forme d'une liste d'instance de Episode
+
+        par exemple : request={"$or": [{"transcription": ""}, {"transcription": None}]}
+        """
+        episodes = []
+        result = self.collection.find(request).sort("date", pymongo.DESCENDING)
+        for entry in result:
+            episode = Episode.from_oid(entry.get("_id"))
+            episodes.append(episode)
+        return episodes
+
+    def get_missing_transcriptions(self) -> List[Episode]:
+        return self.get_entries(
+            {"$or": [{"transcription": ""}, {"transcription": None}]}
+        )
+
+    def __str__(self):
+        return f"""
+        {self.collection.count_documents({})} entries
+        {len(self.get_missing_transcriptions())} missing transcriptions
+        """
+
+    def __repr__(self):
+        return self.__str__()
