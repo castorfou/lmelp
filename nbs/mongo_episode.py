@@ -234,6 +234,16 @@ class Episode:
         else:
             return date.strftime(DATE_FORMAT)
 
+    @staticmethod
+    def format_duration(seconds: int) -> str:
+        """Convert duration in seconds to HH:MM:SS format."""
+        if seconds < 0:
+            return f"-{Episode.format_duration(seconds*(-1))}"
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        seconds = seconds % 60
+        return f"{hours:02}:{minutes:02}:{seconds:02}"
+
     def __str__(self):
         return f"""
         _oid: {self.get_oid()}
@@ -242,7 +252,7 @@ class Episode:
         Description: {self.description}
         URL de téléchargement: {self.url_telechargement}
         Fichier audio: {self.audio_rel_filename}
-        Duree: {self.duree} en secondes 
+        Duree: {self.duree} en secondes ({Episode.format_duration(self.duree)})
         Transcription: {self.transcription[:100] if self.transcription else 'No transcription yet available'}...
         """
 
