@@ -21,10 +21,9 @@ st.set_page_config(
 
 st.write("## Rimouveur de la mort")
 st.write("débarrassez vous de l'arrière plan de vos images en un clic")
-st.title("rimouveur de la mort")
+st.sidebar.write("## uploader")
 
-# on charge l'image
-image_upload = st.file_uploader("Choisissez une image", type=["png", "jpg", "jpeg"])
+col1, col2 = st.columns(2)
 
 
 def convert_image(image):
@@ -34,16 +33,28 @@ def convert_image(image):
     return byte_im
 
 
-if image_upload:
-    st.image(image_upload)
-    image = Image.open(image_upload)
+def fix_image(image):
+    image = Image.open(image)
+    col1.write("Image originale")
+    col1.image(image)
     fixed = remove(image)
-    downloadable_image = convert_image(fixed)
-    st.image(downloadable_image)
-
-    st.download_button(
-        "image detouree",
-        downloadable_image,
+    col2.write("Image détourée")
+    col2.image(fixed)
+    st.sidebar.write("\\n")
+    st.sidebar.download_button(
+        "Telecharger l'image détourée",
+        convert_image(fixed),
         file_name="image_detouree.png",
         mime="image/png",
     )
+
+
+# on charge l'image
+image_upload = st.sidebar.file_uploader(
+    "Choisissez une image", type=["png", "jpg", "jpeg"]
+)
+
+if image_upload is not None:
+    fix_image(image_upload)
+else:
+    fix_image("ui/oiseau.jpg")
