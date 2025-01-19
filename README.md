@@ -22,9 +22,9 @@ install, it is available in snap (4.3.1)
 
 ## ulimit
 
-j'ai du augmenter l'ulimit de mon systeme pour utiliser whisper
+j'ai du augmenter l'ulimit de mon systeme pour utiliser whisper pour eviter l'erreur `Too many open files`
 
-`ulimit -n 4096`
+Avec ce parametre je n'ai pls le probleme: `ulimit -n 4096`
 
 
 ## `.env`
