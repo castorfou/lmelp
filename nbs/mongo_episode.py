@@ -7,10 +7,12 @@ __all__ = [
     "LOG_DATE_FORMAT",
     "RSS_DUREE_MINI_MINUTES",
     "RSS_DATE_FORMAT",
+    "WEB_DATE_FORMAT",
     "get_audio_path",
     "extract_whisper",
     "Episode",
     "RSS_episode",
+    "WEB_episode",
     "Episodes",
 ]
 
@@ -317,7 +319,7 @@ class RSS_episode(Episode):
     def __init__(self, date: str, titre: str):
         """
         RSS_episode is a class that represents an RSS episode in the database episodes.
-        :param date: The date for this episode at the format "2024-12-22T09:59:39.000+00:00" parsed by "%Y-%m-%dT%H:%M:%S.%f%z".
+        :param date: The date for this episode at the format "2024-12-22T09:59:39" parsed by "%Y-%m-%dT%H:%M:%S".
         :param titre: The title of this episode.
         """
         super().__init__(date, titre)
@@ -400,6 +402,131 @@ class RSS_episode(Episode):
 
 
 # %% py mongo helper episodes.ipynb 20
+import requests
+from bs4 import BeautifulSoup
+import json
+import locale
+
+
+WEB_DATE_FORMAT = "%d %b %Y"  # '26 août 2024', '20 oct. 2024', '22 sept. 2024', '8 sept. 2024', '25 août 2024', '4 août 2024', '23 juin 2024', '19 mai 2024', '5 mai 2024',
+
+
+class WEB_episode(Episode):
+    def __init__(self, date: str, titre: str):
+        """
+        WEB_episode is a class that represents an historical episode (legacy, not available anymore as RSS) in the database episodes.
+        :param date: The date for this episode at the format "2024-12-22T09:59:39" parsed by "%Y-%m-%dT%H:%M:%S".
+        :param titre: The title of this episode.
+        """
+        super().__init__(date, titre)
+
+    @staticmethod
+    def parse_web_date(web_date: str, web_date_format=WEB_DATE_FORMAT) -> datetime:
+        """Convertit une date en français dans la page de masque sous forme de chaîne de caractères en un objet datetime.
+        la page du masque utilise des abreviations non standards pour fev et juil
+        """
+
+        locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+
+        def corrige_date(date_str):
+            # Dictionnaire de remplacement pour corriger les abréviations des mois
+            month_replacements = {
+                "fév.": "févr.",
+                "juill.": "juil.",
+            }
+            for fr_month, fr_month_norm in month_replacements.items():
+                date_str = date_str.replace(fr_month, fr_month_norm)
+            return date_str
+
+        # Convertir la date normalisée en objet datetime
+        try:
+            dt = datetime.strptime(corrige_date(web_date), web_date_format)
+            return dt
+        except ValueError as e:
+            print(f"Erreur de conversion pour la date '{web_date}': {e}")
+            return None
+
+    @staticmethod
+    def get_audio_url(url):
+        """
+        Prend l'url d'un épisode du masque en entrée et retourne l'URL vers le fichier audio .m4a ou .mp3.
+        """
+
+        try:
+            # Faire une requête HTTP pour obtenir le contenu de la page
+            response = requests.get(url)
+            response.raise_for_status()  # Vérifier que la requête a réussi
+        except requests.RequestException as e:
+            print(f"Erreur lors de la requête HTTP: {e}")
+            return None
+
+        # Analyser le contenu HTML avec BeautifulSoup
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        # Rechercher la balise <script> contenant l'objet JSON
+        script_tag = soup.find("script", string=lambda t: t and "contentUrl" in t)
+
+        if script_tag:
+            try:
+                # Extraire le contenu JSON de la balise <script>
+                json_text = script_tag.string
+                json_data = json.loads(json_text)
+
+                # Extraire l'URL du fichier audio
+                audio_url = None
+                for item in json_data.get("@graph", []):
+                    if item.get("@type") == "RadioEpisode":
+                        main_entity = item.get("mainEntity", {})
+                        audio_url = main_entity.get("contentUrl")
+                        break
+
+                return audio_url
+            except (json.JSONDecodeError, KeyError, TypeError) as e:
+                print(f"Erreur lors de l'analyse du JSON: {e}")
+                return None
+
+        print("Balise <script> contenant 'contentUrl' non trouvée")
+        return None
+
+    @classmethod
+    def from_webpage_entry(cls, dict_web_episode: dict) -> "WEB_episode":
+        """
+        Create a WEB episode from a dict web episode entry.
+        :param dict_web_episode: The web episode entry with these keys: ['title', 'url', 'description', 'date', 'duration']
+        :return: The WEB episode.
+        """
+
+        date_web = cls.parse_web_date(dict_web_episode["date"])
+        date_web_str = cls.get_string_from_date(date_web, DATE_FORMAT)
+        inst = cls(
+            date=date_web_str,
+            titre=dict_web_episode["title"],
+        )
+        inst.description = dict_web_episode["description"]
+        inst.type = "livres"
+        inst.url_telechargement = cls.get_audio_url(dict_web_episode["url"])
+
+        # self.audio_rel_filename = None
+        # self.transcription = None
+        inst.duree = cls.get_duree_in_seconds(
+            dict_web_episode["duration"]
+        )  # in seconds
+
+        return inst
+
+    @staticmethod
+    def get_duree_in_seconds(duree: str) -> int:
+        """
+        Get the duration in seconds from a string.
+        :param duree: The duration string at the format "MM min".
+        :return: The duration in seconds.
+        """
+        duree = duree.split(" ")
+        if len(duree) == 2:
+            return int(duree[0]) * 60
+
+
+# %% py mongo helper episodes.ipynb 22
 from typing import List
 import pymongo
 
