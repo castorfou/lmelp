@@ -37,6 +37,15 @@ si absent `https://radiofrance-podcast.net/podcast09/rss_14007.xml` est utilisé
 RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml
 ```
 
+### web info
+
+Le lien vers la page web stockee du masque listant les episodes "legacy" historiques
+
+si absent `/home/guillaume/git/lmelp/db/À écouter plus tard I Radio France/À écouter plus tard I Radio France.html` est utilisé par defaut
+```
+WEB_LMELP_FILENAME=/home/guillaume/git/lmelp/db/À écouter plus tard I Radio France/À écouter plus tard I Radio France.html
+```
+
 ### db info
 
 pour tout ce qui concerne la base mongo
