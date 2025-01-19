@@ -33,10 +33,24 @@ def get_episodes():
     return episodes_df
 
 
+@st.cache_data  # 👈 Add the caching decorator
+def print_episodes_info(episodes_df):
+    st.write("### Informations sur les épisodes")
+    st.write(f"{episodes_df.shape[0]} épisodes")
+    st.write(f"{episodes_df['date'].min()} - {episodes_df['date'].max()}")
+    # Compter les transcriptions disponibles et manquantes
+    transcriptions_ok = episodes_df["transcription"].notna().sum()
+    transcriptions_missing = episodes_df["transcription"].isna().sum()
+
+    st.write(f"Transcriptions OK : {transcriptions_ok}")
+    st.write(f"Transcriptions manquantes : {transcriptions_missing}")
+
+
 def afficher_episodes():
     st.write("### Épisodes")
     st.write("Liste des épisodes du Masque et la Plume.")
     episodes_df = get_episodes()
+    print_episodes_info(episodes_df)
     # Ajoutez ici le code pour afficher les épisodes
     st.dataframe(episodes_df, use_container_width=True)
 
