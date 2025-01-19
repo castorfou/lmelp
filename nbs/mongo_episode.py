@@ -562,6 +562,12 @@ class Episodes:
             {"$or": [{"transcription": ""}, {"transcription": None}]}
         )
 
+    def get_transcriptions(self) -> List[Episode]:
+        """
+        Retourne toutes les entrées pour lesquelles une transcription existe.
+        """
+        return self.get_entries({"transcription": {"$ne": None, "$ne": ""}})
+
     def __str__(self):
         return f"""
         {self.collection.count_documents({})} entries
