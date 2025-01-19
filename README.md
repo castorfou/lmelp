@@ -3,7 +3,7 @@
 ## environnements de dev python
 
 creer l'environnement whisper depuis `envs/whisper.txt`
-qui contient ce qu il faut pour whisper, feedparser, transformers (huggingface), dotenv, mongo
+qui contient ce qu il faut pour whisper, feedparser, transformers (huggingface), dotenv, mongo, streamlit
 
 creer l'environnement whisper depuis `envs/gemini.txt`
 qui contient ce qu il faut pour gemini, dotenv, llamaindex, llm, mongo

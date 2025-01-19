@@ -4,22 +4,13 @@ mamba activate whisper
 
 pip install --upgrade pip
 pip install --upgrade transformers 'datasets[audio]' accelerate
-mamba install ipykernel ipywidgets
-pip install pre-commit
-mamba install nb_conda_kernels --yes  
+mamba install ipykernel ipywidgets --yes
+pip install -q pre-commit python-dotenv
 
-mamba install feedparser
-
-mamba install pymongo
-
-mamba install gitpython
-
-mamba install nbdev
-
-pip install python-dotenv
+mamba install feedparser pymongo gitpython nbdev nb_conda_kernels --yes  
 
 sudo apt update
 sudo apt install libdbus-1-dev libdbus-glib-1-dev cmake
-pip install dbus-python
+pip install -q dbus-python
 
-pip install lxml html5lib beautifulsoup4 requests plotly
+pip install -q lxml html5lib beautifulsoup4 requests plotly streamlit

@@ -1,0 +1,6 @@
+mamba remove --name streamlit_korben --all
+mamba create -n streamlit_korben python==3.11 --yes
+mamba activate streamlit_korben
+
+pip install --upgrade pip
+pip install streamlit "rembg[cpu]"
