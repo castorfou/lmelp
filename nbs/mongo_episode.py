@@ -583,7 +583,9 @@ class Episodes:
         """
         Retourne toutes les entrées pour lesquelles une transcription existe.
         """
-        return self.get_entries({"transcription": {"$ne": None, "$ne": ""}})
+        return self.get_entries(
+            {"$and": [{"transcription": {"$ne": None}}, {"transcription": {"$ne": ""}}]}
+        )
 
     def __str__(self):
         return f"""
