@@ -526,7 +526,7 @@ class WEB_episode(Episode):
             return int(duree[0]) * 60
 
 
-# %% py mongo helper episodes.ipynb 22
+# %% py mongo helper episodes.ipynb 27
 from typing import List
 import pymongo
 
