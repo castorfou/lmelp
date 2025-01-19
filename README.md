@@ -20,6 +20,13 @@ ffmpeg is required to load audio files from filename for whisper use (transcript
 
 install, it is available in snap (4.3.1)
 
+## ulimit
+
+j'ai du augmenter l'ulimit de mon systeme pour utiliser whisper
+
+`ulimit -n 4096`
+
+
 ## `.env`
 
 https://pypi.org/project/python-dotenv/ 
