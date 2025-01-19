@@ -92,6 +92,7 @@ from bson import ObjectId
 from mongo import get_collection, get_DB_VARS, mongolog
 from datetime import datetime
 import requests
+from typing import Dict
 
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
 LOG_DATE_FORMAT = "%d %b %Y %H:%M"
@@ -306,8 +307,24 @@ class Episode:
             {"_id": self.get_oid()}, {"$set": {"transcription": self.transcription}}
         )
 
+    def to_dict(self) -> Dict[str, str]:
+        """
+        return episode as a dictionnary
+        keys are ['date', 'titre', 'description', 'url_telechargement', 'audio_rel_filename', 'transcription', 'type', 'duree']
+        """
+        return {
+            "date": self.date,
+            "titre": self.titre,
+            "description": self.description,
+            "url_telechargement": self.url_telechargement,
+            "audio_rel_filename": self.audio_rel_filename,
+            "transcription": self.transcription,
+            "type": self.type,
+            "duree": self.duree,
+        }
 
-# %% py mongo helper episodes.ipynb 11
+
+# %% py mongo helper episodes.ipynb 12
 from feedparser.util import FeedParserDict
 from transformers import pipeline
 
@@ -401,7 +418,7 @@ class RSS_episode(Episode):
         return result["labels"][0]
 
 
-# %% py mongo helper episodes.ipynb 20
+# %% py mongo helper episodes.ipynb 21
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -526,7 +543,7 @@ class WEB_episode(Episode):
             return int(duree[0]) * 60
 
 
-# %% py mongo helper episodes.ipynb 27
+# %% py mongo helper episodes.ipynb 28
 from typing import List
 import pymongo
 
