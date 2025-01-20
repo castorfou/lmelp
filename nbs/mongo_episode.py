@@ -150,6 +150,32 @@ class Episode:
         inst = cls(date=date_doc_str, titre=document.get("titre"))
         return inst
 
+    @classmethod
+    def from_date(cls, date: datetime, collection_name: str = "episodes") -> "Episode":
+        """
+        Create an episode from a date of a mongo entry.
+        :param date: date as datetime.
+        :return: The Episode.
+        """
+        DB_HOST, DB_NAME, _ = get_DB_VARS()
+        collection = get_collection(
+            target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
+        )
+
+        # Convertir la date en début et fin de journée pour la requête
+        start_date = datetime(date.year, date.month, date.day)
+        end_date = datetime(date.year, date.month, date.day, 23, 59, 59)
+
+        # Rechercher un document dont la date est dans l'intervalle
+        document = collection.find_one({"date": {"$gte": start_date, "$lte": end_date}})
+
+        if document:
+            date_doc_str = cls.get_string_from_date(document.get("date"), DATE_FORMAT)
+            inst = cls(date=date_doc_str, titre=document.get("titre"))
+            return inst
+        else:
+            return None
+
     def exists(self) -> bool:
         """
         Check if the episode exists in the database.
@@ -216,7 +242,7 @@ class Episode:
             return None
 
     @staticmethod
-    def get_date_from_string(date: str) -> datetime:
+    def get_date_from_string(date: str, DATE_FORMAT: str = DATE_FORMAT) -> datetime:
         """
         Get the datetime object from a string.
         :param date: The date string.
@@ -294,6 +320,7 @@ class Episode:
         """
         based on audio file, use whisper model to get transcription
         if transcription already exists, do nothing
+        if cache transcription (meaning a txt file aside audio file, same stem name), read it and store in DB
         if audio file does not exist, do nothing
         save transcription in DB
         """
@@ -302,6 +329,19 @@ class Episode:
                 print("Transcription existe deja")
             return
         mp3_fullfilename = get_audio_path(AUDIO_PATH, year="") + self.audio_rel_filename
+        cache_transcription_filename = f"{os.path.splitext(mp3_fullfilename)[0]}.txt"
+        # check if cache_transcription_file exists
+        if os.path.exists(cache_transcription_filename):
+            if verbose:
+                print(f"Transcription cachee trouvee: {cache_transcription_filename}")
+            with open(cache_transcription_filename, "r") as file:
+                self.transcription = file.read()
+            self.collection.update_one(
+                {"_id": self.get_oid()},
+                {"$set": {"transcription": self.transcription}},
+            )
+            return
+
         self.transcription = extract_whisper(mp3_fullfilename)
         self.collection.update_one(
             {"_id": self.get_oid()}, {"$set": {"transcription": self.transcription}}
@@ -324,7 +364,7 @@ class Episode:
         }
 
 
-# %% py mongo helper episodes.ipynb 12
+# %% py mongo helper episodes.ipynb 13
 from feedparser.util import FeedParserDict
 from transformers import pipeline
 
@@ -418,7 +458,7 @@ class RSS_episode(Episode):
         return result["labels"][0]
 
 
-# %% py mongo helper episodes.ipynb 21
+# %% py mongo helper episodes.ipynb 25
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -543,7 +583,7 @@ class WEB_episode(Episode):
             return int(duree[0]) * 60
 
 
-# %% py mongo helper episodes.ipynb 28
+# %% py mongo helper episodes.ipynb 32
 from typing import List
 import pymongo
 
