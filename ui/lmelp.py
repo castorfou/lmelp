@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_card import card
 
 st.set_page_config(
     page_title="le masque et la plume",
@@ -25,3 +26,15 @@ st.write(f"Episodes tbd")
 st.write(f"Auteurs tbd")
 st.write(f"Livres tbd")
 st.write(f"Avis tbd")
+
+
+def example():
+    card(
+        title="Hello World!",
+        text="Some description",
+        image="http://placekitten.com/300/250",
+        url="https://www.google.com",
+    )
+
+
+example()
