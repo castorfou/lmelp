@@ -93,4 +93,8 @@ gemini vertex (llamaindex), GOOGLE_AUTH_FILE
 
 follow instructions at https://stackoverflow.com/a/69941050
 
+## streamlit
 
+from vscode: palette > run task > run streamlit
+
+or from terminal: `ui/lmelp_ui.sh`
