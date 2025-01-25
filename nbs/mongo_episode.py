@@ -584,7 +584,7 @@ class WEB_episode(Episode):
 
 
 # %% py mongo helper episodes.ipynb 32
-from typing import List
+from typing import List, Dict, Any
 import pymongo
 
 
@@ -600,21 +600,31 @@ class Episodes:
         self.collection = get_collection(
             target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
         )
+        self.episodes = self._load_episodes()
+
+    def _load_episodes(self) -> List[Dict[str, Any]]:
+        """
+        Load episodes from the database and return them as a list of dictionaries.
+        """
+        result = self.collection.find().sort("date", pymongo.DESCENDING)
+        episodes = [Episode.from_oid(entry.get("_id")).to_dict() for entry in result]
+        return episodes
 
     def get_entries(self, request="") -> List[Episode]:
         """'
         retourne le resultat de la requete sous forme d'une liste d'instance de Episode
+        tries par date decroissante (du plus recent au plus vieux)
 
         par exemple : request={"$or": [{"transcription": ""}, {"transcription": None}]}
         """
-        episodes = []
         result = self.collection.find(request).sort("date", pymongo.DESCENDING)
-        for entry in result:
-            episode = Episode.from_oid(entry.get("_id"))
-            episodes.append(episode)
+        episodes = [Episode.from_oid(entry.get("_id")).to_dict() for entry in result]
         return episodes
 
     def get_missing_transcriptions(self) -> List[Episode]:
+        """
+        retourne les episodes pour lesquels la transcription est manquante
+        """
         return self.get_entries(
             {"$or": [{"transcription": ""}, {"transcription": None}]}
         )
@@ -626,6 +636,18 @@ class Episodes:
         return self.get_entries(
             {"$and": [{"transcription": {"$ne": None}}, {"transcription": {"$ne": ""}}]}
         )
+
+    def __getitem__(self, index: int) -> Dict[str, Any]:
+        return self.episodes[index]
+
+    def __len__(self) -> int:
+        return len(self.episodes)
+
+    def __iter__(self):
+        return iter(self.episodes)
+
+    def __repr__(self) -> str:
+        return f"Episodes({self.episodes})"
 
     def __str__(self):
         return f"""
