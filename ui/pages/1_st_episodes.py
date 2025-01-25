@@ -2,17 +2,9 @@ import streamlit as st
 from git import Repo
 import os
 import sys
+from ..ui_tools import add_to_sys_path
 
-
-def get_git_root(path):
-    git_repo = Repo(path, search_parent_directories=True)
-    return git_repo.git.rev_parse("--show-toplevel")
-
-
-project_root = get_git_root(os.getcwd())
-
-# Ajouter le chemin du répertoire 'nbs' à sys.path
-sys.path.append(os.path.abspath(os.path.join(project_root, "nbs")))
+add_to_sys_path()
 
 from mongo_episode import Episodes
 import pandas as pd
