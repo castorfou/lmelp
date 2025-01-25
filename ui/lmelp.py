@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_card import card
+from ui_tools import add_to_sys_path
 
 st.set_page_config(
     page_title="le masque et la plume",
@@ -37,4 +38,20 @@ def example():
     )
 
 
+add_to_sys_path()
+
+from mongo_episode import Episodes
+
+
+def affiche_episodes():
+    episodes = Episodes()
+    card(
+        title="# Episode",
+        text=f"{len(episodes)}",
+        image="http://placekitten.com/300/250",
+        url="pages/1_st_episodes.py",
+    )
+
+
 example()
+affiche_episodes()
