@@ -82,6 +82,12 @@ def affiche_missing_transcription(episodes=episodes):
     )
 
 
-affiche_episodes(episodes)
-affiche_last_date(episodes)
-affiche_missing_transcription(episodes)
+# Créer des colonnes pour afficher les cartes sur la même ligne
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    affiche_episodes(episodes)
+with col2:
+    affiche_last_date(episodes)
+with col3:
+    affiche_missing_transcription(episodes)
