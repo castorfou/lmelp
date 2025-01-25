@@ -23,7 +23,6 @@ st.page_link("pages/2_st_auteurs.py", label="auteurs", icon=":material/person:")
 st.page_link("pages/3_st_livres.py", label="livres", icon=":material/menu_book:")
 
 st.write("## Contenu (a mettre sous forme de cartes)")
-st.write(f"Episodes tbd")
 st.write(f"Auteurs tbd")
 st.write(f"Livres tbd")
 st.write(f"Avis tbd")
@@ -55,7 +54,6 @@ def affiche_episodes(episodes=episodes):
     )
 
 
-import datetime
 import locale
 
 # Définir la locale en français
