@@ -49,9 +49,8 @@ def affiche_episodes():
         title="# Episode",
         text=f"{len(episodes)}",
         image="http://placekitten.com/300/250",
-        url="pages/1_st_episodes.py",
+        url="/st_episodes",
     )
 
 
-example()
 affiche_episodes()

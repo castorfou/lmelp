@@ -2,7 +2,10 @@ import streamlit as st
 from git import Repo
 import os
 import sys
-from ..ui_tools import add_to_sys_path
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from ui_tools import add_to_sys_path
 
 add_to_sys_path()
 
@@ -13,9 +16,7 @@ import pandas as pd
 @st.cache_data  # 👈 Add the caching decorator
 def get_episodes():
     episodes = Episodes()
-    episodes_df = pd.DataFrame(
-        [episode.to_dict() for episode in episodes.get_entries()]
-    )
+    episodes_df = pd.DataFrame([episode for episode in episodes.get_entries()])
     episodes_df["date"] = episodes_df["date"].dt.strftime("%Y/%m/%d")
     episodes_df["duree (min)"] = (episodes_df["duree"] / 60).round(1)
     episodes_df.drop(
