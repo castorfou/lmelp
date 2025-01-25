@@ -42,15 +42,48 @@ add_to_sys_path()
 
 from mongo_episode import Episodes
 
+episodes = Episodes()
 
-def affiche_episodes():
-    episodes = Episodes()
+
+def affiche_episodes(episodes=episodes):
+
     card(
-        title="# Episode",
+        title="# episodes",
         text=f"{len(episodes)}",
         image="http://placekitten.com/300/250",
         url="/st_episodes",
     )
 
 
-affiche_episodes()
+import datetime
+import locale
+
+# Définir la locale en français
+locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+
+DATE_FORMAT = "%d %b %Y"
+
+
+def affiche_last_date(episodes=episodes):
+
+    card(
+        title="last episode",
+        text=f"{episodes[0].get('date').strftime(DATE_FORMAT)}",
+        image="http://placekitten.com/300/250",
+        url="/st_episodes",
+    )
+
+
+def affiche_missing_transcription(episodes=episodes):
+
+    card(
+        title="# missing transcriptions",
+        text=f"{len(episodes.get_missing_transcriptions())}",
+        image="http://placekitten.com/300/250",
+        url="/st_episodes",
+    )
+
+
+affiche_episodes(episodes)
+affiche_last_date(episodes)
+affiche_missing_transcription(episodes)
