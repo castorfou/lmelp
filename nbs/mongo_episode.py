@@ -604,11 +604,9 @@ class Episodes:
 
     def _load_episodes(self) -> List[Dict[str, Any]]:
         """
-        Load episodes from the database and return them as a list of dictionaries.
+        Load all episodes from the database and return them as a list of dictionaries.
         """
-        result = self.collection.find().sort("date", pymongo.DESCENDING)
-        episodes = [Episode.from_oid(entry.get("_id")).to_dict() for entry in result]
-        return episodes
+        return self.get_entries()
 
     def get_entries(self, request="") -> List[Episode]:
         """'
