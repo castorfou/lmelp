@@ -1,4 +1,6 @@
 import streamlit as st
+from streamlit_card import card
+from ui_tools import add_to_sys_path
 
 st.set_page_config(
     page_title="le masque et la plume",
@@ -21,7 +23,71 @@ st.page_link("pages/2_st_auteurs.py", label="auteurs", icon=":material/person:")
 st.page_link("pages/3_st_livres.py", label="livres", icon=":material/menu_book:")
 
 st.write("## Contenu (a mettre sous forme de cartes)")
-st.write(f"Episodes tbd")
 st.write(f"Auteurs tbd")
 st.write(f"Livres tbd")
 st.write(f"Avis tbd")
+
+
+def example():
+    card(
+        title="Hello World!",
+        text="Some description",
+        image="http://placekitten.com/300/250",
+        url="https://www.google.com",
+    )
+
+
+add_to_sys_path()
+
+from mongo_episode import Episodes
+
+episodes = Episodes()
+
+
+def affiche_episodes(episodes=episodes):
+
+    card(
+        title="# episodes",
+        text=f"{len(episodes)}",
+        image="http://placekitten.com/300/250",
+        url="/st_episodes",
+    )
+
+
+import locale
+
+# Définir la locale en français
+locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+
+DATE_FORMAT = "%d %b %Y"
+
+
+def affiche_last_date(episodes=episodes):
+
+    card(
+        title="last episode",
+        text=f"{episodes[0].to_dict().get('date').strftime(DATE_FORMAT)}",
+        image="http://placekitten.com/300/250",
+        url="/st_episodes",
+    )
+
+
+def affiche_missing_transcription(episodes=episodes):
+
+    card(
+        title="# missing transcriptions",
+        text=f"{len(episodes.get_missing_transcriptions())}",
+        image="http://placekitten.com/300/250",
+        url="/st_episodes",
+    )
+
+
+# Créer des colonnes pour afficher les cartes sur la même ligne
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    affiche_episodes(episodes)
+with col2:
+    affiche_last_date(episodes)
+with col3:
+    affiche_missing_transcription(episodes)
