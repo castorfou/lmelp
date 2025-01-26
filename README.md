@@ -20,6 +20,19 @@ ffmpeg is required to load audio files from filename for whisper use (transcript
 
 install, it is available in snap (4.3.1)
 
+## locale FR
+
+en cas d'erreur de type `locale.Error: unsupported locale setting`
+
+verifier avec `locale -a` que `fr_FR.UTF-8` soit installée.
+
+Sinon le faire avec 
+
+```bash
+sudo apt-get install language-pack-fr-base
+locale -a
+```
+
 ## ulimit
 
 j'ai du augmenter l'ulimit de mon systeme pour utiliser whisper pour eviter l'erreur `Too many open files`
