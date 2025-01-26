@@ -655,7 +655,7 @@ class Episodes:
         par exemple : request={"$or": [{"transcription": ""}, {"transcription": None}]}
         """
         result = self.collection.find(request).sort("date", pymongo.DESCENDING)
-        episodes = [Episode.from_oid(entry.get("_id")).to_dict() for entry in result]
+        episodes = [Episode.from_oid(entry.get("_id")) for entry in result]
         return episodes
 
     def get_missing_transcriptions(self) -> List[Episode]:

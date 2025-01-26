@@ -66,7 +66,7 @@ def affiche_last_date(episodes=episodes):
 
     card(
         title="last episode",
-        text=f"{episodes[0].get('date').strftime(DATE_FORMAT)}",
+        text=f"{episodes[0].to_dict().get('date').strftime(DATE_FORMAT)}",
         image="http://placekitten.com/300/250",
         url="/st_episodes",
     )

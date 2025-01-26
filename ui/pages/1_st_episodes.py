@@ -16,7 +16,8 @@ import pandas as pd
 @st.cache_data  # 👈 Add the caching decorator
 def get_episodes():
     episodes = Episodes()
-    episodes_df = pd.DataFrame([episode for episode in episodes.get_entries()])
+    all_episodes = episodes.episodes
+    episodes_df = pd.DataFrame([episode.to_dict() for episode in all_episodes])
     episodes_df["date"] = episodes_df["date"].dt.strftime("%Y/%m/%d")
     episodes_df["duree (min)"] = (episodes_df["duree"] / 60).round(1)
     episodes_df.drop(

@@ -37,7 +37,8 @@ locale -a
 
 j'ai du augmenter l'ulimit de mon systeme pour utiliser whisper pour eviter l'erreur `Too many open files`
 
-Avec ce parametre je n'ai pls le probleme: `ulimit -n 4096`
+Avec ce parametre je n'ai plus le probleme: `ulimit -n 4096`
+Je l'ai ajoute dans `.zshrc`
 
 
 ## `.env`
