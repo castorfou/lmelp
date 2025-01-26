@@ -9,6 +9,13 @@ from ui_tools import add_to_sys_path
 
 add_to_sys_path()
 
+st.set_page_config(
+    page_title="le masque et la plume",
+    page_icon=":material/music_note:",
+    layout="wide",
+    initial_sidebar_state="auto",
+)
+
 from mongo_episode import Episodes
 import pandas as pd
 from datetime import datetime
@@ -59,22 +66,16 @@ def afficher_episodes():
 
 def afficher_un_episode(episodes_df):
     # Widget de sélection de date
-    selected_date = st.date_input(
-        "Sélectionnez une date",
-        min_value=datetime(1958, 1, 1),
-        max_value=datetime.today(),
-    )
-
-    # Convertir la date sélectionnée en chaîne de caractères au format yyyy/mm/dd
-    selected_date_str = selected_date.strftime("%Y/%m/%d")
+    selected_date = st.selectbox("Sélectionnez un épisode", episodes_df["date"])
 
     # Filtrer le DataFrame pour trouver la ligne correspondant à la date sélectionnée
-    episode = episodes_df[episodes_df["date"] == selected_date_str]
+    episode = episodes_df[episodes_df["date"] == selected_date]
 
     if not episode.empty:
         episode = episode.iloc[0]
         st.write(f"### {episode['titre']}")
-        st.write(f"Date: {selected_date.strftime(DATE_FORMAT)}")
+        selected_date_dt = datetime.strptime(selected_date, "%Y/%m/%d")
+        st.write(f"Date: {selected_date_dt.strftime(DATE_FORMAT)}")
 
         st.write(f"Durée: {episode['duree (min)']} minutes")
         st.write(f"Description: {episode['description']}")
