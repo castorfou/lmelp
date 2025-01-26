@@ -34,17 +34,6 @@ def print_duree_traitement(start_time, end_time):
 
 def main():
 
-    # Connexion au bus D-Bus
-    bus = dbus.SessionBus()
-    proxy = bus.get_object(
-        "org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver"
-    )
-    interface = dbus.Interface(proxy, "org.freedesktop.ScreenSaver")
-
-    # Prévenir la mise en veille
-    cookie = interface.Inhibit("my_script", "Long running process")
-    print("Mise en veille deactivee")
-
     episodes = Episodes()
     print(episodes)
     miss_transcriptions = episodes.get_missing_transcriptions()
@@ -53,17 +42,11 @@ def main():
         miss_transcription = miss_transcriptions[-1]
         print("On va recuperer la transcription de l'episode \n")
         print(miss_transcription)
-        try:
-            # Votre traitement long ici
-            start_time = time.time()
-            miss_transcription.set_transcription(verbose=True)
-            end_time = time.time()
-            print_duree_traitement(start_time=start_time, end_time=end_time)
+        start_time = time.time()
+        miss_transcription.set_transcription(verbose=True)
+        end_time = time.time()
+        print_duree_traitement(start_time=start_time, end_time=end_time)
 
-        finally:
-            # Réactiver la mise en veille normale
-            print("Mise en veille normale reactivee")
-            interface.UnInhibit(cookie)
     print(episodes)
 
 
