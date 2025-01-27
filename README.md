@@ -20,11 +20,25 @@ ffmpeg is required to load audio files from filename for whisper use (transcript
 
 install, it is available in snap (4.3.1)
 
+## locale FR
+
+en cas d'erreur de type `locale.Error: unsupported locale setting`
+
+verifier avec `locale -a` que `fr_FR.UTF-8` soit installée.
+
+Sinon le faire avec 
+
+```bash
+sudo apt-get install language-pack-fr-base
+locale -a
+```
+
 ## ulimit
 
 j'ai du augmenter l'ulimit de mon systeme pour utiliser whisper pour eviter l'erreur `Too many open files`
 
-Avec ce parametre je n'ai pls le probleme: `ulimit -n 4096`
+Avec ce parametre je n'ai plus le probleme: `ulimit -n 4096`
+Je l'ai ajoute dans `.zshrc`
 
 
 ## `.env`
@@ -93,4 +107,8 @@ gemini vertex (llamaindex), GOOGLE_AUTH_FILE
 
 follow instructions at https://stackoverflow.com/a/69941050
 
+## streamlit
 
+from vscode: palette > run task > run streamlit
+
+or from terminal: `ui/lmelp_ui.sh`

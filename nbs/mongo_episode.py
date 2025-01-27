@@ -9,6 +9,7 @@ __all__ = [
     "RSS_DATE_FORMAT",
     "WEB_DATE_FORMAT",
     "get_audio_path",
+    "prevent_sleep",
     "extract_whisper",
     "Episode",
     "RSS_episode",
@@ -50,7 +51,38 @@ import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 from datasets import load_dataset
 
+import dbus
+import time
+from functools import wraps
 
+
+def prevent_sleep(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Connexion au bus D-Bus
+        bus = dbus.SessionBus()
+        proxy = bus.get_object(
+            "org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver"
+        )
+        interface = dbus.Interface(proxy, "org.freedesktop.ScreenSaver")
+
+        # Prévenir la mise en veille
+        cookie = interface.Inhibit("my_script", "Long running process")
+        print("Mise en veille désactivée")
+
+        try:
+            # Exécuter la fonction décorée
+            result = func(*args, **kwargs)
+            return result
+        finally:
+            # Réactiver la mise en veille normale
+            interface.UnInhibit(cookie)
+            print("Mise en veille normale réactivée")
+
+    return wrapper
+
+
+@prevent_sleep
 def extract_whisper(mp3_filename):
 
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -150,6 +182,32 @@ class Episode:
         inst = cls(date=date_doc_str, titre=document.get("titre"))
         return inst
 
+    @classmethod
+    def from_date(cls, date: datetime, collection_name: str = "episodes") -> "Episode":
+        """
+        Create an episode from a date of a mongo entry.
+        :param date: date as datetime.
+        :return: The Episode.
+        """
+        DB_HOST, DB_NAME, _ = get_DB_VARS()
+        collection = get_collection(
+            target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
+        )
+
+        # Convertir la date en début et fin de journée pour la requête
+        start_date = datetime(date.year, date.month, date.day)
+        end_date = datetime(date.year, date.month, date.day, 23, 59, 59)
+
+        # Rechercher un document dont la date est dans l'intervalle
+        document = collection.find_one({"date": {"$gte": start_date, "$lte": end_date}})
+
+        if document:
+            date_doc_str = cls.get_string_from_date(document.get("date"), DATE_FORMAT)
+            inst = cls(date=date_doc_str, titre=document.get("titre"))
+            return inst
+        else:
+            return None
+
     def exists(self) -> bool:
         """
         Check if the episode exists in the database.
@@ -216,7 +274,7 @@ class Episode:
             return None
 
     @staticmethod
-    def get_date_from_string(date: str) -> datetime:
+    def get_date_from_string(date: str, DATE_FORMAT: str = DATE_FORMAT) -> datetime:
         """
         Get the datetime object from a string.
         :param date: The date string.
@@ -290,11 +348,13 @@ class Episode:
             if verbose:
                 print(f"Le fichier {full_filename} existe déjà. Ignoré.")
 
-    def set_transcription(self, verbose=False):
+    def set_transcription(self, verbose=False, keep_cache=True):
         """
         based on audio file, use whisper model to get transcription
         if transcription already exists, do nothing
+        if cache transcription (meaning a txt file aside audio file, same stem name), read it and store in DB
         if audio file does not exist, do nothing
+        if keep_cache, save transcription in a txt file aside audio file, same stem name
         save transcription in DB
         """
         if self.transcription is not None:
@@ -302,7 +362,24 @@ class Episode:
                 print("Transcription existe deja")
             return
         mp3_fullfilename = get_audio_path(AUDIO_PATH, year="") + self.audio_rel_filename
+        cache_transcription_filename = f"{os.path.splitext(mp3_fullfilename)[0]}.txt"
+        # check if cache_transcription_file exists
+        if os.path.exists(cache_transcription_filename):
+            if verbose:
+                print(f"Transcription cachee trouvee: {cache_transcription_filename}")
+            with open(cache_transcription_filename, "r") as file:
+                self.transcription = file.read()
+            self.collection.update_one(
+                {"_id": self.get_oid()},
+                {"$set": {"transcription": self.transcription}},
+            )
+            return
+
         self.transcription = extract_whisper(mp3_fullfilename)
+        if keep_cache:
+            # Écrire la transcription dans un fichier texte
+            with open(cache_transcription_filename, "w") as f:
+                f.write(self.transcription)
         self.collection.update_one(
             {"_id": self.get_oid()}, {"$set": {"transcription": self.transcription}}
         )
@@ -324,12 +401,13 @@ class Episode:
         }
 
 
-# %% py mongo helper episodes.ipynb 12
+# %% py mongo helper episodes.ipynb 13
 from feedparser.util import FeedParserDict
 from transformers import pipeline
+import locale
 
 RSS_DUREE_MINI_MINUTES = 15
-RSS_DATE_FORMAT = "%a, %d %b %Y %H:%M:%S %z"  # "Sun, 29 Dec 2024 10:59:39 +0100"
+RSS_DATE_FORMAT = "%a, %d %b %Y %H:%M:%S %z"  # "Sun, 29 Dec 2024 10:59:39 +0100" 'Sun, 26 Jan 2025 10:59:39 +0100'
 
 
 class RSS_episode(Episode):
@@ -348,6 +426,7 @@ class RSS_episode(Episode):
         :param feed_entry: The feed entry.
         :return: The RSS episode.
         """
+        locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
 
         date_rss = datetime.strptime(feed_entry.published, RSS_DATE_FORMAT)
         date_rss_str = cls.get_string_from_date(date_rss, DATE_FORMAT)
@@ -418,7 +497,7 @@ class RSS_episode(Episode):
         return result["labels"][0]
 
 
-# %% py mongo helper episodes.ipynb 21
+# %% py mongo helper episodes.ipynb 27
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -543,8 +622,8 @@ class WEB_episode(Episode):
             return int(duree[0]) * 60
 
 
-# %% py mongo helper episodes.ipynb 28
-from typing import List
+# %% py mongo helper episodes.ipynb 34
+from typing import List, Dict, Any
 import pymongo
 
 
@@ -560,21 +639,29 @@ class Episodes:
         self.collection = get_collection(
             target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
         )
+        self.episodes = self._load_episodes()
+
+    def _load_episodes(self) -> List[Dict[str, Any]]:
+        """
+        Load all episodes from the database and return them as a list of dictionaries.
+        """
+        return self.get_entries()
 
     def get_entries(self, request="") -> List[Episode]:
         """'
         retourne le resultat de la requete sous forme d'une liste d'instance de Episode
+        tries par date decroissante (du plus recent au plus vieux)
 
         par exemple : request={"$or": [{"transcription": ""}, {"transcription": None}]}
         """
-        episodes = []
         result = self.collection.find(request).sort("date", pymongo.DESCENDING)
-        for entry in result:
-            episode = Episode.from_oid(entry.get("_id"))
-            episodes.append(episode)
+        episodes = [Episode.from_oid(entry.get("_id")) for entry in result]
         return episodes
 
     def get_missing_transcriptions(self) -> List[Episode]:
+        """
+        retourne les episodes pour lesquels la transcription est manquante
+        """
         return self.get_entries(
             {"$or": [{"transcription": ""}, {"transcription": None}]}
         )
@@ -586,6 +673,18 @@ class Episodes:
         return self.get_entries(
             {"$and": [{"transcription": {"$ne": None}}, {"transcription": {"$ne": ""}}]}
         )
+
+    def __getitem__(self, index: int) -> Dict[str, Any]:
+        return self.episodes[index]
+
+    def __len__(self) -> int:
+        return len(self.episodes)
+
+    def __iter__(self):
+        return iter(self.episodes)
+
+    def __repr__(self) -> str:
+        return f"Episodes({self.episodes})"
 
     def __str__(self):
         return f"""

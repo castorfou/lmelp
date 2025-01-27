@@ -2,17 +2,12 @@ import streamlit as st
 from git import Repo
 import os
 import sys
+from pathlib import Path
 
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from ui_tools import add_to_sys_path
 
-def get_git_root(path):
-    git_repo = Repo(path, search_parent_directories=True)
-    return git_repo.git.rev_parse("--show-toplevel")
-
-
-project_root = get_git_root(os.getcwd())
-
-# Ajouter le chemin du répertoire 'nbs' à sys.path
-sys.path.append(os.path.abspath(os.path.join(project_root, "nbs")))
+add_to_sys_path()
 
 from mongo_episode import Episodes
 import pandas as pd
@@ -21,9 +16,8 @@ import pandas as pd
 @st.cache_data  # 👈 Add the caching decorator
 def get_episodes():
     episodes = Episodes()
-    episodes_df = pd.DataFrame(
-        [episode.to_dict() for episode in episodes.get_entries()]
-    )
+    all_episodes = episodes.episodes
+    episodes_df = pd.DataFrame([episode.to_dict() for episode in all_episodes])
     episodes_df["date"] = episodes_df["date"].dt.strftime("%Y/%m/%d")
     episodes_df["duree (min)"] = (episodes_df["duree"] / 60).round(1)
     episodes_df.drop(
