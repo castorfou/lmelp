@@ -12,6 +12,18 @@ qui contient ce qu il faut pour gemini, dotenv, llamaindex, llm, mongo
 
 `pre-commit install`
 
+## config vscode
+
+en cas de message `"Visual Studio Code is unable to watch for file changes in this large workspace" (error ENOSPC)` [see vscode linux page](https://code.visualstudio.com/docs/setup/linux#_visual-studio-code-is-unable-to-watch-for-file-changes-in-this-large-workspace-error-enospc)
+
+```bash
+# add fs.inotify.max_user_watches=524288 to /etc/sysctl.conf
+sudo sysctl -p # to apply directly
+cat /proc/sys/fs/inotify/max_user_watches # to control it is applied
+```
+
+or add `files.watcherExclude` directive in `.vscode/settings.json`
+
 # pour utiliser
 
 ## ffmpeg
