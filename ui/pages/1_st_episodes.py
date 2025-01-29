@@ -98,6 +98,7 @@ def nb_mots_transcription(episodes_df):
 
     episodes_df = episodes_df.copy()
     episodes_df["date"] = episodes_df["date"].apply(lambda x: x.strftime(DATE_FORMAT))
+
     # Calculer le nombre de mots par minute
     episodes_df["mots_par_minute"] = (
         episodes_df["transcription"].apply(lambda x: len(x.split()))
