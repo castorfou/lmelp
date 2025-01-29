@@ -98,6 +98,12 @@ def nb_mots_transcription(episodes_df):
 
     episodes_df = episodes_df.copy()
     episodes_df["date"] = episodes_df["date"].apply(lambda x: x.strftime(DATE_FORMAT))
+
+    # Ajouter un identifiant unique pour chaque épisode
+    episodes_df["unique_id"] = (
+        episodes_df["date"] + " - " + episodes_df.index.astype(str)
+    )
+
     # Calculer le nombre de mots par minute
     episodes_df["mots_par_minute"] = (
         episodes_df["transcription"].apply(lambda x: len(x.split()))
@@ -107,7 +113,7 @@ def nb_mots_transcription(episodes_df):
     # Créer le graphique interactif
     fig = px.bar(
         episodes_df,
-        x="date",
+        x="unique_id",
         y="mots_par_minute",
         custom_data=["date", "titre", "mots_par_minute", "duree (min)"],
         labels={"mots_par_minute": "Mots par Minute"},
