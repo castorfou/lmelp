@@ -13,4 +13,4 @@ sudo apt update
 sudo apt install libdbus-1-dev libdbus-glib-1-dev cmake
 pip install -q dbus-python
 
-pip install -q lxml html5lib beautifulsoup4 requests plotly streamlit streamlit-extras
+pip install -q lxml html5lib beautifulsoup4 requests plotly streamlit streamlit-extras thefuzz
