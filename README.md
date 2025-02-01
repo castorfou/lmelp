@@ -119,6 +119,16 @@ gemini vertex (llamaindex), GOOGLE_AUTH_FILE
 
 follow instructions at https://stackoverflow.com/a/69941050
 
+### SerpApi
+
+to request search engines
+
+with
+
+```text
+SERP_API_KEY
+```
+
 ## streamlit
 
 from vscode: palette > run task > run streamlit

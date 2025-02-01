@@ -18,3 +18,5 @@ pip install -q lxml html5lib beautifulsoup4 requests plotly streamlit streamlit-
 pip install -q -U google-generativeai pandas
 
 pip install -U llama-index-core llama-index-llms-openai llama-index-embeddings-openai llama-index-llms-azure-openai llama-index-embeddings-azure-openai llama-index-llms-gemini llama-index-llms-vertex
+
+pip install google-search-results
