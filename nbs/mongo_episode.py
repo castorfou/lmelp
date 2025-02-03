@@ -253,6 +253,18 @@ class Episode:
             mongolog("update", self.collection.name, message_log)
             return 0
 
+    def update_date(self, new_date: datetime):
+        """
+        Update the date of the episode.
+        :param new_date: The new date of the episode, datetime format.
+        """
+        self.collection.update_one(
+            {"_id": self.get_oid()}, {"$set": {"date": new_date}}
+        )
+        message_log = f"{Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} - {self.titre} -> {Episode.get_string_from_date(new_date, format=LOG_DATE_FORMAT)}"
+        self.date = new_date
+        mongolog("force_update", self.collection.name, message_log)
+
     def remove(self):
         """
         Remove the episode from the database.
@@ -401,7 +413,7 @@ class Episode:
         }
 
 
-# %% py mongo helper episodes.ipynb 13
+# %% py mongo helper episodes.ipynb 14
 from feedparser.util import FeedParserDict
 from transformers import pipeline
 import locale
@@ -497,7 +509,7 @@ class RSS_episode(Episode):
         return result["labels"][0]
 
 
-# %% py mongo helper episodes.ipynb 27
+# %% py mongo helper episodes.ipynb 28
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -622,7 +634,7 @@ class WEB_episode(Episode):
             return int(duree[0]) * 60
 
 
-# %% py mongo helper episodes.ipynb 34
+# %% py mongo helper episodes.ipynb 35
 from typing import List, Dict, Any
 import pymongo
 
