@@ -28,7 +28,6 @@ __all__ = [
     "mongolog",
     "print_logs",
     "BaseEntity",
-    "Auteur",
     "Editeur",
     "Critique",
 ]
@@ -180,18 +179,6 @@ class BaseEntity:
 
 
 # %% py mongo helper.ipynb 12
-class Auteur(BaseEntity):
-    collection = "auteurs"
-
-    def __init__(self, nom: str):
-        """
-        Auteur is a class that represents an author in the database auteurs.
-        :param nom: The name of the author.
-        """
-        super().__init__(nom, self.collection)
-
-
-# %% py mongo helper.ipynb 17
 class Editeur(BaseEntity):
     collection = "editeurs"
 
@@ -203,7 +190,7 @@ class Editeur(BaseEntity):
         super().__init__(nom, self.collection)
 
 
-# %% py mongo helper.ipynb 22
+# %% py mongo helper.ipynb 17
 class Critique(BaseEntity):
     collection = "critiques"
 
