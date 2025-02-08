@@ -46,5 +46,5 @@ if __name__ == "__main__":
         if auteur_corrige is not None:
             print(f"{auteur} -> {auteur_corrige}")
             aut = Auteur(auteur_corrige)
-            print(f"Est-ce que auteur1 existe ? {aut.exists()}")
+            print(f"Est-ce que {aut.nom} existe ? {aut.exists()}")
             aut.keep()
