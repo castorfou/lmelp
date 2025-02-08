@@ -1,0 +1,65 @@
+Azure Open AI Models (Sweden Central Azure Region) : january 2025
+    Dalle3 
+    GPT-4-Turbo		
+    Text-Embedding-Ada-002
+    gpt-4o	
+    gpt-4o-mini
+    o1 		
+    o1-mini		
+    text-embedding-3-large
+    whisper	
+
+LLMaaS (LLM Model as a Service) 
+    Meta Llama3 8b 
+    Meta Llama3 90b (In Progress) 
+    Mistral 7b
+
+
+Running test for model: Dalle3
+❌ Chat Request (Status code: 400)
+❌ Structured Output Request (Status code: 400)
+❌ Tool Calling Request (Status code: 400)
+Running test for model: GPT-4-Turbo
+✅ Chat Request
+❌ Structured Output Request (Status code: 400)
+✅ Tool Calling Request
+Running test for model: Text-Embedding-Ada-002
+❌ Chat Request (Status code: 400)
+❌ Structured Output Request (Status code: 400)
+❌ Tool Calling Request (Status code: 400)
+Running test for model: gpt-4o
+✅ Chat Request
+✅ Structured Output Request
+✅ Tool Calling Request
+Running test for model: gpt-4o-mini
+✅ Chat Request
+✅ Structured Output Request
+✅ Tool Calling Request
+Running test for model: o1
+❌ Chat Request (Status code: 404)
+❌ Structured Output Request (Status code: 404)
+❌ Tool Calling Request (Status code: 404)
+Running test for model: o1-mini
+❌ Chat Request (Status code: 400)
+❌ Structured Output Request (Status code: 400)
+❌ Tool Calling Request (Status code: 400)
+Running test for model: text-embedding-3-large
+❌ Chat Request (Status code: 400)
+❌ Structured Output Request (Status code: 400)
+❌ Tool Calling Request (Status code: 400)
+Running test for model: whisper
+❌ Chat Request (Status code: 400)
+❌ Structured Output Request (Status code: 400)
+❌ Tool Calling Request (Status code: 429)
+Running test for model: Meta Llama3 8b
+❌ Chat Request (Status code: 404)
+❌ Structured Output Request (Status code: 404)
+❌ Tool Calling Request (Status code: 404)
+Running test for model: Meta Llama3 90b
+❌ Chat Request (Status code: 404)
+❌ Structured Output Request (Status code: 404)
+❌ Tool Calling Request (Status code: 404)
+Running test for model: Mistral 7b
+❌ Chat Request (Status code: 404)
+❌ Structured Output Request (Status code: 404)
+❌ Tool Calling Request (Status code: 404)

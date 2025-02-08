@@ -124,7 +124,11 @@ from bson import ObjectId
 from mongo import get_collection, get_DB_VARS, mongolog
 from datetime import datetime
 import requests
-from typing import Dict
+from typing import Dict, List
+from llm import get_azure_llm
+from llama_index.core.llms import ChatMessage
+import json
+
 
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
 LOG_DATE_FORMAT = "%d %b %Y %H:%M"
@@ -412,8 +416,62 @@ class Episode:
             "duree": self.duree,
         }
 
+    def get_all_auteurs(self) -> List[str]:
+        """
+        Get all the authors of the episode from the transcription.
+        :return: The list of authors.
+        """
+        if self.transcription is None:
+            return []
 
-# %% py mongo helper episodes.ipynb 14
+        llm_structured_output = get_azure_llm("gpt-4o")
+        response_schema = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "AuthorList",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "Authors": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "description": "A list of authors from transcription",
+                            },
+                        }
+                    },
+                    "required": ["Authors"],
+                    "additionalProperties": False,
+                },
+            },
+        }
+        response = llm_structured_output.chat(
+            messages=[
+                ChatMessage(
+                    role="system",
+                    content="Tu es un assistant utile qui retourne une liste JSON de noms d'auteurs.",
+                ),
+                ChatMessage(
+                    role="user",
+                    content=f"Est-ce que tu peux me lister tous les noms d'auteurs dont on parle des oeuvres \
+                            dans cette transcription d'un episode du masque et la plume \
+                            diffuse le {self.date.strftime('%d %b %Y')}. \
+                            Je veux toujours avoir le prenom et le nom complet de chaque auteur. \
+                            voici cette transcription : \
+                            {self.transcription} ",
+                ),
+            ],
+            response_format=response_schema,
+        )
+        try:
+            json_dict = json.loads(response.message.content)
+        except json.JSONDecodeError as e:
+            print("Error parsing JSON:", e)
+            print("Raw response:", json_dict)
+        return json_dict["Authors"]
+
+
+# %% py mongo helper episodes.ipynb 15
 from feedparser.util import FeedParserDict
 from transformers import pipeline
 import locale
@@ -509,7 +567,7 @@ class RSS_episode(Episode):
         return result["labels"][0]
 
 
-# %% py mongo helper episodes.ipynb 28
+# %% py mongo helper episodes.ipynb 29
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -634,7 +692,7 @@ class WEB_episode(Episode):
             return int(duree[0]) * 60
 
 
-# %% py mongo helper episodes.ipynb 35
+# %% py mongo helper episodes.ipynb 36
 from typing import List, Dict, Any
 import pymongo
 
