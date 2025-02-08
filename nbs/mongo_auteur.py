@@ -16,12 +16,13 @@ from mongo import BaseEntity
 
 
 class Auteur(BaseEntity):
-    collection = "auteurs"
+    collection: str = "auteurs"
 
-    def __init__(self, nom: str):
-        """
-        Auteur is a class that represents an author in the database auteurs.
-        :param nom: The name of the author.
+    def __init__(self, nom: str) -> None:
+        """Initialise une instance d'Auteur.
+
+        Args:
+            nom (str): Le nom de l'auteur.
         """
         super().__init__(nom, self.collection)
 
@@ -29,28 +30,42 @@ class Auteur(BaseEntity):
 # %% py mongo helper auteurs.ipynb 7
 from thefuzz import fuzz
 from thefuzz import process
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 score_fuzz_threshold = 80
 
 
 class AuthorFuzzMatcher:
-    def __init__(self, reference_authors: List[str] = None):
-        """Initialize with a list of known author names"""
+    def __init__(self, reference_authors: Optional[List[str]] = None) -> None:
+        """Initializes an AuthorFuzzMatcher with a list of known author names.
+
+        Args:
+            reference_authors (Optional[List[str]]): A list of known author names. Defaults to None.
+        """
         self.reference_authors = set(reference_authors) if reference_authors else set()
 
     def add_reference_author(self, author: str) -> None:
-        """Add a new reference author to the set"""
+        """Adds a new reference author to the set.
+
+        Args:
+            author (str): The author name to be added.
+        """
         self.reference_authors.add(author.strip())
 
-    def find_best_match(self, name: str, min_score: int = 80) -> Tuple[str, int]:
-        """
-        Find the best matching reference author for a given name
-        Returns: (best_match, score)
+    def find_best_match(
+        self, name: str, min_score: int = 80
+    ) -> Tuple[Optional[str], int]:
+        """Finds the best matching reference author for a given name using token set ratio.
+
+        Args:
+            name (str): The name to match against the reference authors.
+            min_score (int, optional): The minimal score required for a match. Defaults to 80.
+
+        Returns:
+            Tuple[Optional[str], int]: A tuple with the best matching author's name (or None if no match satisfies the minimum score) and the matching score.
         """
         if not name or not self.reference_authors:
             return None, 0
-        # Find best match using token set ratio for better partial matching
         best_match, score = process.extractOne(
             name, self.reference_authors, scorer=fuzz.token_set_ratio
         )
@@ -63,10 +78,11 @@ class AuthorFuzzMatcher:
 import os
 from googleapiclient.discovery import build
 from llm import load_env
+from typing import List, Dict, Optional
 
 load_env()
-api_key = os.getenv("GOOGLE_CUSTOM_SEARCH_API_KEY")
-cse_id = os.getenv("SEARCH_ENGINE_ID")
+api_key: Optional[str] = os.getenv("GOOGLE_CUSTOM_SEARCH_API_KEY")
+cse_id: Optional[str] = os.getenv("SEARCH_ENGINE_ID")
 
 if not api_key or not cse_id:
     raise ValueError(
@@ -74,17 +90,26 @@ if not api_key or not cse_id:
     )
 
 
-# Fonction de recherche Google
-def google_search(query):
+def google_search(query: str) -> Optional[List[Dict[str, Optional[str]]]]:
+    """Effectue une recherche Google en utilisant l'API Custom Search et retourne les résultats.
+
+    Args:
+        query (str): La requête de recherche.
+
+    Returns:
+        Optional[List[Dict[str, Optional[str]]]]:
+            Une liste de dictionnaires représentant les résultats de la recherche, chaque dictionnaire contenant
+            les clés 'title', 'snippet' et 'link'. Retourne None en cas d'erreur.
+    """
     try:
         service = build("customsearch", "v1", developerKey=api_key)
         res = service.cse().list(q=query, cx=cse_id).execute()
 
-        results = []
+        results: List[Dict[str, Optional[str]]] = []
         for item in res.get("items", []):
-            title = item.get("title")
-            snippet = item.get("snippet")
-            link = item.get("link")
+            title: Optional[str] = item.get("title")
+            snippet: Optional[str] = item.get("snippet")
+            link: Optional[str] = item.get("link")
             results.append({"title": title, "snippet": snippet, "link": link})
         return results
     except Exception as e:
@@ -93,6 +118,7 @@ def google_search(query):
 
 
 # %% py mongo helper auteurs.ipynb 9
+from typing import List, Optional, Union, Dict
 from mongo_auteur import Auteur
 from mongo_episode import Episode
 from llm import get_azure_llm
@@ -101,13 +127,31 @@ import json
 
 
 class AuthorChecker:
+    """Class to verify and correct an author's name using multiple data sources.
 
-    def __init__(self, episode: Episode):
+    This class verifies an author in an episode through sources including:
+      - RSS metadata (title, description)
+      - MongoDB database of known authors
+      - LLM suggestions
+      - Web search analysis
+    """
+
+    def __init__(self, episode: Episode) -> None:
+        """Initializes the AuthorChecker with an episode.
+
+        Args:
+            episode (Episode): An episode instance containing title and description.
+        """
         self.episode = episode
         self.llm_structured_output = get_azure_llm("gpt-4o")
         self.authors_titre_description = self._get_authors_from_titre_description()
 
-    def _get_authors_from_titre_description(self):
+    def _get_authors_from_titre_description(self) -> List[str]:
+        """Retrieves a list of author names extracted from the episode title and description using LLM.
+
+        Returns:
+            List[str]: A list of author names extracted from the title and description.
+        """
         response_schema = {
             "type": "json_schema",
             "json_schema": {
@@ -136,9 +180,7 @@ class AuthorChecker:
                 ),
                 ChatMessage(
                     role="user",
-                    content=f"Est-ce que tu peux me lister tous les noms \
-                            qui sont cités dans le titre et la description de l'épisode suivant : \
-                            {self.episode.titre} {self.episode.description}. ",
+                    content=f"Est-ce que tu peux me lister tous les noms qui sont cités dans le titre et la description de l'épisode suivant : {self.episode.titre} {self.episode.description}. ",
                 ),
             ],
             response_format=response_schema,
@@ -147,11 +189,19 @@ class AuthorChecker:
             json_dict = json.loads(response.message.content)
         except json.JSONDecodeError as e:
             print("Error parsing JSON:", e)
-            print("Raw response:", json_dict)
+            print("Raw response:", response.message.content)
+            return []  # Return an empty list if parsing fails
         return json_dict["Authors_TitreDescription"]
 
-    def _get_authors_from_llm(self, autor) -> List[str]:
+    def _get_authors_from_llm(self, autor: str) -> List[str]:
+        """Queries the LLM to retrieve a list of potential author names based on a provided name.
 
+        Args:
+            autor (str): The author name to query.
+
+        Returns:
+            List[str]: A list of author names suggested by the LLM.
+        """
         response_schema = {
             "type": "json_schema",
             "json_schema": {
@@ -195,7 +245,6 @@ class AuthorChecker:
                     role="system",
                     content="Tu es un agent litteraire qui connait parfaitement les auteurs.",
                 ),
-                # ChatMessage(role="user", content=f"{query}. Please provide the response in JSON format as a list of strings, following this schema: ['author1', 'author2', ...]")
                 ChatMessage(role="user", content=f"{prompt}. "),
             ],
             response_format=response_schema,
@@ -203,14 +252,24 @@ class AuthorChecker:
 
         try:
             json_dict = json.loads(response.message.content)
-            # ...
         except json.JSONDecodeError as e:
             print("Error parsing JSON:", e)
-            print("Raw response:", response)
+            print("Raw response:", response.message.content)
+            return []
         return json_dict["Authors_LLM"]
 
-    def _get_author_from_web(self, author: str):
+    def _get_author_from_web(self, author: str) -> Dict[str, Union[str, int]]:
+        """Analyzes a Google search result to verify if a given name corresponds to an author.
 
+        Args:
+            author (str): The author name to verify.
+
+        Returns:
+            Dict[str, Union[str, int]]: A dictionary containing:
+                - "auteur": The corrected author name if applicable.
+                - "certitude": An integer between 0 and 100 indicating the confidence.
+                - "analyse": A textual analysis of the Google search query.
+        """
         result_google = google_search(author)
 
         prompt_incertitude_auteur = f"""
@@ -228,7 +287,7 @@ class AuthorChecker:
 
         - "auteur" : le nom de l'auteur, eventuellement corrige si j'ai oublie des accents ou une faute de frappe
         - "certitude" : le pourcentage de certitude de 0 à 100, un entier
-        - "analyse" : une analyse de la requete google
+        - "analyse" : une analyse de la requete Google concernant l'auteur.
         """
         response_schema = {
             "type": "json_schema",
@@ -275,11 +334,22 @@ class AuthorChecker:
             json_dict = json.loads(response.message.content)
         except json.JSONDecodeError as e:
             print("Error parsing JSON:", e)
-            print("Raw response:", json_dict)
+            print("Raw response:", response.message.content)
+            return {}
         return json_dict
 
-    def _check_author_source(self, author: str, authors_list: list[str]) -> str | None:
-        """Essaie de faire correspondre 'author' dans 'authors_list' et retourne la meilleure correspondance ou None."""
+    def _check_author_source(
+        self, author: str, authors_list: List[str]
+    ) -> Optional[str]:
+        """Determines the best matching author from a provided list using fuzzy matching.
+
+        Args:
+            author (str): The author name to match.
+            authors_list (List[str]): A list of author names to check against.
+
+        Returns:
+            Optional[str]: The best matching author name if the match score is above the threshold, otherwise None.
+        """
         matcher = AuthorFuzzMatcher(authors_list)
         best_match, score = matcher.find_best_match(author)
         if score >= score_fuzz_threshold:
@@ -289,17 +359,23 @@ class AuthorChecker:
 
     def check_author(
         self, author: str, return_details: bool = False, verbose: bool = False
-    ) -> str | dict | None:
-        """
-        Vérifie l'auteur en testant différentes sources et retourne soit :
-          - une chaîne (le nom corrigé) si return_details=False,
-          - ou un dictionnaire détaillé avec plusieurs informations si return_details=True.
+    ) -> Union[str, Dict[str, Union[str, int]], None]:
+        """Verifies an author's name through various sources and returns the corrected name.
 
-        Les étapes testées sont :
-          - rss:metadata (titre, description)
-          - mongodb:auteurs (déjà connus)
-          - llm
-          - web search
+        It checks in the following order:
+          1. RSS metadata (title, description)
+          2. MongoDB list of known authors
+          3. LLM suggested names
+          4. Web search analysis
+
+        Args:
+            author (str): The author name to verify.
+            return_details (bool, optional): If True, returns a detailed dictionary with source and analysis. Defaults to False.
+            verbose (bool, optional): If True, prints debug messages. Defaults to False.
+
+        Returns:
+            Union[str, Dict[str, Union[str, int]], None]: The corrected author name as a string if return_details is False;
+                a detailed dict if return_details is True; or None if no match is found.
         """
         details = {"author_original": author, "author_corrected": None, "source": None}
 
@@ -336,7 +412,6 @@ class AuthorChecker:
         web_result_dict = self._get_author_from_web(author)
         match = web_result_dict.get("auteur")
         score = web_result_dict.get("certitude", 0)
-        # Ajout d'infos web dans le dictionnaire détaillé
         details.update(
             {
                 "author_corrected": match,
@@ -354,10 +429,5 @@ class AuthorChecker:
                 print(
                     f"Score insuffisant {score} avec web search: {web_result_dict.get('analyse', '')}"
                 )
-                # Ajout d'infos web dans le dictionnaire détaillé
-            details.update(
-                {
-                    "author_corrected": None,
-                }
-            )
+            details["author_corrected"] = None
             return details if return_details else None

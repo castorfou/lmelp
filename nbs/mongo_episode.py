@@ -21,25 +21,41 @@ __all__ = [
 import os
 from git import Repo
 
-AUDIO_PATH = "audios"
+AUDIO_PATH: str = "audios"
 
 
-def get_audio_path(audio_path=AUDIO_PATH, year: str = "2024"):
+def get_audio_path(audio_path: str = AUDIO_PATH, year: str = "2024") -> str:
+    """Returns the full path to the audio files by appending the year as a subdirectory.
+
+    If the directory does not exist, it is created.
+
+    Args:
+        audio_path (str): Relative path to the audio files.
+        year (str): The year used as a subdirectory (default "2024").
+
+    Returns:
+        str: The full path to the corresponding audio directory.
+
+    Example:
+        >>> path = get_audio_path("audios", "2024")
     """
-    audio_path: str
-        relative path to audio files
-    will add year as subdirectory
-    return full audio path and create dir if it doesn t exist
-    """
 
-    def get_git_root(path):
+    def get_git_root(path: str) -> str:
+        """Retrieves the root directory of the Git repository.
+
+        Args:
+            path (str): The current working directory.
+
+        Returns:
+            str: The root directory of the Git repository.
+        """
         git_repo = Repo(path, search_parent_directories=True)
         return git_repo.git.rev_parse("--show-toplevel")
 
-    project_root = get_git_root(os.getcwd())
-    full_audio_path = os.path.join(project_root, audio_path, year)
+    project_root: str = get_git_root(os.getcwd())
+    full_audio_path: str = os.path.join(project_root, audio_path, year)
 
-    # create dir if it doesn t exist
+    # Create the directory if it does not exist
     if not os.path.exists(full_audio_path):
         os.makedirs(full_audio_path)
 
@@ -52,30 +68,58 @@ from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 from datasets import load_dataset
 
 import dbus
-import time
 from functools import wraps
+from typing import Callable, Any
 
 
-def prevent_sleep(func):
+def prevent_sleep(func: Callable[..., Any]) -> Callable[..., Any]:
+    """
+    Decorator that prevents the system from sleeping during a long-running process.
+
+    Connects to the D-Bus session bus and inhibits the screensaver, ensuring
+    that the system does not enter sleep mode while the decorated function runs.
+
+    Args:
+        func (Callable[..., Any]): The function to be decorated.
+
+    Returns:
+        Callable[..., Any]: The wrapped function that prevents system sleep
+        during its execution.
+
+    Example:
+        @prevent_sleep
+        def long_task():
+            ...
+    """
+
     @wraps(func)
-    def wrapper(*args, **kwargs):
-        # Connexion au bus D-Bus
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        """
+        Wrapper function that manages sleep inhibition.
+
+        Args:
+            *args: Variable length argument list for the decorated function.
+            **kwargs: Arbitrary keyword arguments for the decorated function.
+
+        Returns:
+            Any: The result of executing the decorated function.
+        """
+        # Connect to the D-Bus session bus and obtain the screensaver interface.
         bus = dbus.SessionBus()
         proxy = bus.get_object(
             "org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver"
         )
         interface = dbus.Interface(proxy, "org.freedesktop.ScreenSaver")
 
-        # Prévenir la mise en veille
+        # Inhibit sleep mode.
         cookie = interface.Inhibit("my_script", "Long running process")
         print("Mise en veille désactivée")
 
         try:
-            # Exécuter la fonction décorée
             result = func(*args, **kwargs)
             return result
         finally:
-            # Réactiver la mise en veille normale
+            # Re-enable normal sleep mode.
             interface.UnInhibit(cookie)
             print("Mise en veille normale réactivée")
 
@@ -83,12 +127,27 @@ def prevent_sleep(func):
 
 
 @prevent_sleep
-def extract_whisper(mp3_filename):
+def extract_whisper(mp3_filename: str) -> str:
+    """
+    Extract transcription text from an audio file using a Whisper model.
 
-    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    Loads a Whisper model and its processor from Hugging Face, sets up an automatic
+    speech recognition pipeline, and processes the provided MP3 file to return
+    the transcription text.
+
+    Args:
+        mp3_filename (str): Path to the MP3 audio file.
+
+    Returns:
+        str: Transcribed text extracted from the audio.
+
+    Example:
+        >>> transcription = extract_whisper("path/to/audio.mp3")
+    """
+    device: str = "cuda:0" if torch.cuda.is_available() else "cpu"
     torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 
-    model_id = "openai/whisper-large-v3-turbo"
+    model_id: str = "openai/whisper-large-v3-turbo"
 
     model = AutoModelForSpeechSeq2Seq.from_pretrained(
         model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
@@ -106,6 +165,7 @@ def extract_whisper(mp3_filename):
         device=device,
     )
 
+    # Load a sample dataset (this sample is loaded for demonstration purposes and is not used in transcription).
     dataset = load_dataset(
         "distil-whisper/librispeech_long", "clean", split="validation"
     )
@@ -124,98 +184,109 @@ from bson import ObjectId
 from mongo import get_collection, get_DB_VARS, mongolog
 from datetime import datetime
 import requests
-from typing import Dict, List
+from typing import Dict, List, Optional, Union
 from llm import get_azure_llm
 from llama_index.core.llms import ChatMessage
 import json
+import os  # nécessaire pour os.path
 
+# get_audio_path et extract_whisper doivent être importés ou définis ailleurs
+# Par exemple :
+# from audio_utils import get_audio_path, extract_whisper
 
-DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
-LOG_DATE_FORMAT = "%d %b %Y %H:%M"
+DATE_FORMAT: str = "%Y-%m-%dT%H:%M:%S"
+LOG_DATE_FORMAT: str = "%d %b %Y %H:%M"
 
 
 class Episode:
-    def __init__(self, date: str, titre: str, collection_name: str = "episodes"):
-        """
-        Episode is a class that represents a generic Episode entity in the database.
-        :param date: The date for this episode at the format "2024-12-22T09:59:39" parsed by "%Y-%m-%dT%H:%M:%S".
-        :param titre: The title of this episode.
-        :param collection_name: The name of the collection. default: "episodes".
+    def __init__(
+        self, date: str, titre: str, collection_name: str = "episodes"
+    ) -> None:
+        """Initialise une instance d'Episode.
 
-        if this episode already exists in DB, loads it
+        Args:
+            date (str): La date de l'épisode au format "2024-12-22T09:59:39" conforme à DATE_FORMAT.
+            titre (str): Le titre de l'épisode.
+            collection_name (str, optional): Le nom de la collection dans la base de données. Défaut: "episodes".
+
+        Notes:
+            Si l'épisode existe déjà en base, ses attributs seront chargés.
         """
         DB_HOST, DB_NAME, _ = get_DB_VARS()
         self.collection = get_collection(
             target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
         )
-        self.date = Episode.get_date_from_string(date)
-        self.titre = titre
+        self.date: datetime = Episode.get_date_from_string(date)
+        self.titre: str = titre
 
         if self.exists():
             episode = self.collection.find_one({"titre": self.titre, "date": self.date})
-            self.description = episode.get("description")
-            self.url_telechargement = episode.get("url")
-            self.audio_rel_filename = episode.get("audio_rel_filename")
-            self.transcription = episode.get("transcription")
-            self.type = episode.get("type")
-            self.duree = episode.get("duree")
+            self.description: Optional[str] = episode.get("description")
+            self.url_telechargement: Optional[str] = episode.get("url")
+            self.audio_rel_filename: Optional[str] = episode.get("audio_rel_filename")
+            self.transcription: Optional[str] = episode.get("transcription")
+            self.type: Optional[str] = episode.get("type")
+            self.duree: int = episode.get("duree", -1)
         else:
             self.description = None
             self.url_telechargement = None
             self.audio_rel_filename = None
             self.transcription = None
             self.type = None
-            self.duree = -1  # in seconds
+            self.duree = -1  # en secondes
 
     @classmethod
     def from_oid(cls, oid: ObjectId, collection_name: str = "episodes") -> "Episode":
-        """
-        Create an episode from an oid of a mongo entry.
-        :param oid: oid as ObjectId.
-        :return: The Eepisode.
-        """
+        """Crée un épisode à partir d'un ObjectId dans la base de données.
 
+        Args:
+            oid (ObjectId): L'identifiant de l'épisode dans Mongo.
+            collection_name (str, optional): Le nom de la collection. Défaut: "episodes".
+
+        Returns:
+            Episode: L'instance d'Episode correspondante.
+        """
         DB_HOST, DB_NAME, _ = get_DB_VARS()
         collection = get_collection(
             target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
         )
-
         document = collection.find_one({"_id": oid})
-
         date_doc_str = cls.get_string_from_date(document.get("date"), DATE_FORMAT)
-        inst = cls(date=date_doc_str, titre=document.get("titre"))
-        return inst
+        instance = cls(date=date_doc_str, titre=document.get("titre"))
+        return instance
 
     @classmethod
-    def from_date(cls, date: datetime, collection_name: str = "episodes") -> "Episode":
-        """
-        Create an episode from a date of a mongo entry.
-        :param date: date as datetime.
-        :return: The Episode.
+    def from_date(
+        cls, date: datetime, collection_name: str = "episodes"
+    ) -> Optional["Episode"]:
+        """Crée un épisode à partir d'une date dans la base de données.
+
+        Args:
+            date (datetime): La date recherchée.
+            collection_name (str, optional): Le nom de la collection. Défaut: "episodes".
+
+        Returns:
+            Optional[Episode]: L'instance d'Episode si trouvée, sinon None.
         """
         DB_HOST, DB_NAME, _ = get_DB_VARS()
         collection = get_collection(
             target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
         )
-
-        # Convertir la date en début et fin de journée pour la requête
         start_date = datetime(date.year, date.month, date.day)
         end_date = datetime(date.year, date.month, date.day, 23, 59, 59)
-
-        # Rechercher un document dont la date est dans l'intervalle
         document = collection.find_one({"date": {"$gte": start_date, "$lte": end_date}})
-
         if document:
             date_doc_str = cls.get_string_from_date(document.get("date"), DATE_FORMAT)
-            inst = cls(date=date_doc_str, titre=document.get("titre"))
-            return inst
+            instance = cls(date=date_doc_str, titre=document.get("titre"))
+            return instance
         else:
             return None
 
     def exists(self) -> bool:
-        """
-        Check if the episode exists in the database.
-        :return: True if the episode exists, False otherwise.
+        """Vérifie si l'épisode existe dans la base de données.
+
+        Returns:
+            bool: True si l'épisode existe, False sinon.
         """
         return (
             self.collection.find_one({"titre": self.titre, "date": self.date})
@@ -223,12 +294,10 @@ class Episode:
         )
 
     def keep(self) -> int:
-        """
-        download the audio file if needed
-        Keep the episode in the database
+        """Télécharge le fichier audio si nécessaire et conserve l'épisode dans la base de données.
 
-        retourne 1 si 1 entree est creee en base
-        0 sinon
+        Returns:
+            int: 1 si une nouvelle entrée est créée en base, 0 sinon.
         """
         message_log = f"{Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} - {self.titre}"
         if not self.exists():
@@ -257,10 +326,11 @@ class Episode:
             mongolog("update", self.collection.name, message_log)
             return 0
 
-    def update_date(self, new_date: datetime):
-        """
-        Update the date of the episode.
-        :param new_date: The new date of the episode, datetime format.
+    def update_date(self, new_date: datetime) -> None:
+        """Met à jour la date de l'épisode dans la base de données.
+
+        Args:
+            new_date (datetime): La nouvelle date de l'épisode.
         """
         self.collection.update_one(
             {"_id": self.get_oid()}, {"$set": {"date": new_date}}
@@ -269,19 +339,17 @@ class Episode:
         self.date = new_date
         mongolog("force_update", self.collection.name, message_log)
 
-    def remove(self):
-        """
-        Remove the episode from the database.
-        """
+    def remove(self) -> None:
+        """Supprime l'épisode de la base de données."""
         message_log = f"{Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} - {self.titre}"
         self.collection.delete_one({"titre": self.titre, "date": self.date})
         mongolog("delete", self.collection.name, message_log)
 
-    def get_oid(self) -> ObjectId:
-        """
-        Get the object id of the episode.
-        :return: The object id of the episode. (bson.ObjectId)
-        None if does not exist.
+    def get_oid(self) -> Optional[ObjectId]:
+        """Récupère l'identifiant Mongo (_id) de l'épisode.
+
+        Returns:
+            Optional[ObjectId]: L'ObjectId de l'épisode s'il existe, sinon None.
         """
         document = self.collection.find_one({"titre": self.titre, "date": self.date})
         if document:
@@ -291,20 +359,27 @@ class Episode:
 
     @staticmethod
     def get_date_from_string(date: str, DATE_FORMAT: str = DATE_FORMAT) -> datetime:
-        """
-        Get the datetime object from a string.
-        :param date: The date string.
-        :return: The datetime object.
+        """Convertit une chaîne de caractères en objet datetime.
+
+        Args:
+            date (str): La chaîne représentant la date.
+            DATE_FORMAT (str, optional): Le format de la date. Défaut est DATE_FORMAT.
+
+        Returns:
+            datetime: L'objet datetime correspondant.
         """
         return datetime.strptime(date, DATE_FORMAT)
 
     @staticmethod
-    def get_string_from_date(date: datetime, format: str = None) -> str:
-        """
-        Get the string from a datetime object.
-        :param date: The datetime object.
-        :param format: The format of the string. default: None and DATE_FORMAT will be used.
-        :return: The date string.
+    def get_string_from_date(date: datetime, format: Optional[str] = None) -> str:
+        """Convertit un objet datetime en chaîne de caractères.
+
+        Args:
+            date (datetime): L'objet datetime.
+            format (Optional[str], optional): Le format de sortie. Si None, DATE_FORMAT est utilisé.
+
+        Returns:
+            str: La chaîne représentant la date.
         """
         if format is not None:
             return date.strftime(format)
@@ -313,33 +388,51 @@ class Episode:
 
     @staticmethod
     def format_duration(seconds: int) -> str:
-        """Convert duration in seconds to HH:MM:SS format."""
+        """Convertit une durée en secondes au format HH:MM:SS.
+
+        Args:
+            seconds (int): La durée en secondes.
+
+        Returns:
+            str: La durée formatée en chaîne de caractères.
+        """
         if seconds < 0:
-            return f"-{Episode.format_duration(seconds*(-1))}"
+            return f"-{Episode.format_duration(-seconds)}"
         hours = seconds // 3600
         minutes = (seconds % 3600) // 60
         seconds = seconds % 60
         return f"{hours:02}:{minutes:02}:{seconds:02}"
 
-    def __str__(self):
-        return f"""
-        _oid: {self.get_oid()}
-        Date: {Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)}
-        Titre: {self.titre}
-        Description: {self.description}
-        URL de téléchargement: {self.url_telechargement}
-        Fichier audio: {self.audio_rel_filename}
-        Duree: {self.duree} en secondes ({Episode.format_duration(self.duree)})
-        Transcription: {self.transcription[:100] if self.transcription else 'No transcription yet available'}...
-        """
+    def __str__(self) -> str:
+        """Renvoie une représentation textuelle de l'épisode.
 
-    def __repr__(self):
+        Returns:
+            str: Les informations de l'épisode sous forme de chaîne de caractères.
+        """
+        return (
+            f"_oid: {self.get_oid()}\n"
+            f"Date: {Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)}\n"
+            f"Titre: {self.titre}\n"
+            f"Description: {self.description}\n"
+            f"URL de téléchargement: {self.url_telechargement}\n"
+            f"Fichier audio: {self.audio_rel_filename}\n"
+            f"Duree: {self.duree} en secondes ({Episode.format_duration(self.duree)})\n"
+            f"Transcription: {self.transcription[:100] if self.transcription else 'No transcription yet available'}..."
+        )
+
+    def __repr__(self) -> str:
+        """Renvoie une représentation officielle de l'objet.
+
+        Returns:
+            str: La représentation de l'objet (équivalente à __str__).
+        """
         return self.__str__()
 
-    def download_audio(self, verbose=False):
-        """
-        based on url_telechargement
-        will download audio file and store in AUDIO_PATH/year
+    def download_audio(self, verbose: bool = False) -> None:
+        """Télécharge le fichier audio à partir de l'URL de téléchargement et le sauvegarde localement.
+
+        Args:
+            verbose (bool, optional): Si True, affiche des messages d'information. Défaut False.
         """
         if self.url_telechargement is None:
             return
@@ -351,7 +444,6 @@ class Episode:
         self.audio_rel_filename = os.path.relpath(
             full_filename, get_audio_path(AUDIO_PATH, year="")
         )
-        # Vérification si le fichier existe déjà
         if not os.path.exists(full_filename):
             if verbose:
                 print(
@@ -364,14 +456,14 @@ class Episode:
             if verbose:
                 print(f"Le fichier {full_filename} existe déjà. Ignoré.")
 
-    def set_transcription(self, verbose=False, keep_cache=True):
-        """
-        based on audio file, use whisper model to get transcription
-        if transcription already exists, do nothing
-        if cache transcription (meaning a txt file aside audio file, same stem name), read it and store in DB
-        if audio file does not exist, do nothing
-        if keep_cache, save transcription in a txt file aside audio file, same stem name
-        save transcription in DB
+    def set_transcription(self, verbose: bool = False, keep_cache: bool = True) -> None:
+        """Extrait et sauvegarde la transcription de l'audio en utilisant un modèle Whisper.
+
+        Utilise le cache si disponible ou extrait la transcription de l'audio.
+
+        Args:
+            verbose (bool, optional): Si True, affiche des messages d'information. Défaut False.
+            keep_cache (bool, optional): Si True, sauvegarde la transcription dans un fichier cache. Défaut True.
         """
         if self.transcription is not None:
             if verbose:
@@ -379,7 +471,6 @@ class Episode:
             return
         mp3_fullfilename = get_audio_path(AUDIO_PATH, year="") + self.audio_rel_filename
         cache_transcription_filename = f"{os.path.splitext(mp3_fullfilename)[0]}.txt"
-        # check if cache_transcription_file exists
         if os.path.exists(cache_transcription_filename):
             if verbose:
                 print(f"Transcription cachee trouvee: {cache_transcription_filename}")
@@ -393,17 +484,18 @@ class Episode:
 
         self.transcription = extract_whisper(mp3_fullfilename)
         if keep_cache:
-            # Écrire la transcription dans un fichier texte
             with open(cache_transcription_filename, "w") as f:
                 f.write(self.transcription)
         self.collection.update_one(
             {"_id": self.get_oid()}, {"$set": {"transcription": self.transcription}}
         )
 
-    def to_dict(self) -> Dict[str, str]:
-        """
-        return episode as a dictionnary
-        keys are ['date', 'titre', 'description', 'url_telechargement', 'audio_rel_filename', 'transcription', 'type', 'duree']
+    def to_dict(self) -> Dict[str, Union[str, datetime, int, None]]:
+        """Convertit l'épisode en dictionnaire.
+
+        Returns:
+            Dict[str, Union[str, datetime, int, None]]: Dictionnaire contenant les informations de l'épisode.
+                Les clés sont ['date', 'titre', 'description', 'url_telechargement', 'audio_rel_filename', 'transcription', 'type', 'duree'].
         """
         return {
             "date": self.date,
@@ -417,9 +509,13 @@ class Episode:
         }
 
     def get_all_auteurs(self) -> List[str]:
-        """
-        Get all the authors of the episode from the transcription.
-        :return: The list of authors.
+        """Extrait la liste de tous les auteurs mentionnés dans la transcription.
+
+        Notes:
+            Utilise le modèle GPT-4 via Azure LLM pour extraire une liste JSON de noms d'auteurs.
+
+        Returns:
+            List[str]: La liste des auteurs détectés.
         """
         if self.transcription is None:
             return []
@@ -436,7 +532,7 @@ class Episode:
                             "type": "array",
                             "items": {
                                 "type": "string",
-                                "description": "A list of authors from transcription",
+                                "description": "Une liste des auteurs extraits de la transcription",
                             },
                         }
                     },
@@ -454,11 +550,10 @@ class Episode:
                 ChatMessage(
                     role="user",
                     content=f"Est-ce que tu peux me lister tous les noms d'auteurs dont on parle des oeuvres \
-                            dans cette transcription d'un episode du masque et la plume \
-                            diffuse le {self.date.strftime('%d %b %Y')}. \
-                            Je veux toujours avoir le prenom et le nom complet de chaque auteur. \
-                            voici cette transcription : \
-                            {self.transcription} ",
+dans cette transcription d'un épisode du masque et la plume \
+diffuse le {self.date.strftime('%d %b %Y')}. \
+Je veux toujours avoir le prénom et le nom complet de chaque auteur. \
+Voici cette transcription : {self.transcription} ",
                 ),
             ],
             response_format=response_schema,
@@ -467,7 +562,8 @@ class Episode:
             json_dict = json.loads(response.message.content)
         except json.JSONDecodeError as e:
             print("Error parsing JSON:", e)
-            print("Raw response:", json_dict)
+            print("Raw response:", response.message.content)
+            return []
         return json_dict["Authors"]
 
 
@@ -475,31 +571,39 @@ class Episode:
 from feedparser.util import FeedParserDict
 from transformers import pipeline
 import locale
+from datetime import datetime
 
-RSS_DUREE_MINI_MINUTES = 15
-RSS_DATE_FORMAT = "%a, %d %b %Y %H:%M:%S %z"  # "Sun, 29 Dec 2024 10:59:39 +0100" 'Sun, 26 Jan 2025 10:59:39 +0100'
+RSS_DUREE_MINI_MINUTES: int = 15
+RSS_DATE_FORMAT: str = (
+    "%a, %d %b %Y %H:%M:%S %z"  # Exemple: "Sun, 29 Dec 2024 10:59:39 +0100"
+)
 
 
 class RSS_episode(Episode):
-    def __init__(self, date: str, titre: str):
+    def __init__(self, date: str, titre: str) -> None:
         """
-        RSS_episode is a class that represents an RSS episode in the database episodes.
-        :param date: The date for this episode at the format "2024-12-22T09:59:39" parsed by "%Y-%m-%dT%H:%M:%S".
-        :param titre: The title of this episode.
+        Initialize an RSS_episode instance.
+
+        Args:
+            date (str): The episode date in the format "2024-12-22T09:59:39".
+            titre (str): The title of the episode.
         """
         super().__init__(date, titre)
 
     @classmethod
     def from_feed_entry(cls, feed_entry: FeedParserDict) -> "RSS_episode":
         """
-        Create an RSS episode from a feed entry.
-        :param feed_entry: The feed entry.
-        :return: The RSS episode.
+        Create an RSS_episode instance from an RSS feed entry.
+
+        Args:
+            feed_entry (FeedParserDict): The entry from the RSS feed.
+
+        Returns:
+            RSS_episode: The created RSS_episode instance.
         """
         locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
-
-        date_rss = datetime.strptime(feed_entry.published, RSS_DATE_FORMAT)
-        date_rss_str = cls.get_string_from_date(date_rss, DATE_FORMAT)
+        date_rss: datetime = datetime.strptime(feed_entry.published, RSS_DATE_FORMAT)
+        date_rss_str: str = cls.get_string_from_date(date_rss, DATE_FORMAT)
         inst = cls(
             date=date_rss_str,
             titre=feed_entry.title,
@@ -511,8 +615,6 @@ class RSS_episode(Episode):
                 inst.url_telechargement = link.href
                 break
 
-        # self.audio_rel_filename = None
-        # self.transcription = None
         inst.type = cls.set_titre(inst.titre + " " + inst.description)
         inst.duree = cls.get_duree_in_seconds(feed_entry.itunes_duration)  # in seconds
 
@@ -521,28 +623,40 @@ class RSS_episode(Episode):
     @staticmethod
     def get_duree_in_seconds(duree: str) -> int:
         """
-        Get the duration in seconds from a string.
-        :param duree: The duration string at the format "HH:MM:SS" or "HH:MM".
-        :return: The duration in seconds.
+        Convert a duration string into total seconds.
+
+        The duration can be in formats "HH:MM:SS", "HH:MM", or simply seconds.
+
+        Args:
+            duree (str): The duration as a string.
+
+        Returns:
+            int: The duration expressed in total seconds.
         """
-        duree = duree.split(":")
-        if len(duree) == 3:
-            return int(duree[0]) * 3600 + int(duree[1]) * 60 + int(duree[2])
-        elif len(duree) == 2:
-            return int(duree[0]) * 60 + int(duree[1])
+        duree_parts = duree.split(":")
+        if len(duree_parts) == 3:
+            return (
+                int(duree_parts[0]) * 3600
+                + int(duree_parts[1]) * 60
+                + int(duree_parts[2])
+            )
+        elif len(duree_parts) == 2:
+            return int(duree_parts[0]) * 60 + int(duree_parts[1])
         else:
-            return int(duree[0])
+            return int(duree_parts[0])
 
     def keep(self) -> int:
         """
-        Keep the episode in the database.
-        only if duration > RSS_DUREE_MINI_MINUTES * 60
-        only if type == livres
+        Save the episode to the database if conditions are met.
 
-        retourne 1 si 1 entree est creee en base
-        0 sinon
+        The episode is saved if:
+            - The duration is greater than RSS_DUREE_MINI_MINUTES * 60 seconds.
+            - The type is equal to "livres".
+
+        Returns:
+            int: 1 if an entry is created in the database, 0 otherwise.
         """
-        if (self.duree > RSS_DUREE_MINI_MINUTES * 60) & (self.type == "livres"):
+        if (self.duree > RSS_DUREE_MINI_MINUTES * 60) and (self.type == "livres"):
             return super().keep()
         else:
             print(
@@ -553,14 +667,17 @@ class RSS_episode(Episode):
     @staticmethod
     def set_titre(description: str) -> str:
         """
-        use bart meta model from huggingface to classify episodes from
-        ["livres", "films", "pièces de théâtre"]
+        Classify the episode by using a zero-shot classification model from HuggingFace based on the provided description.
+
+        Args:
+            description (str): The description combining the title and summary.
+
+        Returns:
+            str: The label with the highest score among ["livres", "films", "pièces de théâtre"].
         """
-        # Charger le pipeline de classification de texte
         classifier = pipeline(
             "zero-shot-classification", model="facebook/bart-large-mnli"
         )
-        # Labels possibles
         labels = ["livres", "films", "pièces de théâtre"]
 
         result = classifier(description, labels)
@@ -572,30 +689,52 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import locale
+from datetime import datetime
+from typing import Optional, Dict, Any
 
-
-WEB_DATE_FORMAT = "%d %b %Y"  # '26 août 2024', '20 oct. 2024', '22 sept. 2024', '8 sept. 2024', '25 août 2024', '4 août 2024', '23 juin 2024', '19 mai 2024', '5 mai 2024',
+WEB_DATE_FORMAT: str = (
+    "%d %b %Y"  # '26 août 2024', '20 oct. 2024', '22 sept. 2024', etc.
+)
 
 
 class WEB_episode(Episode):
-    def __init__(self, date: str, titre: str):
-        """
-        WEB_episode is a class that represents an historical episode (legacy, not available anymore as RSS) in the database episodes.
-        :param date: The date for this episode at the format "2024-12-22T09:59:39" parsed by "%Y-%m-%dT%H:%M:%S".
-        :param titre: The title of this episode.
+    """Représente un épisode web avec ses attributs et méthodes de conversion et récupération des données."""
+
+    def __init__(self, date: str, titre: str) -> None:
+        """Initialise une instance de WEB_episode.
+
+        Args:
+            date (str): La date de l'épisode au format "2024-12-22T09:59:39".
+            titre (str): Le titre de l'épisode.
         """
         super().__init__(date, titre)
 
     @staticmethod
-    def parse_web_date(web_date: str, web_date_format=WEB_DATE_FORMAT) -> datetime:
-        """Convertit une date en français dans la page de masque sous forme de chaîne de caractères en un objet datetime.
-        la page du masque utilise des abreviations non standards pour fev et juil
-        """
+    def parse_web_date(
+        web_date: str, web_date_format: str = WEB_DATE_FORMAT
+    ) -> Optional[datetime]:
+        """Convertit une date en français extraite d'une page web en un objet datetime.
 
+        Corrige les abréviations non standard pour certains mois (exemple : "fév." devient "févr.", "juill." devient "juil.").
+
+        Args:
+            web_date (str): La chaîne représentant la date en français.
+            web_date_format (str, optional): Le format de la date utilisé par la page web. Defaults to WEB_DATE_FORMAT.
+
+        Returns:
+            Optional[datetime]: L'objet datetime si la conversion réussit, sinon None.
+        """
         locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
 
-        def corrige_date(date_str):
-            # Dictionnaire de remplacement pour corriger les abréviations des mois
+        def corrige_date(date_str: str) -> str:
+            """Corrige les abréviations non standard dans la chaîne de date.
+
+            Args:
+                date_str (str): La chaîne de date originale.
+
+            Returns:
+                str: La chaîne de date corrigée.
+            """
             month_replacements = {
                 "fév.": "févr.",
                 "juill.": "juil.",
@@ -604,48 +743,45 @@ class WEB_episode(Episode):
                 date_str = date_str.replace(fr_month, fr_month_norm)
             return date_str
 
-        # Convertir la date normalisée en objet datetime
         try:
-            dt = datetime.strptime(corrige_date(web_date), web_date_format)
+            dt: datetime = datetime.strptime(corrige_date(web_date), web_date_format)
             return dt
         except ValueError as e:
             print(f"Erreur de conversion pour la date '{web_date}': {e}")
             return None
 
     @staticmethod
-    def get_audio_url(url):
-        """
-        Prend l'url d'un épisode du masque en entrée et retourne l'URL vers le fichier audio .m4a ou .mp3.
-        """
+    def get_audio_url(url: str) -> Optional[str]:
+        """Récupère l'URL du fichier audio (.m4a ou .mp3) à partir de la page d'un épisode.
 
+        Recherche dans une balise <script> contenant la clé "contentUrl".
+
+        Args:
+            url (str): L'URL de la page de l'épisode.
+
+        Returns:
+            Optional[str]: L'URL du fichier audio si trouvée, sinon None.
+        """
         try:
-            # Faire une requête HTTP pour obtenir le contenu de la page
-            response = requests.get(url)
-            response.raise_for_status()  # Vérifier que la requête a réussi
+            response: requests.Response = requests.get(url)
+            response.raise_for_status()
         except requests.RequestException as e:
             print(f"Erreur lors de la requête HTTP: {e}")
             return None
 
-        # Analyser le contenu HTML avec BeautifulSoup
-        soup = BeautifulSoup(response.content, "html.parser")
-
-        # Rechercher la balise <script> contenant l'objet JSON
+        soup: BeautifulSoup = BeautifulSoup(response.content, "html.parser")
         script_tag = soup.find("script", string=lambda t: t and "contentUrl" in t)
 
         if script_tag:
             try:
-                # Extraire le contenu JSON de la balise <script>
-                json_text = script_tag.string
-                json_data = json.loads(json_text)
-
-                # Extraire l'URL du fichier audio
-                audio_url = None
+                json_text: str = script_tag.string  # type: ignore
+                json_data: Dict[str, Any] = json.loads(json_text)
+                audio_url: Optional[str] = None
                 for item in json_data.get("@graph", []):
                     if item.get("@type") == "RadioEpisode":
-                        main_entity = item.get("mainEntity", {})
+                        main_entity: Dict[str, Any] = item.get("mainEntity", {})
                         audio_url = main_entity.get("contentUrl")
                         break
-
                 return audio_url
             except (json.JSONDecodeError, KeyError, TypeError) as e:
                 print(f"Erreur lors de l'analyse du JSON: {e}")
@@ -655,112 +791,164 @@ class WEB_episode(Episode):
         return None
 
     @classmethod
-    def from_webpage_entry(cls, dict_web_episode: dict) -> "WEB_episode":
-        """
-        Create a WEB episode from a dict web episode entry.
-        :param dict_web_episode: The web episode entry with these keys: ['title', 'url', 'description', 'date', 'duration']
-        :return: The WEB episode.
-        """
+    def from_webpage_entry(cls, dict_web_episode: Dict[str, Any]) -> "WEB_episode":
+        """Crée une instance de WEB_episode à partir d'un dictionnaire représentant une entrée de page web.
 
-        date_web = cls.parse_web_date(dict_web_episode["date"])
-        date_web_str = cls.get_string_from_date(date_web, DATE_FORMAT)
-        inst = cls(
+        Le dictionnaire doit contenir les clés : 'title', 'url', 'description', 'date', 'duration'.
+        La variable DATE_FORMAT et la méthode get_string_from_date doivent être définies ailleurs dans le code.
+
+        Args:
+            dict_web_episode (Dict[str, Any]): Dictionnaire contenant les informations de l'épisode.
+
+        Returns:
+            WEB_episode: Une instance de WEB_episode initialisée avec les données fournies.
+        """
+        date_web: Optional[datetime] = cls.parse_web_date(dict_web_episode["date"])
+        date_web_str: str = cls.get_string_from_date(
+            date_web, DATE_FORMAT
+        )  # DATE_FORMAT doit être défini en amont
+        inst: WEB_episode = cls(
             date=date_web_str,
             titre=dict_web_episode["title"],
         )
         inst.description = dict_web_episode["description"]
         inst.type = "livres"
         inst.url_telechargement = cls.get_audio_url(dict_web_episode["url"])
-
-        # self.audio_rel_filename = None
-        # self.transcription = None
-        inst.duree = cls.get_duree_in_seconds(
-            dict_web_episode["duration"]
-        )  # in seconds
-
+        inst.duree = cls.get_duree_in_seconds(dict_web_episode["duration"])
         return inst
 
     @staticmethod
     def get_duree_in_seconds(duree: str) -> int:
+        """Convertit une durée exprimée en minutes ("MM min") en secondes.
+
+        Args:
+            duree (str): La durée sous forme de chaîne.
+
+        Returns:
+            int: La durée convertie en secondes. Retourne 0 si le format n'est pas correct.
         """
-        Get the duration in seconds from a string.
-        :param duree: The duration string at the format "MM min".
-        :return: The duration in seconds.
-        """
-        duree = duree.split(" ")
-        if len(duree) == 2:
-            return int(duree[0]) * 60
+        parts = duree.split(" ")
+        if len(parts) == 2:
+            return int(parts[0]) * 60
+        return 0
 
 
 # %% py mongo helper episodes.ipynb 36
-from typing import List, Dict, Any
+from typing import List, Any, Iterator
 import pymongo
 
 
 class Episodes:
-    """
-    This is a class that will allow search on episodes to manage quality of data
+    """Classe pour rechercher et gérer la qualité des données des épisodes.
 
-    For example get new transcriptions.
+    Cette classe permet par exemple de récupérer de nouvelles transcriptions
+    en se connectant à la base de données MongoDB.
     """
 
-    def __init__(self, collection_name: str = "episodes"):
+    def __init__(self, collection_name: str = "episodes") -> None:
+        """Initialise une instance du gestionnaire d'épisodes.
+
+        Se connecte à la base de données et charge les épisodes.
+
+        Args:
+            collection_name (str): Nom de la collection à utiliser. Par défaut "episodes".
+
+        Returns:
+            None
+        """
         DB_HOST, DB_NAME, _ = get_DB_VARS()
         self.collection = get_collection(
             target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
         )
         self.episodes = self._load_episodes()
 
-    def _load_episodes(self) -> List[Dict[str, Any]]:
-        """
-        Load all episodes from the database and return them as a list of dictionaries.
+    def _load_episodes(self) -> List["Episode"]:
+        """Charge tous les épisodes depuis la base de données.
+
+        Returns:
+            List[Episode]: Liste des épisodes chargés.
         """
         return self.get_entries()
 
-    def get_entries(self, request="") -> List[Episode]:
-        """'
-        retourne le resultat de la requete sous forme d'une liste d'instance de Episode
-        tries par date decroissante (du plus recent au plus vieux)
+    def get_entries(self, request: Any = "") -> List["Episode"]:
+        """Retourne les épisodes correspondant à une requête spécifique, triés par date décroissante.
 
-        par exemple : request={"$or": [{"transcription": ""}, {"transcription": None}]}
+        Args:
+            request (Any): Requête MongoDB à exécuter. Exemples:
+                {"$or": [{"transcription": ""}, {"transcription": None}]}.
+                Par défaut, une requête vide qui retourne tous les épisodes.
+
+        Returns:
+            List[Episode]: Liste des épisodes correspondant à la requête.
         """
         result = self.collection.find(request).sort("date", pymongo.DESCENDING)
         episodes = [Episode.from_oid(entry.get("_id")) for entry in result]
         return episodes
 
-    def get_missing_transcriptions(self) -> List[Episode]:
-        """
-        retourne les episodes pour lesquels la transcription est manquante
+    def get_missing_transcriptions(self) -> List["Episode"]:
+        """Retourne les épisodes sans transcription.
+
+        Returns:
+            List[Episode]: Liste des épisodes dont la transcription est manquante.
         """
         return self.get_entries(
             {"$or": [{"transcription": ""}, {"transcription": None}]}
         )
 
-    def get_transcriptions(self) -> List[Episode]:
-        """
-        Retourne toutes les entrées pour lesquelles une transcription existe.
+    def get_transcriptions(self) -> List["Episode"]:
+        """Retourne les épisodes qui possèdent une transcription.
+
+        Returns:
+            List[Episode]: Liste des épisodes ayant une transcription.
         """
         return self.get_entries(
             {"$and": [{"transcription": {"$ne": None}}, {"transcription": {"$ne": ""}}]}
         )
 
-    def __getitem__(self, index: int) -> Dict[str, Any]:
+    def __getitem__(self, index: int) -> "Episode":
+        """Permet l'accès aux épisodes par indexation.
+
+        Args:
+            index (int): Position de l'épisode dans la liste.
+
+        Returns:
+            Episode: L'épisode à la position donnée.
+        """
         return self.episodes[index]
 
     def __len__(self) -> int:
+        """Retourne le nombre total d'épisodes chargés.
+
+        Returns:
+            int: Nombre d'épisodes.
+        """
         return len(self.episodes)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator["Episode"]:
+        """Permet d'itérer sur les épisodes.
+
+        Returns:
+            Iterator[Episode]: Itérateur sur la liste des épisodes.
+        """
         return iter(self.episodes)
 
-    def __repr__(self) -> str:
-        return f"Episodes({self.episodes})"
+    def __str__(self) -> str:
+        """Retourne une représentation textuelle de l'objet Episodes.
 
-    def __str__(self):
-        return f"""
-        {self.collection.count_documents({})} entries
-        {len(self.get_missing_transcriptions())} missing transcriptions
+        La représentation inclut le nombre total d'entrées et le nombre d'épisodes sans transcription.
+
+        Returns:
+            str: Chaîne de caractères décrivant l'objet Episodes.
         """
+        return (
+            f"{self.collection.count_documents({})} entries\n"
+            f"{len(self.get_missing_transcriptions())} missing transcriptions"
+        )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Retourne la représentation officielle de l'objet Episodes.
+
+        Returns:
+            str: Représentation de l'objet Episodes identique à celle retournée par __str__.
+        """
         return self.__str__()

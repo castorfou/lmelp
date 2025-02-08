@@ -15,15 +15,33 @@ AUDIO_PATH = "audios"
 # %% 09 whisper mp3.ipynb 4
 from mongo_episode import get_audio_path
 import os, glob
+from typing import List
 
 
-def list_mp3_files(audio_path=AUDIO_PATH):
+def list_mp3_files(audio_path=AUDIO_PATH) -> List[str]:
+    """
+    Liste tous les fichiers MP3 dans le répertoire spécifié.
+
+    Args:
+        audio_path (str): Le chemin du répertoire contenant les fichiers audio. Par défaut, utilise la constante AUDIO_PATH.
+
+    Returns:
+        list: Une liste des chemins de fichiers MP3 trouvés.
+    """
     fullpath = get_audio_path(audio_path, year="")
-
     return glob.glob(os.path.join(fullpath, "**/*.mp3"), recursive=True)
 
 
-def list_audio_files(audio_path=AUDIO_PATH):
+def list_audio_files(audio_path=AUDIO_PATH) -> List[str]:
+    """
+    Liste tous les fichiers audio (MP3 et M4A) dans le répertoire spécifié.
+
+    Args:
+        audio_path (str): Le chemin du répertoire contenant les fichiers audio. Par défaut, utilise la constante AUDIO_PATH.
+
+    Returns:
+        list: Une liste des chemins de fichiers audio (MP3 et M4A) trouvés.
+    """
     fullpath = get_audio_path(audio_path, year="")
 
     mp3_files = glob.glob(os.path.join(fullpath, "**/*.mp3"), recursive=True)
@@ -38,8 +56,16 @@ from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 from datasets import load_dataset
 
 
-def extract_whisper(audio_filename):
+def extract_whisper(audio_filename: str) -> str:
+    """
+    Extrait la transcription d'un fichier audio en utilisant le modèle Whisper.
 
+    Args:
+        audio_filename (str): Le chemin du fichier audio à transcrire.
+
+    Returns:
+        str: La transcription du fichier audio.
+    """
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 
@@ -83,18 +109,29 @@ def extract_whisper(audio_filename):
 
 # %% 09 whisper mp3.ipynb 11
 from bson import ObjectId
+import pymongo
 
 
-def store_whisper_in_db(whisper, collection, oid, force=False, verbose=False):
+def store_whisper_in_db(
+    whisper: str,
+    collection: pymongo.collection.Collection,
+    oid: str,
+    force: bool = False,
+    verbose: bool = False,
+) -> bool:
     """
-    whisper: str, la transcription du fichier audio
-    collection: pymongo collection
-    oid: str, l'identifiant de l episode
-    force: bool, si True, on ecrase le whisper existant
+    Stocke la transcription Whisper dans la base de données.
 
-    return True si le whisper a ete stocke, False sinon
+    Args:
+        whisper (str): La transcription du fichier audio.
+        collection: La collection pymongo.
+        oid (str): L'identifiant de l'épisode.
+        force (bool, optional): Si True, écrase le Whisper existant. Par défaut, False.
+        verbose (bool, optional): Si True, affiche des messages détaillés. Par défaut, False.
+
+    Returns:
+        bool: True si le Whisper a été stocké, False sinon.
     """
-
     # Récupération du document
     document_entry = collection.find_one({"_id": ObjectId(oid)})
 
@@ -106,7 +143,7 @@ def store_whisper_in_db(whisper, collection, oid, force=False, verbose=False):
     if "whisper" in document_entry and not force:
         if verbose:
             print(
-                f"Whisper déjà stocké pour l'oid {oid}m et on ne force pas le stockage"
+                f"Whisper déjà stocké pour l'oid {oid}, et on ne force pas le stockage"
             )
         return False
     else:

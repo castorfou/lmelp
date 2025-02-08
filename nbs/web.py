@@ -8,11 +8,27 @@ from dotenv import load_dotenv, find_dotenv
 import os
 
 
-def load_env():
+def load_env() -> None:
+    """
+    Load environment variables from a .env file.
+
+    This function uses the `dotenv` library to load environment variables
+    from a .env file located in the current working directory or any parent directory.
+    """
     _ = load_dotenv(find_dotenv())
 
 
-def get_WEB_filename():
+def get_WEB_filename() -> str:
+    """
+    Get the filename of the WEB_LMELP file.
+
+    This function loads environment variables and retrieves the value of the
+    `WEB_LMELP_FILENAME` environment variable. If the variable is not set,
+    it returns a default file path.
+
+    Returns:
+        str: The filename of the WEB_LMELP file.
+    """
     load_env()
 
     WEB_LMELP_FILENAME = os.getenv("WEB_LMELP_FILENAME")
@@ -23,10 +39,18 @@ def get_WEB_filename():
 
 # %% py web helper.ipynb 5
 from bs4 import BeautifulSoup
+from typing import List, Dict, Any
 
 
 class WebPage:
     def __init__(self):
+        """
+        Initialize the WebPage object.
+
+        This method reads the HTML content from the file specified by the
+        `WEB_LMELP_FILENAME` environment variable, parses it using BeautifulSoup,
+        and extracts information about the episodes.
+        """
         file_path = get_WEB_filename()
 
         # Lire le contenu du fichier HTML
@@ -37,7 +61,7 @@ class WebPage:
         soup = BeautifulSoup(html_content, "html.parser")
 
         # Extraire les informations des épisodes
-        self.episodes = []
+        self.episodes: List[Dict[str, Any]] = []
 
         # Rechercher les éléments contenant les informations des épisodes
         for item in soup.find_all("li", class_="Collection-section-items-item"):
@@ -70,7 +94,13 @@ class WebPage:
                     }
                 )
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """
+        Return a string representation of the WebPage object.
+
+        Returns:
+            str: A string containing the details of all episodes.
+        """
         output = ""
         for episode in self.episodes:
             output += f"""
@@ -83,11 +113,32 @@ Duration: {episode['duration']}
             """
         return output
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """
+        Return a string representation of the WebPage object for debugging.
+
+        Returns:
+            str: A string containing the details of all episodes.
+        """
         return self.__str__()
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> Dict[str, Any]:
+        """
+        Get an episode by its index.
+
+        Args:
+            index (int): The index of the episode to retrieve.
+
+        Returns:
+            dict: A dictionary containing the details of the episode.
+        """
         return self.episodes[index]
 
-    def __len__(self):
+    def __len__(self) -> int:
+        """
+        Get the number of episodes.
+
+        Returns:
+            int: The number of episodes.
+        """
         return len(self.episodes)
