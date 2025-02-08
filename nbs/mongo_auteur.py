@@ -150,19 +150,6 @@ class AuthorChecker:
             print("Raw response:", json_dict)
         return json_dict["Authors_TitreDescription"]
 
-    def _check_author_source(
-        self, author: str, authors_list: list[str], method: str
-    ) -> str | None:
-        """Try to match 'author' against 'authors_list', return best match or None."""
-        matcher = AuthorFuzzMatcher(authors_list)
-        best_match, score = matcher.find_best_match(author)
-        if score >= score_fuzz_threshold:
-            print(f"Trouvé avec {method}: {best_match}")
-            return best_match
-        else:
-            print(f"Non trouvé avec {method}: {author}")
-            return None
-
     def _get_authors_from_llm(self, autor) -> List[str]:
 
         response_schema = {
@@ -291,43 +278,86 @@ class AuthorChecker:
             print("Raw response:", json_dict)
         return json_dict
 
-    def check_author(self, author: str) -> str | None:
-        """Check 'author' against :
-        - rss:metadata (titre, description)
-        - mongodb:auteurs
-        - llm
-        - web search
-        """
-        # First, check rss:metadata (titre, description)
-        match = self._check_author_source(
-            author, self.authors_titre_description, "rss:metadata (titre, description)"
-        )
-        if match:
-            return match
-
-        # Then, check DB
-        list_db_auteurs = [auteur.nom for auteur in Auteur.get_entries()]
-        match = self._check_author_source(
-            author, list_db_auteurs, "mongodb:auteurs (deja connus)"
-        )
-        if match:
-            return match
-
-        # Then, check llm
-        list_llm_auteurs = self._get_authors_from_llm(author)
-        match = self._check_author_source(author, list_llm_auteurs, "llm")
-        if match:
-            return match
-
-        # Finally, check web search
-        web_result_dict = self._get_author_from_web(author)
-        match = web_result_dict["auteur"]
-        score = web_result_dict["certitude"]
+    def _check_author_source(self, author: str, authors_list: list[str]) -> str | None:
+        """Essaie de faire correspondre 'author' dans 'authors_list' et retourne la meilleure correspondance ou None."""
+        matcher = AuthorFuzzMatcher(authors_list)
+        best_match, score = matcher.find_best_match(author)
         if score >= score_fuzz_threshold:
-            print(f"Trouvé avec web search: {match}")
-            return match
+            return best_match
         else:
-            print(
-                f"Score insuffisant {score} avec web search: {web_result_dict['analyse']}"
-            )
             return None
+
+    def check_author(
+        self, author: str, return_details: bool = False, verbose: bool = False
+    ) -> str | dict | None:
+        """
+        Vérifie l'auteur en testant différentes sources et retourne soit :
+          - une chaîne (le nom corrigé) si return_details=False,
+          - ou un dictionnaire détaillé avec plusieurs informations si return_details=True.
+
+        Les étapes testées sont :
+          - rss:metadata (titre, description)
+          - mongodb:auteurs (déjà connus)
+          - llm
+          - web search
+        """
+        details = {"author_original": author, "author_corrected": None, "source": None}
+
+        # 1. Vérification dans rss:metadata (titre, description)
+        match = self._check_author_source(author, self.authors_titre_description)
+        if match:
+            details["author_corrected"] = match
+            details["source"] = "rss:metadata"
+            if verbose:
+                print(f"Trouvé avec rss:metadata: {match}")
+            return details if return_details else match
+
+        # 2. Vérification dans la base de données (mongodb:auteurs)
+        list_db_auteurs = [auteur.nom for auteur in Auteur.get_entries()]
+        match = self._check_author_source(author, list_db_auteurs)
+        if match:
+            details["author_corrected"] = match
+            details["source"] = "mongodb:auteurs"
+            if verbose:
+                print(f"Trouvé avec mongodb:auteurs: {match}")
+            return details if return_details else match
+
+        # 3. Vérification via llm
+        list_llm_auteurs = self._get_authors_from_llm(author)
+        match = self._check_author_source(author, list_llm_auteurs)
+        if match:
+            details["author_corrected"] = match
+            details["source"] = "llm"
+            if verbose:
+                print(f"Trouvé avec llm: {match}")
+            return details if return_details else match
+
+        # 4. Vérification via web search
+        web_result_dict = self._get_author_from_web(author)
+        match = web_result_dict.get("auteur")
+        score = web_result_dict.get("certitude", 0)
+        # Ajout d'infos web dans le dictionnaire détaillé
+        details.update(
+            {
+                "author_corrected": match,
+                "score": score,
+                "analyse": web_result_dict.get("analyse", ""),
+                "source": "web search",
+            }
+        )
+        if score >= score_fuzz_threshold:
+            if verbose:
+                print(f"Trouvé avec web search: {match}")
+            return details if return_details else match
+        else:
+            if verbose:
+                print(
+                    f"Score insuffisant {score} avec web search: {web_result_dict.get('analyse', '')}"
+                )
+                # Ajout d'infos web dans le dictionnaire détaillé
+            details.update(
+                {
+                    "author_corrected": None,
+                }
+            )
+            return details if return_details else None
