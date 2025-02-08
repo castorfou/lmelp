@@ -70,7 +70,32 @@ def ajoute_auteurs(episode: Episode):
 
 
 if __name__ == "__main__":
-
+    parser = argparse.ArgumentParser(
+        prog="store_all_auteurs_from_all_episodes.py",
+        description=(
+            "Ce programme récupère les épisodes d'une base de données pour une date donnée, "
+            "extrait les auteurs de chaque épisode, vérifie et met à jour ces auteurs dans "
+            "la base de données, puis affiche un rapport du traitement effectué."
+            "Si une date est fournie, seuls les episodes anterieurs à cette date seront traités."
+        ),
+    )
+    parser.add_argument(
+        "-d",
+        "--date",
+        type=str,
+        required=False,
+        help="Date of the episode au format francais dd/mm/year",
+    )
+    args = parser.parse_args()
+    if args.date is not None:
+        try:
+            date = datetime.datetime.strptime(args.date, "%d/%m/%Y")
+        except ValueError:
+            print(f"Format de date invalide {args.date}. Utiliser le format dd/mm/yyyy")
+            sys.exit(1)
+    else:
+        date = datetime.datetime.now()
     episodes = Episodes().get_entries()
     for episode in episodes:
-        ajoute_auteurs(episode)
+        if episode.date < date:
+            ajoute_auteurs(episode)
