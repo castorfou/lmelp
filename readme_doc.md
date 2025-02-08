@@ -6,6 +6,7 @@
   - [Modifier les docstrings](#modifier-les-docstrings)
   - [Lancer le serveur de développement](#lancer-le-serveur-de-développement)
   - [Générer la documentation statique](#générer-la-documentation-statique)
+  - [Pousser sous github pages](#pousser-sous-github-pages)
 
 
 Voici une solution complète pour créer une documentation avec MkDocs et le thème Material, en incluant l'extraction automatique de la doc de vos fichiers .py grâce à l'extension mkdocstrings.
@@ -117,6 +118,12 @@ mkdocs build
 ```
 
 Le site sera créé dans le dossier `site/`, prêt à être déployé.
+
+## Pousser sous github pages
+
+```bash
+mkdocs gh-deploy
+```
 
 **Résumé**
 
