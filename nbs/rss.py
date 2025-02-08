@@ -15,11 +15,21 @@ from dotenv import load_dotenv, find_dotenv
 import os
 
 
-def load_env():
+def load_env() -> None:
+    """
+    Charge les variables d'environnement à partir d'un fichier .env.
+    """
     _ = load_dotenv(find_dotenv())
 
 
-def get_RSS_URL():
+def get_RSS_URL() -> str:
+    """
+    Récupère l'URL du flux RSS à partir des variables d'environnement.
+
+    Returns:
+        str: L'URL du flux RSS. Si la variable d'environnement `RSS_LMELP_URL` n'est pas définie,
+        retourne une URL par défaut.
+    """
     load_env()
     RSS_LMELP_URL = os.getenv("RSS_LMELP_URL")
     if RSS_LMELP_URL is None:
@@ -30,15 +40,20 @@ def get_RSS_URL():
 # %% py rss helper.ipynb 5
 import feedparser
 import re
+from typing import List
 
 
-def extraire_dureesummary(summary):
-    """Extrait la durée d un episode du masque.
-    Returns:
-    Le nombre de secondes correspondant à la durée d'un episode.
-    -1 si la durée n'est pas trouvée.
+def extraire_dureesummary(summary: str) -> int:
     """
+    Extrait la durée d'un épisode du masque.
 
+    Args:
+        summary (str): Le résumé de l'épisode contenant la durée.
+
+    Returns:
+        int: Le nombre de secondes correspondant à la durée d'un épisode.
+        Retourne -1 si la durée n'est pas trouvée.
+    """
     # Expression régulière pour extraire la durée
     pattern_duree = r"durée\s*:\s*(\d{2}:\d{2}:\d{2})"
 
@@ -53,16 +68,16 @@ def extraire_dureesummary(summary):
         return -1
 
 
-def extraire_urls_rss(duree_mini_minutes=15):
-    """Extrait les URLs des balises `enclosure` d'un flux RSS des episodes durant plus de duree_mini_minutes minutes
+def extraire_urls_rss(duree_mini_minutes: int = 15) -> List[str]:
+    """
+    Extrait les URLs des balises `enclosure` d'un flux RSS des épisodes durant plus de `duree_mini_minutes` minutes.
 
     Args:
-      duree_mini_minutes: la duree mini en minutes des episodes du flux
+        duree_mini_minutes (int): La durée minimale en minutes des épisodes du flux.
 
     Returns:
-      Une liste d'URLs.
+        List[str]: Une liste d'URLs.
     """
-
     url_flux = get_RSS_URL()
 
     flux = feedparser.parse(url_flux)
@@ -70,9 +85,7 @@ def extraire_urls_rss(duree_mini_minutes=15):
     for entree in flux.entries:
         for link in entree.links:
             if link.type == "audio/mpeg":
-                if (
-                    extraire_dureesummary(entree.summary) > duree_mini_minutes * 60
-                ):  # 15 minutes
+                if extraire_dureesummary(entree.summary) > duree_mini_minutes * 60:
                     urls.append(link.href)
     return urls
 
@@ -81,7 +94,7 @@ def extraire_urls_rss(duree_mini_minutes=15):
 import feedparser
 from mongo import get_collection, get_DB_VARS
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 from feedparser.util import FeedParserDict
 from mongo_episode import RSS_episode
 import pytz
@@ -91,18 +104,23 @@ RSS_DATE_FORMAT = "%a, %d %b %Y %H:%M:%S %z"  # "Sun, 29 Dec 2024 10:59:39 +0100
 
 class Podcast:
     def __init__(self):
+        """
+        Initialise la classe Podcast en analysant le flux RSS et en obtenant la collection MongoDB.
+        """
         self.parsed_flow = feedparser.parse(get_RSS_URL())
         DB_HOST, DB_NAME, _ = get_DB_VARS()
         self.collection = get_collection(
             target_db=DB_HOST, client_name=DB_NAME, collection_name="episodes"
         )
 
-    def get_most_recent_episode_from_DB(self) -> datetime:
+    def get_most_recent_episode_from_DB(self) -> Optional[datetime]:
         """
-        on recupere la date la plus recente des episodes stockes
+        Récupère la date la plus récente des épisodes stockés dans la base de données.
+
+        Returns:
+            Optional[datetime]: La date la plus récente des épisodes stockés, ou None si aucun épisode n'est trouvé.
         """
         most_recent_document = self.collection.find().sort({"date": -1}).limit(1)
-        # Extraire la date du document
         most_recent_date = None
         for doc in most_recent_document:
             most_recent_date = doc["date"].replace(tzinfo=pytz.timezone("Europe/Paris"))
@@ -112,15 +130,20 @@ class Podcast:
         self, duree_mini_minutes: int = 15
     ) -> List[FeedParserDict]:
         """
-        list RSS documents that are
-        - newer than get_most_recent_episode_from_DB(self)
-        - longer than duree_mini_minutes=15
+        Liste les épisodes RSS qui sont plus récents que le plus récent épisode stocké dans la base de données
+        et qui durent plus de `duree_mini_minutes` minutes.
+
+        Args:
+            duree_mini_minutes (int): La durée minimale en minutes des épisodes à lister. Par défaut à 15 minutes.
+
+        Returns:
+            List[FeedParserDict]: Une liste d'entrées RSS correspondant aux critères.
         """
         last_large_episodes = []
         for entry in self.parsed_flow.entries:
             date_rss = datetime.strptime(entry.published, RSS_DATE_FORMAT)
             date_db = self.get_most_recent_episode_from_DB()
-            if date_rss > date_db:
+            if date_db and date_rss > date_db:
                 if (
                     RSS_episode.get_duree_in_seconds(entry.itunes_duration)
                     > duree_mini_minutes * 60
@@ -128,11 +151,13 @@ class Podcast:
                     last_large_episodes.append(entry)
         return last_large_episodes
 
-    def store_last_large_episodes(self, duree_mini_minutes: int = 15):
+    def store_last_large_episodes(self, duree_mini_minutes: int = 15) -> None:
         """
-        loop through list_last_large_episodes
-        instantiate RSS_episode and keep them
-        print the nu;ber of successful updates in DB
+        Parcourt la liste des épisodes longs récents, instancie RSS_episode et les conserve dans la base de données.
+        Affiche le nombre de mises à jour réussies dans la base de données.
+
+        Args:
+            duree_mini_minutes (int): La durée minimale en minutes des épisodes à stocker. Par défaut à 15 minutes.
         """
         updates = 0
         last_large_episodes = self.list_last_large_episodes(duree_mini_minutes)

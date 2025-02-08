@@ -22,3 +22,5 @@ pip install -U llama-index-core llama-index-llms-openai llama-index-embeddings-o
 pip install google-search-results
 
 pip install 'smolagents[litellm]'
+
+pip install mkdocs mkdocs-material "mkdocstrings[python]"
