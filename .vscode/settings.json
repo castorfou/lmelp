@@ -1,8 +1,8 @@
 {
     "python.analysis.extraPaths": [
-        "/home/guillaume/miniforge3/envs/gemini/lib/python3.11/site-packages",
-        "/home/guillaume/miniforge3/envs/whisper/lib/python3.11/site-packages",
-        "/home/guillaume/miniforge3/envs/streamlit_korben/lib/python3.11/site-packages",
+        "/home/guillaume/miniconda/envs/gemini/lib/python3.11/site-packages",
+        "/home/guillaume/miniconda/envs/whisper/lib/python3.11/site-packages",
+        "/home/guillaume/miniconda/envs/streamlit_korben/lib/python3.11/site-packages",
         "./nbs"
     ],
     "files.watcherExclude": {
