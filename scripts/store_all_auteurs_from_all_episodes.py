@@ -9,9 +9,26 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../nbs"
 
 from mongo_episode import Episode, Episodes
 from mongo_auteur import Auteur, AuthorChecker
+from rich import print as rprint
+from rich.table import Table
 
 # il faudra executer ce script dans le repo (utilisation de la lib git)
 # et avec l'interpreter python whisper
+
+cache_filename = "store_all_auteurs_from_all_episodes.txt"
+
+
+def prettyprint(auteur_traitement_df):
+    table = Table(title="Table des auteurs")
+    # Ajout d'une colonne pour l'index (par exemple "Auteur" si l'index correspond au nom)
+    table.add_column("Auteur", justify="center", style="bold")
+    # Ajout des colonnes du DataFrame
+    for column in auteur_traitement_df.columns:
+        table.add_column(column, justify="center")
+    # Ajout des lignes, incluant l'index en première colonne
+    for idx, row in auteur_traitement_df.iterrows():
+        table.add_row(str(idx), *[str(item) for item in row])
+    rprint(table)
 
 
 def ajoute_auteurs(episode: Episode):
@@ -67,6 +84,11 @@ def ajoute_auteurs(episode: Episode):
                 "analyse": auteur_corrige_dict["analyse"],
                 "score": auteur_corrige_dict["score"],
             }
+    prettyprint(auteur_traitement_df)
+    if len(analyse_dict) > 0:
+        print("\nAnalyse des anomalies\n")
+    for auteur, details in analyse_dict.items():
+        print(f"{auteur} -> {details['analyse']} (score: {details['score']})")
 
 
 if __name__ == "__main__":
@@ -77,8 +99,17 @@ if __name__ == "__main__":
             "extrait les auteurs de chaque épisode, vérifie et met à jour ces auteurs dans "
             "la base de données, puis affiche un rapport du traitement effectué."
             "Si une date est fournie, seuls les episodes anterieurs à cette date seront traités."
+            "si le fichier `store_all_auteurs_from_all_episodes.txt` existe et contient une date, on reprend de cette date"
         ),
     )
+    # lis le contenu du fichier cache_filename s'il existe
+    if os.path.exists(cache_filename):
+        with open(cache_filename, "r") as f:
+            date_cache = datetime.datetime.strptime(f.read(), "%d/%m/%Y")
+            print(f"Reprise du traitement à partir de la date {date_cache}")
+    else:
+        date_cache = datetime.datetime.now()
+
     parser.add_argument(
         "-d",
         "--date",
@@ -86,6 +117,7 @@ if __name__ == "__main__":
         required=False,
         help="Date of the episode au format francais dd/mm/year",
     )
+
     args = parser.parse_args()
     if args.date is not None:
         try:
@@ -95,7 +127,14 @@ if __name__ == "__main__":
             sys.exit(1)
     else:
         date = datetime.datetime.now()
+
+    # on prend la date la plus ancienne entre date et date_cache
+    date = date if date < date_cache else date_cache
     episodes = Episodes().get_entries()
     for episode in episodes:
         if episode.date < date:
             ajoute_auteurs(episode)
+            # on sauvegarde la date de traitement
+            # le cache ne contient que cette date, rien d'autre
+            with open(cache_filename, "w") as f:
+                f.write(episode.date.strftime("%d/%m/%Y"))

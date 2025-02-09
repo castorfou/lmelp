@@ -9,9 +9,24 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../nbs"
 
 from mongo_episode import Episode
 from mongo_auteur import Auteur, AuthorChecker
+from rich import print as rprint
+from rich.table import Table
 
 # il faudra executer ce script dans le repo (utilisation de la lib git)
 # et avec l'interpreter python whisper
+
+
+def prettyprint(auteur_traitement_df):
+    table = Table(title="Table des auteurs")
+    # Ajout d'une colonne pour l'index (par exemple "Auteur" si l'index correspond au nom)
+    table.add_column("Auteur", justify="center", style="bold")
+    # Ajout des colonnes du DataFrame
+    for column in auteur_traitement_df.columns:
+        table.add_column(column, justify="center")
+    # Ajout des lignes, incluant l'index en première colonne
+    for idx, row in auteur_traitement_df.iterrows():
+        table.add_row(str(idx), *[str(item) for item in row])
+    rprint(table)
 
 
 def ajoute_auteurs(episode: Episode, verbose=False):
@@ -67,7 +82,7 @@ def ajoute_auteurs(episode: Episode, verbose=False):
                 "score": auteur_corrige_dict["score"],
             }
 
-    print(auteur_traitement_df)
+    prettyprint(auteur_traitement_df)
     if len(analyse_dict) > 0:
         print("\nAnalyse des anomalies\n")
     for auteur, details in analyse_dict.items():
