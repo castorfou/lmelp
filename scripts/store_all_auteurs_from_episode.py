@@ -14,7 +14,7 @@ from mongo_auteur import Auteur, AuthorChecker
 # et avec l'interpreter python whisper
 
 
-def ajoute_auteurs(episode: Episode):
+def ajoute_auteurs(episode: Episode, verbose=False):
     affiche_episode = f"""
     Date: {episode.date.strftime("%d %b %Y")}
     Titre: {episode.titre}
@@ -33,20 +33,25 @@ def ajoute_auteurs(episode: Episode):
     analyse_dict = {}
 
     for auteur in auteurs:
-        auteur_corrige_dict = ac.check_author(auteur, return_details=True)
+        auteur_corrige_dict = ac.check_author(
+            auteur, return_details=True, verbose=verbose
+        )
+        if verbose:
+            print(auteur_corrige_dict)
+        # check_author retourne None dans author_corrected si le process via rss:metadata, db, llm, web search n'a rien renvoye
+        # c'est donc une anomalie
+        anomalie = True if auteur_corrige_dict["author_corrected"] is None else False
+        # dans auteur_corrige c'est le nom de l'auteur si il est different de l'original sinon None
         auteur_corrige = (
             auteur_corrige_dict["author_corrected"]
             if auteur_corrige_dict["author_corrected"]
             != auteur_corrige_dict["author_original"]
             else None
         )
+        nom_auteur = auteur_corrige_dict["author_corrected"] if not None else auteur
+        # a quel endroit a ete detecte l'auteur (rss:metadata, db, llm, web search)
         detection = auteur_corrige_dict["source"]
-        anomalie = True if auteur_corrige_dict["author_corrected"] is None else False
-        existait_en_base = (
-            False
-            if anomalie
-            else Auteur(auteur_corrige_dict["author_corrected"]).exists()
-        )
+        existait_en_base = False if anomalie else Auteur(nom_auteur).exists()
         auteur_traitement_df.loc[auteur] = [
             auteur_corrige,
             detection,
@@ -54,7 +59,7 @@ def ajoute_auteurs(episode: Episode):
             anomalie,
         ]
         if not anomalie:
-            aut = Auteur(auteur_corrige)
+            aut = Auteur(nom_auteur)
             aut.keep()
         else:
             analyse_dict[auteur] = {
@@ -78,6 +83,12 @@ if __name__ == "__main__":
         required=True,
         help="Date of the episode au format francais dd/mm/year",
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Verbose mode if you want additional infos",
+    )
     args = parser.parse_args()
     try:
         date = datetime.datetime.strptime(args.date, "%d/%m/%Y")
@@ -90,4 +101,4 @@ if __name__ == "__main__":
         print(f"Episode du {date.strftime('%d/%m/%Y')} n'existe pas")
         sys.exit(1)
 
-    ajoute_auteurs(episode)
+    ajoute_auteurs(episode, verbose=args.verbose)
