@@ -16,8 +16,14 @@ from rich.table import Table
 # et avec l'interpreter python whisper
 
 
-def prettyprint(auteur_traitement_df):
-    table = Table(title="Table des auteurs")
+def prettyprint(auteur_traitement_df, date: datetime.datetime = None):
+    table = Table(
+        title=(
+            f"Table des auteurs {date.strftime('%d %b %Y')}"
+            if date
+            else "Table des auteurs"
+        )
+    )
     # Ajout d'une colonne pour l'index (par exemple "Auteur" si l'index correspond au nom)
     table.add_column("Auteur", justify="center", style="bold")
     # Ajout des colonnes du DataFrame
@@ -82,7 +88,7 @@ def ajoute_auteurs(episode: Episode, verbose=False):
                 "score": auteur_corrige_dict["score"],
             }
 
-    prettyprint(auteur_traitement_df)
+    prettyprint(auteur_traitement_df, date=episode.date)
     if len(analyse_dict) > 0:
         print("\nAnalyse des anomalies\n")
     for auteur, details in analyse_dict.items():
