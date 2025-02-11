@@ -112,6 +112,7 @@ def get_azure_llm(engine="gpt-4o") -> AzureOpenAI:
         api_key=AZURE_API_KEY,
         azure_endpoint=AZURE_ENDPOINT,
         api_version=AZURE_API_VERSION,
+        timeout=120.0,
     )
     Settings.llm = llm
     return llm
