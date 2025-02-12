@@ -37,7 +37,7 @@ def prettyprint(auteur_traitement_df, date: datetime.datetime = None):
     rprint(table)
 
 
-def ajoute_auteurs(episode: Episode):
+def ajoute_auteurs(episode: Episode, verbose=False):
     affiche_episode = f"""
     Date: {episode.date.strftime("%d %b %Y")}
     Titre: {episode.titre}
@@ -53,7 +53,6 @@ def ajoute_auteurs(episode: Episode):
     auteur_traitement_df = pd.DataFrame(
         columns=["auteur_corrige", "detection", "existait_en_base", "anomalie"]
     )
-    verbose = False
     analyse_dict = {}
 
     for auteur in auteurs:
@@ -105,6 +104,7 @@ if __name__ == "__main__":
             "extrait les auteurs de chaque épisode, vérifie et met à jour ces auteurs dans "
             "la base de données, puis affiche un rapport du traitement effectué."
             "Si une date est fournie, seuls les episodes anterieurs à cette date seront traités."
+            "Si mode verbose, affiche les détails de chaque auteur."
             "si le fichier `store_all_auteurs_from_all_episodes.txt` existe et contient une date, on reprend de cette date"
         ),
     )
@@ -123,7 +123,12 @@ if __name__ == "__main__":
         required=False,
         help="Date of the episode au format francais dd/mm/year",
     )
-
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Verbose mode if you want additional infos",
+    )
     args = parser.parse_args()
     if args.date is not None:
         try:
@@ -139,7 +144,7 @@ if __name__ == "__main__":
     episodes = Episodes().get_entries()
     for episode in episodes:
         if episode.date < date:
-            ajoute_auteurs(episode)
+            ajoute_auteurs(episode, verbose=args.verbose)
             # on sauvegarde la date de traitement
             # le cache ne contient que cette date, rien d'autre
             with open(cache_filename, "w") as f:
