@@ -141,7 +141,7 @@ if __name__ == "__main__":
 
     # on prend la date la plus ancienne entre date et date_cache
     date = date if date < date_cache else date_cache
-    episodes = Episodes().get_entries()
+    episodes = Episodes().get_entries({"date": {"$lt": date}})
     for episode in episodes:
         if episode.date < date:
             ajoute_auteurs(episode, verbose=args.verbose)
