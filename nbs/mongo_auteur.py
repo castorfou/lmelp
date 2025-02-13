@@ -146,6 +146,37 @@ class AuthorChecker:
         self.llm_structured_output = get_azure_llm("gpt-4o")
         self.authors_titre_description = self._get_authors_from_titre_description()
 
+    def _get_filtered_titre_description(self, titre_or_description: str) -> str:
+        """Filter the given titre or description to avoid Error 400.
+
+        Filters out substrings that may trigger Azure OpenAI's content management policy (resulting in a 400 error).
+        Specifically, for certain dates, predefined terms are replaced as specified in the filter mapping.
+
+        For more details, see:
+            https://github.com/castorfou/lmelp/issues/21
+
+        Args:
+            titre_or_description (str): 'titre' or 'description'depending on what to filter.
+
+        Returns:
+            str: The filtered titre or description.
+        """
+        filtering = {
+            "2020/11/15": {"fossoyeur": "rigolo"},
+        }
+        fmt_date = self.episode.date.strftime("%Y/%m/%d")
+        replacements = filtering.get(fmt_date)
+
+        text = (
+            self.episode.titre
+            if titre_or_description == "titre"
+            else self.episode.description
+        )
+        if replacements:
+            for key, value in replacements.items():
+                text = text.replace(key, value)
+        return text
+
     def _get_authors_from_titre_description(self) -> List[str]:
         """Retrieves a list of author names extracted from the episode title and description using LLM.
 
@@ -172,19 +203,26 @@ class AuthorChecker:
                 },
             },
         }
-        response = self.llm_structured_output.chat(
-            messages=[
-                ChatMessage(
-                    role="system",
-                    content="Tu es un assistant utile qui retourne une liste JSON de noms.",
-                ),
-                ChatMessage(
-                    role="user",
-                    content=f"Est-ce que tu peux me lister tous les noms qui sont cités dans le titre et la description de l'épisode suivant : {self.episode.titre} {self.episode.description}. ",
-                ),
-            ],
-            response_format=response_schema,
-        )
+        try:
+            titre = self._get_filtered_titre_description("titre")
+            description = self._get_filtered_titre_description("description")
+            response = self.llm_structured_output.chat(
+                messages=[
+                    ChatMessage(
+                        role="system",
+                        content="Tu es un assistant utile qui retourne une liste JSON de noms.",
+                    ),
+                    ChatMessage(
+                        role="user",
+                        content=f"Est-ce que tu peux me lister tous les noms qui sont cités dans le titre et la description de l'épisode suivant : {titre} {description}. ",
+                    ),
+                ],
+                response_format=response_schema,
+            )
+        except Exception as e:
+            print(f"Error getting authors from titre/description: {e}")
+            print(f"prompt: {titre} {description}")
+            return []
         try:
             json_dict = json.loads(response.message.content)
         except json.JSONDecodeError as e:
