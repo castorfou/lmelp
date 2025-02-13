@@ -28,7 +28,7 @@ Run command "**Create Table of Contents**" (in the VS Code Command Palette) to i
 
 Use github copilot Rewrite : Modify using Copilot 🤖
 
-![](docs/img/rewrite-copilot.png) 🖼️
+![](img/rewrite-copilot.png) 🖼️
 
 Select everything, modify using copilot with this prompt ✍️
 

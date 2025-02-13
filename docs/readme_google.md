@@ -18,14 +18,14 @@ My project is named `lmelp` 🔒 (please verify if this info is sensitive).
 Check out an [overview](https://console.cloud.google.com/home/dashboard) of your project. 🔍  
 I have pinned a few awesome products that might be really useful 💪
 
-![](docs/img/consolegooglecloud-pinnedproducts.png)
+![](img/consolegooglecloud-pinnedproducts.png)
 
 ## API key 🔑
 
 From the dashboard, navigate to generate your API key 🚀:  
 Dashboard > APIs & Services > [Credentials](https://console.cloud.google.com/apis/credentials) 👉
 
-![](docs/img/APIs-Credentials-Keys.png)
+![](img/APIs-Credentials-Keys.png)
 
 I configured one with: ✅
 - Restricted IP access (my two homes 🏠)
@@ -45,7 +45,7 @@ Or dedicated page per API: 👇
 
 [Custom Search API 🔍](https://console.cloud.google.com/apis/api/customsearch.googleapis.com/quotas)
 
-![](docs/img/customsearchquotas.png)
+![](img/customsearchquotas.png)
 
 [Gemini for Google Cloud API 🌌](https://console.cloud.google.com/apis/api/cloudaicompanion.googleapis.com/quotas)
 
