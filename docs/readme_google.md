@@ -1,31 +1,31 @@
-- [Google services 🚀](#google-services-)
-  - [Create a Google project 🌟](#create-a-google-project-)
-  - [Dashboard 📊](#dashboard-)
-  - [API key 🔑](#api-key-)
-  - [Quotas 📈](#quotas-)
+- [Google services🚀](#google-services)
+  - [Create a Google project🌟](#create-a-google-project)
+  - [Dashboard📊](#dashboard)
+  - [API key🔑](#api-key)
+  - [Quotas📈](#quotas)
 
-# Google services 🚀
+# Google services🚀
 
 To use Gemini or Search, I followed these steps 😎
 
-## Create a Google project 🌟
+## Create a Google project🌟
 
 Set it up on [Google Cloud Console](https://console.cloud.google.com) 🖥️.  
 My project is named `lmelp` 🔒 (please verify if this info is sensitive).
 
-## Dashboard 📊
+## Dashboard📊
 
 Check out an [overview](https://console.cloud.google.com/home/dashboard) of your project. 🔍  
 I have pinned a few awesome products that might be really useful 💪
 
-![](docs/img/consolegooglecloud-pinnedproducts.png)
+![](img/consolegooglecloud-pinnedproducts.png)
 
-## API key 🔑
+## API key🔑
 
 From the dashboard, navigate to generate your API key 🚀:  
 Dashboard > APIs & Services > [Credentials](https://console.cloud.google.com/apis/credentials) 👉
 
-![](docs/img/APIs-Credentials-Keys.png)
+![](img/APIs-Credentials-Keys.png)
 
 I configured one with: ✅
 - Restricted IP access (my two homes 🏠)
@@ -35,7 +35,7 @@ I configured one with: ✅
 
 Then, I added this key in `.env` to be used by the project under two entries: `GEMINI_API_KEY` and `GOOGLE_CUSTOM_SEARCH_API_KEY` 🔑
 
-## Quotas 📈
+## Quotas📈
 
 APIs have quotas and they can be accessed at ℹ️
 
@@ -45,7 +45,7 @@ Or dedicated page per API: 👇
 
 [Custom Search API 🔍](https://console.cloud.google.com/apis/api/customsearch.googleapis.com/quotas)
 
-![](docs/img/customsearchquotas.png)
+![](img/customsearchquotas.png)
 
 [Gemini for Google Cloud API 🌌](https://console.cloud.google.com/apis/api/cloudaicompanion.googleapis.com/quotas)
 

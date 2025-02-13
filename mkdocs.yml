@@ -9,6 +9,11 @@ nav:
       - Module mongo: mongo.md
       - Module mongo_episode: mongo_episode.md
       - Module mongo_auteur: mongo_auteur.md
+  - Other kind of docs:
+      - To manage doc: readme_doc.md
+      - To write markdown: readme_markdown.md
+      - some vs_code hints: readme_vscode_hints.md
+      - about Google services: readme_google.md
 theme:
   name: material
 

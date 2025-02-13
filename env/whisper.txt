@@ -23,6 +23,6 @@ pip install google-search-results
 
 pip install 'smolagents[litellm]'
 
-pip install mkdocs mkdocs-material "mkdocstrings[python]"
+pip install mkdocs mkdocs-material "mkdocstrings[python]" mkdocs-include-markdown-plugin
 
 pip install rich
