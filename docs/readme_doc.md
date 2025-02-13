@@ -1,11 +1,11 @@
-- [Étapes à suivre](#étapes-à-suivre) 📋
+- [Étapes à suivre](#etapes-a-suivre) 📋
   - [Installer les dépendances](#installer-les-dependances) 🔧
   - [Initialiser le projet MkDocs](#initialiser-le-projet-mkdocs) 🚀
   - [Configurer le fichier `mkdocs.yml`](#configurer-le-fichier-mkdocsyml) ⚙️
-  - [Créer les pages Markdown pour intégrer la doc extraite](#créer-les-pages-markdown-pour-intégrer-la-doc-extraite) 📝
+  - [Créer les pages Markdown pour intégrer la doc extraite](#creer-les-pages-markdown-pour-integrer-la-doc-extraite) 📝
   - [Modifier les docstrings](#modifier-les-docstrings) ✏️
-  - [Lancer le serveur de développement](#lancer-le-serveur-de-développement) 🖥️
-  - [Générer la documentation statique](#générer-la-documentation-statique) 🏗️
+  - [Lancer le serveur de développement](#lancer-le-serveur-de-developpement) 🖥️
+  - [Générer la documentation statique](#generer-la-documentation-statique) 🏗️
   - [Pousser sous github pages](#pousser-sous-github-pages) 🚢
 
 Voici une solution complète pour créer une documentation avec MkDocs et le thème Material, en incluant l'extraction automatique de la doc de vos fichiers .py grâce à l'extension mkdocstrings. ℹ️
