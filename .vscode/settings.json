@@ -14,5 +14,7 @@
     "github-actions.workflows.pinned.workflows": [
         ".github/workflows/ci.yml",
         "dynamic/pages/pages-build-deployment"
-    ]
+    ],
+    // https://code.visualstudio.com/docs/python/run#_native-repl
+    "python.REPL.sendToNativeREPL": true
 }
