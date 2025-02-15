@@ -1,8 +1,6 @@
 {
     "python.analysis.extraPaths": [
-        "/home/guillaume/miniconda/envs/gemini/lib/python3.11/site-packages",
-        "/home/guillaume/miniconda/envs/whisper/lib/python3.11/site-packages",
-        "/home/guillaume/miniconda/envs/streamlit_korben/lib/python3.11/site-packages",
+        "/workspaces/lmelp/.venv/lib/python3.12/site-packages",
         "./nbs"
     ],
     "files.watcherExclude": {
@@ -10,6 +8,15 @@
         "**/.git/subtree-cache/**": true,
         "**/.venv/**": true,
         "**/node_modules/*/**": true
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.venv": true,
     },
     "markdown.extension.toc.updateOnSave": true,
     "github-actions.workflows.pinned.workflows": [

@@ -27,7 +27,7 @@ ajouter une entree dans __`files.exclude`__ ➕
 ```
         "files.exclude": {
                 "**/.ipynb_checkpoints": true
-        },v
+        },
 ```
 
 ## ajouter des sources pour pylance🔌

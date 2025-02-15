@@ -1,6 +1,7 @@
 ipykernel
 transformers 
 # datasets[audio] 
+dbus-python
 accelerate
 ipywidgets
 pre-commit 
