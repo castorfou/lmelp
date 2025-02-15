@@ -1,12 +1,10 @@
 {
     "python.analysis.extraPaths": [
-        "/workspaces/lmelp/.venv/lib/python3.12/site-packages",
         "./nbs"
     ],
     "files.watcherExclude": {
         "**/.git/objects/**": true,
         "**/.git/subtree-cache/**": true,
-        // "**/.venv/**": true,
         "**/node_modules/*/**": true
     },
     "files.exclude": {
@@ -16,7 +14,6 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        // "**/.venv": true,
     },
     "markdown.extension.toc.updateOnSave": true,
     "github-actions.workflows.pinned.workflows": [
