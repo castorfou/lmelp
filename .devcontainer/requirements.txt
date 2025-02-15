@@ -1,5 +1,6 @@
 ipykernel
 transformers 
+virtualenv
 # datasets[audio] 
 dbus-python
 accelerate

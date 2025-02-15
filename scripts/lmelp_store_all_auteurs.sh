@@ -17,8 +17,6 @@ while [ "$1" != "" ]; do
     shift
 done
 export GPG_TTY=$(tty)
-cd /workspaces/lmelp
-source .venv/bin/activate
 pushd /workspaces/lmelp/scripts
 python store_all_auteurs_from_all_episodes.py  "$@"
 popd
