@@ -10,7 +10,6 @@ __all__ = [
     "get_azure_openai_keys",
     "get_azure_llm",
     "get_gemini_llm",
-    "get_gemini_llamaindex_llm",
     "get_vertex_llm",
 ]
 
@@ -112,6 +111,7 @@ def get_azure_llm(engine="gpt-4o") -> AzureOpenAI:
         api_key=AZURE_API_KEY,
         azure_endpoint=AZURE_ENDPOINT,
         api_version=AZURE_API_VERSION,
+        # increase timeout to 120 seconds to avoid timeout on scripts/store_all_auteurs_from_all_episodes.py
         timeout=120.0,
     )
     Settings.llm = llm
@@ -141,28 +141,27 @@ def get_gemini_llm(model="gemini-1.5-flash") -> genai.GenerativeModel:
 
 
 # %% py llm helper.ipynb 11
-from llama_index.llms.gemini import Gemini
-from llama_index.core import Settings
+# from llama_index.llms.gemini import Gemini
+# from llama_index.core import Settings
 
 
-def get_gemini_llamaindex_llm(model="models/gemini-1.5-flash") -> Gemini:
-    """
-    Get the Gemini language model for LlamaIndex.
+# def get_gemini_llamaindex_llm(model="models/gemini-1.5-flash") -> Gemini:
+#     """
+#     Get the Gemini language model for LlamaIndex.
 
-    This function configures the Gemini API using the API key obtained from the environment variables
-    and returns an instance of the Gemini model for LlamaIndex.
+#     This function configures the Gemini API using the API key obtained from the environment variables
+#     and returns an instance of the Gemini model for LlamaIndex.
 
-    Args:
-        model (str): The model to use for the Gemini language model. Default is "models/gemini-1.5-flash".
+#     Args:
+#         model (str): The model to use for the Gemini language model. Default is "models/gemini-1.5-flash".
 
-    Returns:
-        Gemini: An instance of the Gemini language model.
-    """
-    genai.configure(api_key=get_gemini_api_key())
-    llm = Gemini(model=model, api_key=get_gemini_api_key())
-    Settings.llm = llm
-    return llm
-
+#     Returns:
+#         Gemini: An instance of the Gemini language model.
+#     """
+#     genai.configure(api_key=get_gemini_api_key())
+#     llm = Gemini(model=model, api_key=get_gemini_api_key())
+#     Settings.llm = llm
+#     return llm
 
 # %% py llm helper.ipynb 14
 from llama_index.core import Settings
