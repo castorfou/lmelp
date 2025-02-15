@@ -2,6 +2,7 @@
 
 # %% auto 0
 __all__ = [
+    "AUDIO_PATH",
     "load_env",
     "get_RSS_URL",
     "get_gemini_api_key",
@@ -9,6 +10,8 @@ __all__ = [
     "get_google_projectID",
     "get_google_auth_file",
     "get_azure_openai_keys",
+    "get_git_root",
+    "get_audio_path",
 ]
 
 # %% py config.ipynb 1
@@ -100,3 +103,52 @@ def get_azure_openai_keys() -> tuple[str, str, str]:
     azure_endpoint = os.getenv("AZURE_ENDPOINT")
     azure_api_version = os.getenv("AZURE_API_VERSION")
     return azure_api_key, azure_endpoint, azure_api_version
+
+
+# %% py config.ipynb 8
+from git import Repo
+
+
+def get_git_root(path: str) -> str:
+    """Retrieves the root directory of the Git repository.
+
+    Args:
+        path (str): The current working directory.
+
+    Returns:
+        str: The root directory of the Git repository.
+    """
+    git_repo = Repo(path, search_parent_directories=True)
+    return git_repo.git.rev_parse("--show-toplevel")
+
+
+# %% py config.ipynb 10
+import os
+
+AUDIO_PATH: str = "audios"
+
+
+def get_audio_path(audio_path: str = AUDIO_PATH, year: str = "2024") -> str:
+    """Returns the full path to the audio files by appending the year as a subdirectory.
+
+    If the directory does not exist, it is created.
+
+    Args:
+        audio_path (str): Relative path to the audio files.
+        year (str): The year used as a subdirectory (default "2024").
+
+    Returns:
+        str: The full path to the corresponding audio directory.
+
+    Example:
+        >>> path = get_audio_path("audios", "2024")
+    """
+
+    project_root: str = get_git_root(os.getcwd())
+    full_audio_path: str = os.path.join(project_root, audio_path, year)
+
+    # Create the directory if it does not exist
+    if not os.path.exists(full_audio_path):
+        os.makedirs(full_audio_path)
+
+    return full_audio_path

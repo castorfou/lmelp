@@ -2,13 +2,11 @@
 
 # %% auto 0
 __all__ = [
-    "AUDIO_PATH",
     "DATE_FORMAT",
     "LOG_DATE_FORMAT",
     "RSS_DUREE_MINI_MINUTES",
     "RSS_DATE_FORMAT",
     "WEB_DATE_FORMAT",
-    "get_audio_path",
     "prevent_sleep",
     "extract_whisper",
     "Episode",
@@ -18,51 +16,6 @@ __all__ = [
 ]
 
 # %% py mongo helper episodes.ipynb 3
-import os
-from git import Repo
-
-AUDIO_PATH: str = "audios"
-
-
-def get_audio_path(audio_path: str = AUDIO_PATH, year: str = "2024") -> str:
-    """Returns the full path to the audio files by appending the year as a subdirectory.
-
-    If the directory does not exist, it is created.
-
-    Args:
-        audio_path (str): Relative path to the audio files.
-        year (str): The year used as a subdirectory (default "2024").
-
-    Returns:
-        str: The full path to the corresponding audio directory.
-
-    Example:
-        >>> path = get_audio_path("audios", "2024")
-    """
-
-    def get_git_root(path: str) -> str:
-        """Retrieves the root directory of the Git repository.
-
-        Args:
-            path (str): The current working directory.
-
-        Returns:
-            str: The root directory of the Git repository.
-        """
-        git_repo = Repo(path, search_parent_directories=True)
-        return git_repo.git.rev_parse("--show-toplevel")
-
-    project_root: str = get_git_root(os.getcwd())
-    full_audio_path: str = os.path.join(project_root, audio_path, year)
-
-    # Create the directory if it does not exist
-    if not os.path.exists(full_audio_path):
-        os.makedirs(full_audio_path)
-
-    return full_audio_path
-
-
-# %% py mongo helper episodes.ipynb 6
 import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 
@@ -180,7 +133,7 @@ def extract_whisper(mp3_filename: str) -> str:
     return result["text"]
 
 
-# %% py mongo helper episodes.ipynb 7
+# %% py mongo helper episodes.ipynb 4
 from bson import ObjectId
 from mongo import get_collection, get_DB_VARS, mongolog
 from datetime import datetime
@@ -189,11 +142,9 @@ from typing import Dict, List, Optional, Union
 from llm import get_azure_llm
 from llama_index.core.llms import ChatMessage
 import json
-import os  # nécessaire pour os.path
+import os
+from config import get_audio_path, AUDIO_PATH
 
-# get_audio_path et extract_whisper doivent être importés ou définis ailleurs
-# Par exemple :
-# from audio_utils import get_audio_path, extract_whisper
 
 DATE_FORMAT: str = "%Y-%m-%dT%H:%M:%S"
 LOG_DATE_FORMAT: str = "%d %b %Y %H:%M"
@@ -568,7 +519,7 @@ Voici cette transcription : {self.transcription} ",
         return json_dict["Authors"]
 
 
-# %% py mongo helper episodes.ipynb 15
+# %% py mongo helper episodes.ipynb 12
 from feedparser.util import FeedParserDict
 from transformers import pipeline
 import locale
@@ -685,7 +636,7 @@ class RSS_episode(Episode):
         return result["labels"][0]
 
 
-# %% py mongo helper episodes.ipynb 29
+# %% py mongo helper episodes.ipynb 26
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -834,7 +785,7 @@ class WEB_episode(Episode):
         return 0
 
 
-# %% py mongo helper episodes.ipynb 36
+# %% py mongo helper episodes.ipynb 33
 from typing import List, Any, Iterator
 import pymongo
 
