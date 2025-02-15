@@ -65,7 +65,8 @@ def get_audio_path(audio_path: str = AUDIO_PATH, year: str = "2024") -> str:
 # %% py mongo helper episodes.ipynb 6
 import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
-from datasets import load_dataset
+
+# from datasets import load_dataset
 
 import dbus
 from functools import wraps
@@ -166,10 +167,10 @@ def extract_whisper(mp3_filename: str) -> str:
     )
 
     # Load a sample dataset (this sample is loaded for demonstration purposes and is not used in transcription).
-    dataset = load_dataset(
-        "distil-whisper/librispeech_long", "clean", split="validation"
-    )
-    sample = dataset[0]["audio"]
+    # dataset = load_dataset(
+    #     "distil-whisper/librispeech_long", "clean", split="validation"
+    # )
+    # sample = dataset[0]["audio"]
 
     result = pipe(
         mp3_filename,
@@ -852,9 +853,6 @@ class Episodes:
 
         Args:
             collection_name (str): Nom de la collection à utiliser. Par défaut "episodes".
-
-        Returns:
-            None
         """
         DB_HOST, DB_NAME, _ = get_DB_VARS()
         self.collection = get_collection(
