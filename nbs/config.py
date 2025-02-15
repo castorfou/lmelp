@@ -13,6 +13,7 @@ __all__ = [
     "get_git_root",
     "get_audio_path",
     "get_DB_VARS",
+    "get_WEB_filename",
 ]
 
 # %% py config.ipynb 1
@@ -178,3 +179,27 @@ def get_DB_VARS() -> Tuple[Optional[str], Optional[str], Optional[str]]:
     DB_NAME: Optional[str] = os.getenv("DB_NAME")
     DB_LOGS: Optional[str] = os.getenv("DB_LOGS")
     return DB_HOST, DB_NAME, DB_LOGS
+
+
+# %% py config.ipynb 15
+from pathlib import Path
+
+
+def get_WEB_filename() -> str:
+    """
+    Get the filename of the WEB_LMELP file.
+
+    This function loads environment variables and retrieves the value of the
+    `WEB_LMELP_FILENAME` environment variable. If the variable is not set,
+    it returns a default file path.
+
+    Returns:
+        str: The filename of the WEB_LMELP file.
+    """
+    load_env()
+
+    WEB_LMELP_FILENAME = os.getenv("WEB_LMELP_FILENAME")
+    if WEB_LMELP_FILENAME is None:
+        WEB_LMELP_FILENAME = "db/À écouter plus tard I Radio France/À écouter plus tard I Radio France.html"
+
+    return str(Path(get_git_root(""), WEB_LMELP_FILENAME))
