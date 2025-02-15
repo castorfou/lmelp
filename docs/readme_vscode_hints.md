@@ -51,7 +51,7 @@ https://code.visualstudio.com/docs/python/run#_native-repl 🔗
 
 > You can open the Native REPL via the Command Palette (Ctrl+Shift+P) by searching for Python: **Start Native REPL**. Furthermore, you can send code to the Native REPL via **Smart Send** (Shift+Enter) and Run Selection/Line in Python REPL by setting `"python.REPL.sendToNativeREPL": true` in your settings.json file. 🚀
 
-ca fait tourner un unkonown.ipnb juste a cote. 🔍
+ca fait tourner un unknown.ipnb juste a cote. 🔍
 
 ## editer des fichiers markdown 📝
 
@@ -59,25 +59,38 @@ ca fait tourner un unkonown.ipnb juste a cote. 🔍
 
 ## utiliser dev container 📦
 
-Ressources: 📚
+**Ressources:** 📚
+
 - vscode doc website [Create a dev container](https://code.visualstudio.com/docs/devcontainers/create-dev-container) 📖
+
 - youtube [Get Started with Dev Containers in VS Code](https://www.youtube.com/watch?v=b1RavPr_878&t=169s) 🎥
+
 - youtube [Beginner's Series to: Dev Containers](https://www.youtube.com/playlist?list=PLj6YeMhvp2S5G_X6ZyMc8gfXPMFPg3O31) 🎬
 
-Etapes: 📝
+**Etapes: **📝
+
 1. installer `dev containers` extension ⬇️
+
 2. palette: `Dev Containers: Add Dev Container Configuration Files...` using ms-python3, `Reopen in Container` 🎨
+
 3. **extensions**: les extensions installees localement qui m'interessent pour ce projet, `Manage > Add to devcontainer.json`, et en sauvant je rebuilde le container 🔧
+
 4. **requirements**: les lib python necessaires pour ce projet 📌
+
 5. **postCommand.sh**: j'installe cmake et dbus (pour supprimer la mise en veille), la locale fr_FR.UTF-8 pour la conversion de dates, les libs python, pre-commit et le safe.directory git (car les utilisateurs host et docker sont differents) ⚡
+
 6. **runArgs**: 🚀
+
    1. `--network=host` pour acceder au container depuis le host (pour streamlit) 🌐
+
    2. `--label com.centurylinklabs.watchtower.enable=false` pour exclure le container de la mise a jour watchtower 🚫
+
    3. `--env CONTAINER_NAME=vscode-dev-container-lmelp` pour retrouver le nom du container depuis un script execute depuis host 🆔
+
 7. **forwardPorts** pour acceder a streamlit 🔀
 
 A chaque modification, faire un `Dev Containers: Rebuild Container`. Malheureusement la construction est assez lente du a l'installation des requirements; ca sera top de pouvoir faire un `pip install --batch-download-parallelism 10` (see [PR](https://github.com/pypa/pip/pull/12923)), ou alors passer a [uv](https://docs.astral.sh/uv/) (j'ai essaye mais j'avais des problemes avec venv)
 
-Depuis portainer, passer le **restart policies** a `Always`. (pour pouvoir appeler les scripts meme quand vscode est ferme)
+Depuis portainer, passer le **restart policies** a `Always`. (pour pouvoir appeler les scripts meme quand vscode est ferme, ca n'a pas l'air de bien fonctionner)
 
 Voir dans `.devcontainer` pour le detail. 📂
