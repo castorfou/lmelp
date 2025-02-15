@@ -2,6 +2,7 @@ site_name: Documentation des APIs du repo lmelp
 nav:
   - Accueil: index.md
   - Modules:
+      - Module config: config.md
       - Module llm: llm.md
       - Module whisper: whisper.md
       - Module web: web.md
