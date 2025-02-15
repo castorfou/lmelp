@@ -33,10 +33,7 @@
 				"GitHub.copilot",
 				"dbaeumer.vscode-eslint",
 				"ms-python.autopep8"
-			],
-			"settings": {
-                "python.defaultInterpreterPath": "/workspaces/lmelp/.venv/bin/python"
-            }
+			]
 		}
 	},
 
