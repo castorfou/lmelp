@@ -54,3 +54,16 @@ ca fait tourner un unkonwn.ipnb juste a cote. 🔍
 ## editer des fichiers markdown 📝
 
 [readme_markdown](readme_markdown.md) 📄
+
+## utiliser dev container
+
+Ressources:
+- vscode doc website [Create a dev container](https://code.visualstudio.com/docs/devcontainers/create-dev-container)
+- youtube [Get Started with Dev Containers in VS Code](https://www.youtube.com/watch?v=b1RavPr_878&t=169s)
+- youtube [Beginner's Series to: Dev Containers](https://www.youtube.com/playlist?list=PLj6YeMhvp2S5G_X6ZyMc8gfXPMFPg3O31)
+
+Etapes:
+1. installer `dev containers` extension
+2. palette: `Dev Containers: Add Dev Container Configuration Files...` using ms-python3, `Reopen in Container`
+3. **extensions**: les extensions installees localement qui m'interessent pour ce projet, `Manage > Add to devcontainer.json`, et en sauvant je rebuilde le container
+
