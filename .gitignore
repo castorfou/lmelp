@@ -4,6 +4,7 @@ __pycache__/
 .env
 db/À écouter plus tard I Radio France/À écouter plus tard I Radio France_files
 db/À écouter plus tard I Radio France/À écouter plus tard I Radio France.html
+db/masque_et_la_plume
 nbs/french_authors_cache.json
 .vscode/settings.json
 .gitignore

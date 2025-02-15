@@ -1,5 +1,4 @@
 #!/bin/bash 
-# filepath: /workspaces/lmelp/ui/host_lmelp_ui.sh
 
 # Search for the container with the matching CONTAINER_NAME environment variable.
 container=$(for id in $(docker ps -q); do
@@ -18,4 +17,4 @@ fi
 echo "Using container: $container"
 
 # Execute the UI script in the found container as the user vscode.
-docker exec -u vscode "$container" /workspaces/lmelp/ui/lmelp_ui.sh
+docker exec -u vscode "$container" /workspaces/lmelp/scripts/lmelp_get_one_transcription.sh
