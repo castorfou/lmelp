@@ -1,8 +1,5 @@
 {
     "python.analysis.extraPaths": [
-        "/home/guillaume/miniconda/envs/gemini/lib/python3.11/site-packages",
-        "/home/guillaume/miniconda/envs/whisper/lib/python3.11/site-packages",
-        "/home/guillaume/miniconda/envs/streamlit_korben/lib/python3.11/site-packages",
         "./nbs"
     ],
     "files.watcherExclude": {
@@ -10,9 +7,19 @@
         "**/.git/subtree-cache/**": true,
         "**/node_modules/*/**": true
     },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+    },
     "markdown.extension.toc.updateOnSave": true,
     "github-actions.workflows.pinned.workflows": [
         ".github/workflows/ci.yml",
         "dynamic/pages/pages-build-deployment"
-    ]
+    ],
+    // https://code.visualstudio.com/docs/python/run#_native-repl
+    "python.REPL.sendToNativeREPL": true
 }

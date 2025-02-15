@@ -77,7 +77,7 @@ class AuthorFuzzMatcher:
 # %% py mongo helper auteurs.ipynb 8
 import os
 from googleapiclient.discovery import build
-from llm import load_env
+from config import load_env
 from typing import List, Dict, Optional
 
 load_env()
@@ -119,7 +119,6 @@ def google_search(query: str) -> Optional[List[Dict[str, Optional[str]]]]:
 
 # %% py mongo helper auteurs.ipynb 9
 from typing import List, Optional, Union, Dict
-from mongo_auteur import Auteur
 from mongo_episode import Episode
 from llm import get_azure_llm
 from llama_index.core.llms import ChatMessage

@@ -1,8 +1,8 @@
 #!/bin/bash 
+# to be launched externally with 
+# docker exec -u vscode loving_bose /workspaces/lmelp/ui/lmelp_ui.sh
+export PATH="$HOME/.local/bin:$PATH"
 export GPG_TTY=$(tty)
-source ~/miniforge3/etc/profile.d/conda.sh
-source ~/miniforge3/etc/profile.d/mamba.sh
-mamba activate whisper
-pushd ~/git/lmelp
+pushd /workspaces/lmelp/
 streamlit run ui/lmelp.py
 popd

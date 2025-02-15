@@ -32,6 +32,7 @@ I configured one with: ✅
 - Restricted API access 🔐
     - Custom Search API 🔍
     - Gemini for Google Cloud API 🌌
+    - Generative Language API 🌐
 
 Then, I added this key in `.env` to be used by the project under two entries: `GEMINI_API_KEY` and `GOOGLE_CUSTOM_SEARCH_API_KEY` 🔑
 
@@ -48,6 +49,8 @@ Or dedicated page per API: 👇
 ![](img/customsearchquotas.png)
 
 [Gemini for Google Cloud API 🌌](https://console.cloud.google.com/apis/api/cloudaicompanion.googleapis.com/quotas)
+
+[Generative Language API 🌌](https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com/quotas)
 
 When **out of quotas** (rateLimitExceeded), service will answer **Error 429** ⚠️:
 

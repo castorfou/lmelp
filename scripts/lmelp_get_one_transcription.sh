@@ -1,9 +1,6 @@
 #!/bin/bash 
 export GPG_TTY=$(tty)
-source ~/miniforge3/etc/profile.d/conda.sh
-source ~/miniforge3/etc/profile.d/mamba.sh
-mamba activate whisper
-pushd ~/git/lmelp/scripts
+pushd /workspaces/lmelp/scripts
 ulimit -n 4096
 python get_one_transcription.py
 popd
