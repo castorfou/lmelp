@@ -9,6 +9,7 @@
 		"--label", "com.centurylinklabs.watchtower.enable=false",
 		"--env", "CONTAINER_NAME=vscode-dev-container-lmelp"
 	],
+	"shutdownAction": "none",
 	"customizations": {
 		"vscode": {
 			"extensions": [

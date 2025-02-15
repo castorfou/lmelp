@@ -89,8 +89,9 @@ ca fait tourner un unknown.ipnb juste a cote. 🔍
 
 7. **forwardPorts** pour acceder a streamlit 🔀
 
-A chaque modification, faire un `Dev Containers: Rebuild Container`. Malheureusement la construction est assez lente du a l'installation des requirements; ca sera top de pouvoir faire un `pip install --batch-download-parallelism 10` (see [PR](https://github.com/pypa/pip/pull/12923)), ou alors passer a [uv](https://docs.astral.sh/uv/) (j'ai essaye mais j'avais des problemes avec venv)
+8. **shutdownAction** a "none" pour empecher que le container ne s'arrete a la sortie de vscode (utile pour lancer les scripts ou streamlit)
 
-Depuis portainer, passer le **restart policies** a `Always`. (pour pouvoir appeler les scripts meme quand vscode est ferme, ca n'a pas l'air de bien fonctionner)
+
+A chaque modification, faire un `Dev Containers: Rebuild Container`. Malheureusement la construction est assez lente du a l'installation des requirements; ca sera top de pouvoir faire un `pip install --batch-download-parallelism 10` (see [PR](https://github.com/pypa/pip/pull/12923)), ou alors passer a [uv](https://docs.astral.sh/uv/) (j'ai essaye mais j'avais des problemes avec venv)
 
 Voir dans `.devcontainer` pour le detail. 📂
