@@ -76,4 +76,8 @@ Etapes: 📝
    3. `--env CONTAINER_NAME=vscode-dev-container-lmelp` pour retrouver le nom du container depuis un script execute depuis host 🆔
 7. **forwardPorts** pour acceder a streamlit 🔀
 
+A chaque modification, faire un `Dev Containers: Rebuild Container`. Malheureusement la construction est assez lente du a l'installation des requirements; ca sera top de pouvoir faire un `pip install --batch-download-parallelism 10` (see [PR](https://github.com/pypa/pip/pull/12923)), ou alors passer a [uv](https://docs.astral.sh/uv/) (j'ai essaye mais j'avais des problemes avec venv)
+
+Depuis portainer, passer le **restart policies** a `Always`. (pour pouvoir appeler les scripts meme quand vscode est ferme)
+
 Voir dans `.devcontainer` pour le detail. 📂
