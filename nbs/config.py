@@ -12,6 +12,7 @@ __all__ = [
     "get_azure_openai_keys",
     "get_git_root",
     "get_audio_path",
+    "get_DB_VARS",
 ]
 
 # %% py config.ipynb 1
@@ -152,3 +153,28 @@ def get_audio_path(audio_path: str = AUDIO_PATH, year: str = "2024") -> str:
         os.makedirs(full_audio_path)
 
     return full_audio_path
+
+
+# %% py config.ipynb 13
+import os
+from typing import Tuple, Optional
+
+
+def get_DB_VARS() -> Tuple[Optional[str], Optional[str], Optional[str]]:
+    """Retrieve the database configuration variables from the environment.
+
+    This function loads the environment variables and retrieves the following
+    database configuration variables:
+        - DB_HOST: The hostname for the database.
+        - DB_NAME: The name of the database.
+        - DB_LOGS: A flag indicating if logging is enabled.
+
+    Returns:
+        Tuple[Optional[str], Optional[str], Optional[str]]:
+            A tuple containing (DB_HOST, DB_NAME, DB_LOGS).
+    """
+    load_env()
+    DB_HOST: Optional[str] = os.getenv("DB_HOST")
+    DB_NAME: Optional[str] = os.getenv("DB_NAME")
+    DB_LOGS: Optional[str] = os.getenv("DB_LOGS")
+    return DB_HOST, DB_NAME, DB_LOGS
