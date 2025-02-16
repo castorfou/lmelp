@@ -21,22 +21,9 @@ while [ "$1" != "" ]; do
     shift
 done
 
-# Search for the container with the matching CONTAINER_NAME environment variable.
-container=$(for id in $(docker ps -q); do
-    if docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$id" | grep -q "CONTAINER_NAME=vscode-dev-container-lmelp"; then
-        docker inspect --format='{{.Name}}' "$id" | cut -d'/' -f2
-        break
-    fi
-done)
+source ~/git/lmelp/scripts/from_host/get_container.sh
 
-
-
-# Check if a container was found.
-if [ -z "$container" ]; then
-    echo "No container found with CONTAINER_NAME=vscode-dev-container-lmelp"
-    exit 1
-fi
-
+container=$(get_container)
 echo "Using container: $container"
 
 # Execute the UI script in the found container as the user vscode.
