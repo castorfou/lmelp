@@ -8,3 +8,10 @@ pip install --upgrade pip
 pip install -r .devcontainer/requirements.txt
 pre-commit install
 sudo git config --system --add safe.directory '*'
+
+# Create Streamlit credentials file to avoid the email prompt
+mkdir -p ~/.streamlit
+cat << 'EOF' > ~/.streamlit/credentials.toml
+[general]
+email = "your_email@example.com"
+EOF
