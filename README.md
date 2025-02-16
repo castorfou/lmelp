@@ -19,13 +19,13 @@
 
 ## environnements de dev python 🐍
 
-creer l'environnement whisper depuis `envs/whisper.txt` ✨  
-qui contient ce qu il faut pour whisper, feedparser, transformers (huggingface), dotenv, mongo, streamlit 🛠️
+vscode utilisera automatiquement le devcontainer definit dans le repo sous `.devcontainer`
 
-creer l'environnement whisper depuis `envs/gemini.txt` 💫  
-qui contient ce qu il faut pour gemini, dotenv, llamaindex, llm, mongo 🔧
+je garde quand meme le script de creation d'environnement whisper depuis `envs/whisper.txt` ✨  qui contient ce qu il faut pour whisper, feedparser, transformers (huggingface), dotenv, mongo, streamlit 🛠️
 
 ## pre-commit ⏱️
+
+dans devcontainer, pre-commit est deja configure sinon
 
 `pre-commit install` ✅
 
@@ -82,6 +82,7 @@ creer `.env` à la racine du repo avec 🏗️
 L'adresse du flux RSS du podcast du Masque et la Plume 🎧
 
 si absent `https://radiofrance-podcast.net/podcast09/rss_14007.xml` est utilisé par defaut 🔄  
+
 ```
 RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml
 ```
@@ -90,9 +91,10 @@ RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml
 
 Le lien vers la page web stockee du masque listant les episodes "legacy" historiques 📜
 
-si absent `/home/guillaume/git/lmelp/db/À écouter plus tard I Radio France/À écouter plus tard I Radio France.html` est utilisé par defaut 🔄  
+si absent `db/À écouter plus tard I Radio France/À écouter plus tard I Radio France.html` est utilisé par defaut 🔄  
+
 ```
-WEB_LMELP_FILENAME=/home/guillaume/git/lmelp/db/À écouter plus tard I Radio France/À écouter plus tard I Radio France.html
+WEB_LMELP_FILENAME=db/À écouter plus tard I Radio France/À écouter plus tard I Radio France.html
 ```
 
 ### db info 🗄️
