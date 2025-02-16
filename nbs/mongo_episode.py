@@ -786,8 +786,7 @@ class WEB_episode(Episode):
 
 
 # %% py mongo helper episodes.ipynb 32
-from typing import List, Any, Iterator
-import pymongo
+from typing import Any, Iterator
 
 
 class Episodes:
@@ -838,6 +837,11 @@ class Episodes:
                 .limit(limit)
             )
         self.oid_episodes = [document["_id"] for document in results]
+
+    def len_total_entries(self) -> int:
+        """
+        Retourne le nombre total d'épisodes dans la collection."""
+        return self.collection.estimated_document_count()
 
     def get_missing_transcriptions(self):
         """
