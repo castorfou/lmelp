@@ -16,7 +16,7 @@ st.set_page_config(
     initial_sidebar_state="auto",
 )
 
-from mongo_episode import Episodes
+from mongo_episode import Episodes, Episode
 import pandas as pd
 from datetime import datetime
 
@@ -32,7 +32,8 @@ DATE_FORMAT = "%d %b %Y"
 @st.cache_data  # 👈 Add the caching decorator
 def get_episodes():
     episodes = Episodes()
-    all_episodes = episodes.episodes
+    episodes.get_entries()
+    all_episodes = [Episode.from_oid(oid) for oid in episodes.oid_episodes]
     episodes_df = pd.DataFrame([episode.to_dict() for episode in all_episodes])
     # episodes_df["date"] = episodes_df["date"].dt.strftime("%Y/%m/%d")
     episodes_df["duree (min)"] = (episodes_df["duree"] / 60).round(1)

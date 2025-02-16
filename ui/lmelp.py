@@ -2,6 +2,10 @@ import streamlit as st
 from streamlit_card import card
 from ui_tools import add_to_sys_path
 
+add_to_sys_path()
+
+from rss import Podcast  # Ajout de l'importation nécessaire
+
 st.set_page_config(
     page_title="le masque et la plume",
     page_icon=":book:",
@@ -27,25 +31,24 @@ st.write(f"Auteurs tbd")
 st.write(f"Livres tbd")
 st.write(f"Avis tbd")
 
-
-def example():
-    card(
-        title="Hello World!",
-        text="Some description",
-        image="http://placekitten.com/300/250",
-        url="https://www.google.com",
-    )
-
-
-add_to_sys_path()
+import locale
 
 from mongo_episode import Episodes
 
 episodes = Episodes()
 
+# Bouton de rafraîchissement des épisodes
+if st.button("Refresh Episodes"):
+    locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
+    with st.spinner("Mise à jour des épisodes en cours..."):
+        podcast = Podcast()
+        podcast.store_last_large_episodes()
+        # Rechargement des épisodes après mise à jour
+    st.success("Episodes mis à jour !")
+
 
 def affiche_episodes(episodes=episodes):
-
+    episodes.get_entries()
     card(
         title="# episodes",
         text=f"{len(episodes)}",
@@ -54,8 +57,6 @@ def affiche_episodes(episodes=episodes):
     )
 
 
-import locale
-
 # Définir la locale en français
 locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
 
@@ -63,7 +64,7 @@ DATE_FORMAT = "%d %b %Y"
 
 
 def affiche_last_date(episodes=episodes):
-
+    episodes.get_entries(limit=1)
     card(
         title="last episode",
         text=f"{episodes[0].to_dict().get('date').strftime(DATE_FORMAT)}",
@@ -73,10 +74,11 @@ def affiche_last_date(episodes=episodes):
 
 
 def affiche_missing_transcription(episodes=episodes):
+    episodes.get_missing_transcriptions()
 
     card(
         title="# missing transcriptions",
-        text=f"{len(episodes.get_missing_transcriptions())}",
+        text=f"{len(episodes)}",
         image="http://placekitten.com/300/250",
         url="/st_episodes",
     )
