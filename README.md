@@ -149,6 +149,22 @@ SERP_API_KEY
 
 ## streamlit 🖱️
 
-from vscode: palette > run task > run streamlit 🚀
+3 ways to run it: from vscode, from devcontainer, from host
 
-or from terminal: `ui/lmelp_ui.sh` ⚡
+from **vscode**: palette > run task > run streamlit 🚀
+
+from **devcontainer** terminal: `ui/lmelp_ui.sh` ⚡
+
+from **host** terminal: 
+
+```bash
+#!/bin/bash 
+
+source ~/git/lmelp/scripts/from_host/get_container.sh
+
+container=$(get_container)
+echo "Using container: $container"
+
+# Execute the UI script in the found container as the user vscode.
+docker exec -u vscode "$container" /workspaces/lmelp/ui/lmelp_ui.sh
+```
