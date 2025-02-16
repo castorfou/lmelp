@@ -13,7 +13,7 @@ from rich import print as rprint
 from rich.table import Table
 
 # il faudra executer ce script dans le repo (utilisation de la lib git)
-# et avec l'interpreter python whisper
+# et avec le devcontainer du repo lmelp
 
 cache_filename = "store_all_auteurs_from_all_episodes.txt"
 
@@ -103,7 +103,7 @@ if __name__ == "__main__":
             "Ce programme récupère les épisodes d'une base de données pour une date donnée, "
             "extrait les auteurs de chaque épisode, vérifie et met à jour ces auteurs dans "
             "la base de données, puis affiche un rapport du traitement effectué."
-            "Si une date est fournie, seuls les episodes anterieurs à cette date seront traités."
+            "Si une date est fournie, seuls les episodes posterieurs à cette date seront traités."
             "Si mode verbose, affiche les détails de chaque auteur."
             "si le fichier `store_all_auteurs_from_all_episodes.txt` existe et contient une date, on reprend de cette date"
         ),
@@ -114,7 +114,8 @@ if __name__ == "__main__":
             date_cache = datetime.datetime.strptime(f.read(), "%d/%m/%Y")
             print(f"Reprise du traitement à partir de la date {date_cache}")
     else:
-        date_cache = datetime.datetime.now()
+        # 1er episode date de 1958
+        date_cache = datetime.date(1950, 1, 1)
 
     parser.add_argument(
         "-d",
@@ -137,15 +138,16 @@ if __name__ == "__main__":
             print(f"Format de date invalide {args.date}. Utiliser le format dd/mm/yyyy")
             sys.exit(1)
     else:
-        date = datetime.datetime.now()
+        date = datetime.datetime(1950, 1, 1)
 
-    # on prend la date la plus ancienne entre date et date_cache
-    date = date if date < date_cache else date_cache
-    episodes = Episodes().get_entries({"date": {"$lt": date}})
+    # on prend la date la plus recente entre date et date_cache
+    date = date if date > date_cache else date_cache
+    episodes = Episodes().get_entries({"date": {"$gte": date}})
     for episode in episodes:
-        if episode.date < date:
+        if episode.date > date:
             ajoute_auteurs(episode, verbose=args.verbose)
             # on sauvegarde la date de traitement
             # le cache ne contient que cette date, rien d'autre
             with open(cache_filename, "w") as f:
                 f.write(episode.date.strftime("%d/%m/%Y"))
+    print("Fin du traitement")

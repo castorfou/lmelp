@@ -1,4 +1,8 @@
 #!/bin/bash 
+
+# Stocker les arguments dans un tableau
+args=("$@")
+
 # check arguments, valid ones are -v or --verbose, -d or --date, -h or --help and they are optional
 while [ "$1" != "" ]; do
     case $1 in
@@ -16,7 +20,8 @@ while [ "$1" != "" ]; do
     esac
     shift
 done
+
 export GPG_TTY=$(tty)
 pushd /workspaces/lmelp/scripts
-python store_all_auteurs_from_all_episodes.py  "$@"
+python store_all_auteurs_from_all_episodes.py "${args[@]}"
 popd
