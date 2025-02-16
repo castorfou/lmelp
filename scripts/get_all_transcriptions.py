@@ -10,7 +10,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../nbs"
 # il faudra executer ce script dans le repo (utilisation de la lib git)
 # et avec l'interpreter python whisper
 
-from mongo_episode import Episodes
+from mongo_episode import Episodes, Episode
 
 
 def print_duree_traitement(start_time, end_time):
@@ -42,19 +42,19 @@ def main():
     interface = dbus.Interface(proxy, "org.freedesktop.ScreenSaver")
 
     episodes = Episodes()
-    print(episodes)
-    miss_transcriptions = episodes.get_missing_transcriptions()
+    episodes.get_missing_transcriptions()
 
-    for miss_transcription in reversed(miss_transcriptions):
+    for oid_episode in reversed(episodes):
+        episode = Episode.from_oid(oid_episode)
         # Prévenir la mise en veille
         cookie = interface.Inhibit("my_script", "Long running process")
         print("Mise en veille deactivee")
         print("On va recuperer la transcription de l'episode \n")
-        print(miss_transcription)
+        print(episode)
         try:
             # Votre traitement long ici
             start_time = time.time()
-            miss_transcription.set_transcription(verbose=True)
+            episode.set_transcription(verbose=True)
             end_time = time.time()
             print_duree_traitement(start_time=start_time, end_time=end_time)
 
