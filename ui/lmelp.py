@@ -37,21 +37,37 @@ from mongo_episode import Episodes
 
 episodes = Episodes()
 
-# Bouton de rafraîchissement des épisodes
-if st.button("Refresh Episodes"):
+import io
+import sys
+
+# Bouton de rafraîchissement des épisodes avec affichage avancé de l'output
+if st.button("🔄 Rafraîchir Episodes"):
+    nb_episodes = episodes.len_total_entries()
     locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
     with st.spinner("Mise à jour des épisodes en cours..."):
         podcast = Podcast()
-        podcast.store_last_large_episodes()
-        # Rechargement des épisodes après mise à jour
-    st.success("Episodes mis à jour !")
+        # Capturer la sortie de la fonction
+        buf = io.StringIO()
+        old_stdout = sys.stdout
+        sys.stdout = buf
+        try:
+            podcast.store_last_large_episodes()
+        finally:
+            sys.stdout = old_stdout
+        output = buf.getvalue()
+        if output:
+            st.expander("Output de la mise à jour").code(output, language="bash")
+    nb_episodes_after = episodes.len_total_entries()
+    if nb_episodes_after > nb_episodes:
+        st.success(f"{nb_episodes_after - nb_episodes} episodes mis à jour !")
+    else:
+        st.warning("Pas de nouveaux épisodes aujourd'hui")
 
 
 def affiche_episodes(episodes=episodes):
-    episodes.get_entries()
     card(
         title="# episodes",
-        text=f"{len(episodes)}",
+        text=f"{episodes.len_total_entries()}",
         image="http://placekitten.com/300/250",
         url="/st_episodes",
     )
