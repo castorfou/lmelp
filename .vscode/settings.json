@@ -21,5 +21,6 @@
         "dynamic/pages/pages-build-deployment"
     ],
     // https://code.visualstudio.com/docs/python/run#_native-repl
-    "python.REPL.sendToNativeREPL": true
+    "python.REPL.sendToNativeREPL": true,
+    "python.analysis.typeCheckingMode": "basic"
 }
