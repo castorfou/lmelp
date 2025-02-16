@@ -10,8 +10,8 @@
     - [rss info 🎙️](#rss-info-️)
     - [web info 🌍](#web-info-)
     - [db info 🗄️](#db-info-️)
-    - [llm, llamaindex 🤖](#llm-llamaindex-)
-  - [streamlit 🖱️](#streamlit-️)
+    - [llm, llamaindex, litellm 🤖](#llm-llamaindex-litellm-)
+    - [websearch](#websearch)
 
 
 # pour developper 💻
@@ -106,7 +106,7 @@ DB_NAME="masque_et_la_plume"
 DB_LOGS=true # si présent et valant true, va enregistrer toutes les operations dans la collection logs
 ```
 
-### llm, llamaindex 🤖
+### llm, llamaindex, litellm 🤖
 
 ```
 # gemini 
@@ -135,6 +135,21 @@ from https://console.cloud.google.com 🌐
 gemini vertex (llamaindex), GOOGLE_AUTH_FILE 📂
 
 follow instructions at https://stackoverflow.com/a/69941050 📘
+
+Et pour les modeles locaux **LiteLLM**
+```
+LITELLM_API_KEY
+```
+
+### websearch
+
+We need these 2 keys.
+
+```GOOGLE_CUSTOM_SEARCH_API_KEY
+
+SEARCH_ENGINE_ID```
+
+more details at [readme Google](docs/readme_google.md)
 
 ## streamlit 🖱️
 
