@@ -11,7 +11,6 @@
     - [web info 🌍](#web-info-)
     - [db info 🗄️](#db-info-️)
     - [llm, llamaindex 🤖](#llm-llamaindex-)
-    - [SerpApi 🔍](#serpapi-)
   - [streamlit 🖱️](#streamlit-️)
 
 
@@ -136,16 +135,6 @@ from https://console.cloud.google.com 🌐
 gemini vertex (llamaindex), GOOGLE_AUTH_FILE 📂
 
 follow instructions at https://stackoverflow.com/a/69941050 📘
-
-### SerpApi 🔍
-
-to request search engines 🌟
-
-with
-
-```text
-SERP_API_KEY
-```
 
 ## streamlit 🖱️
 
