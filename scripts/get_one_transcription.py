@@ -35,19 +35,18 @@ def print_duree_traitement(start_time, end_time):
 def main():
 
     episodes = Episodes()
-    print(episodes)
-    miss_transcriptions = episodes.get_missing_transcriptions()
-    if len(miss_transcriptions) > 0:
+    episodes.get_missing_transcriptions()
+    if len(episodes) > 0:
         # on prend le dernier
-        miss_transcription = miss_transcriptions[-1]
+        episode = episodes[-1]
         print("On va recuperer la transcription de l'episode \n")
-        print(miss_transcription)
+        print(episode)
         start_time = time.time()
-        miss_transcription.set_transcription(verbose=True)
+        episode.set_transcription(verbose=True)
         end_time = time.time()
         print_duree_traitement(start_time=start_time, end_time=end_time)
-
-    print(episodes)
+    else:
+        print("Il n'y a pas d'episodes sans transcriptions")
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ def main():
         print(vieil_episode)
 
     episodes = Episodes()
-    print(episodes)
+    print(episodes.len_total_entries())
 
 
 if __name__ == "__main__":

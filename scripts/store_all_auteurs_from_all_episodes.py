@@ -142,8 +142,10 @@ if __name__ == "__main__":
 
     # on prend la date la plus recente entre date et date_cache
     date = date if date > date_cache else date_cache
-    episodes = Episodes().get_entries({"date": {"$gte": date}})
-    for episode in episodes:
+    episodes = Episodes()
+    episodes.get_entries({"date": {"$gte": date}})
+    for oid_episode in episodes:
+        episode = Episode.from_oid(oid_episode)
         if episode.date > date:
             ajoute_auteurs(episode, verbose=args.verbose)
             # on sauvegarde la date de traitement
