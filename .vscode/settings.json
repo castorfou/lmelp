@@ -22,5 +22,4 @@
     ],
     // https://code.visualstudio.com/docs/python/run#_native-repl
     "python.REPL.sendToNativeREPL": true,
-    "python.analysis.typeCheckingMode": "basic"
 }
