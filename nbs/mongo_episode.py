@@ -785,7 +785,7 @@ class WEB_episode(Episode):
         return 0
 
 
-# %% py mongo helper episodes.ipynb 33
+# %% py mongo helper episodes.ipynb 32
 from typing import List, Any, Iterator
 import pymongo
 
@@ -809,48 +809,47 @@ class Episodes:
         self.collection = get_collection(
             target_db=DB_HOST, client_name=DB_NAME, collection_name=collection_name
         )
-        self.episodes = self._load_episodes()
+        # je ne charge plus par defaut tous les episodes c'est inefficace
+        self.oid_episodes = []
 
-    def _load_episodes(self) -> List["Episode"]:
-        """Charge tous les épisodes depuis la base de données.
+    # def _load_all_episodes(self) -> List["Episode"]:
+    #     """Charge tous les épisodes depuis la base de données.
 
-        Returns:
-            List[Episode]: Liste des épisodes chargés.
+    #     Returns:
+    #         List[Episode]: Liste des épisodes chargés.
+    #     """
+    #     return self.get_entries()
+
+    def get_entries(self, request: Any = "", limit: int = -1):
         """
-        return self.get_entries()
-
-    def get_entries(self, request: Any = "") -> List["Episode"]:
-        """Retourne les épisodes correspondant à une requête spécifique, triés par date décroissante.
-
+        Mets dans self.oid_episodes les oids correspondant à une requête spécifique, triés par date décroissante.
+        Si limit est spécifié, seuls les limit premiers résultats sont conservés.
         Args:
             request (Any): Requête MongoDB à exécuter. Exemples:
                 {"$or": [{"transcription": ""}, {"transcription": None}]}.
                 Par défaut, une requête vide qui retourne tous les épisodes.
-
-        Returns:
-            List[Episode]: Liste des épisodes correspondant à la requête.
         """
-        result = self.collection.find(request).sort("date", pymongo.DESCENDING)
-        episodes = [Episode.from_oid(entry.get("_id")) for entry in result]
-        return episodes
+        if limit == -1:
+            results = self.collection.find(request, {"_id": 1}).sort({"date": -1})
+        else:
+            results = (
+                self.collection.find(request, {"_id": 1})
+                .sort({"date": -1})
+                .limit(limit)
+            )
+        self.oid_episodes = [document["_id"] for document in results]
 
-    def get_missing_transcriptions(self) -> List["Episode"]:
-        """Retourne les épisodes sans transcription.
-
-        Returns:
-            List[Episode]: Liste des épisodes dont la transcription est manquante.
+    def get_missing_transcriptions(self):
         """
-        return self.get_entries(
-            {"$or": [{"transcription": ""}, {"transcription": None}]}
-        )
-
-    def get_transcriptions(self) -> List["Episode"]:
-        """Retourne les épisodes qui possèdent une transcription.
-
-        Returns:
-            List[Episode]: Liste des épisodes ayant une transcription.
+        Mets dans self.oid_episodes les oids correspondant aux épisodes sans transcription.
         """
-        return self.get_entries(
+        self.get_entries({"$or": [{"transcription": ""}, {"transcription": None}]})
+
+    def get_transcriptions(self):
+        """
+        Mets dans self.oid_episodes les oids correspondant aux épisodes qui possèdent une transcription.
+        """
+        self.get_entries(
             {"$and": [{"transcription": {"$ne": None}}, {"transcription": {"$ne": ""}}]}
         )
 
@@ -863,15 +862,15 @@ class Episodes:
         Returns:
             Episode: L'épisode à la position donnée.
         """
-        return self.episodes[index]
+        return Episode.from_oid(self.oid_episodes[index])
 
     def __len__(self) -> int:
-        """Retourne le nombre total d'épisodes chargés.
+        """Retourne le nombre total d'épisodes dans oid_episodes.
 
         Returns:
             int: Nombre d'épisodes.
         """
-        return len(self.episodes)
+        return len(self.oid_episodes)
 
     def __iter__(self) -> Iterator["Episode"]:
         """Permet d'itérer sur les épisodes.
@@ -879,25 +878,25 @@ class Episodes:
         Returns:
             Iterator[Episode]: Itérateur sur la liste des épisodes.
         """
-        return iter(self.episodes)
+        return iter(self.oid_episodes)
 
-    def __str__(self) -> str:
-        """Retourne une représentation textuelle de l'objet Episodes.
+    # def __str__(self) -> str:
+    #     """Retourne une représentation textuelle de l'objet Episodes.
 
-        La représentation inclut le nombre total d'entrées et le nombre d'épisodes sans transcription.
+    #     La représentation inclut le nombre total d'entrées et le nombre d'épisodes sans transcription.
 
-        Returns:
-            str: Chaîne de caractères décrivant l'objet Episodes.
-        """
-        return (
-            f"{self.collection.count_documents({})} entries\n"
-            f"{len(self.get_missing_transcriptions())} missing transcriptions"
-        )
+    #     Returns:
+    #         str: Chaîne de caractères décrivant l'objet Episodes.
+    #     """
+    #     return (
+    #         f"{self.collection.count_documents({})} entries\n"
+    #         f"{len(self.get_missing_transcriptions())} missing transcriptions"
+    #     )
 
-    def __repr__(self) -> str:
-        """Retourne la représentation officielle de l'objet Episodes.
+    # def __repr__(self) -> str:
+    #     """Retourne la représentation officielle de l'objet Episodes.
 
-        Returns:
-            str: Représentation de l'objet Episodes identique à celle retournée par __str__.
-        """
-        return self.__str__()
+    #     Returns:
+    #         str: Représentation de l'objet Episodes identique à celle retournée par __str__.
+    #     """
+    #     return self.__str__()
