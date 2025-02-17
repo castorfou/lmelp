@@ -1,0 +1,10 @@
+model_list:
+  - model_name: gpt-4o
+    litellm_params:
+      model: azure/gpt-4o
+      api_base: os.environ/AZURE_ENDPOINT
+      api_key: "os.environ/AZURE_API_KEY"
+      api_version: "2024-09-01-preview" # [OPTIONAL] litellm uses the latest azure api_version by default
+      custom_llm_provider: "azure"
+litellm_settings:
+  ssl_verify: false # 👈 KEY CHANGE
