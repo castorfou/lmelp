@@ -94,4 +94,8 @@ ca fait tourner un unknown.ipnb juste a cote. 🔍
 
 A chaque modification, faire un `Dev Containers: Rebuild Container`. Malheureusement la construction est assez lente du a l'installation des requirements; ca sera top de pouvoir faire un `pip install --batch-download-parallelism 10` (see [PR](https://github.com/pypa/pip/pull/12923)), ou alors passer a [uv](https://docs.astral.sh/uv/) (j'ai essaye mais j'avais des problemes avec venv)
 
+Depuis Windows+WSL, il faut activer `Dev>Containers: Execute in WSL`, cela utilisera le docker de WSL et pas le docker Windows (que je n'ai pas)
+
+![](img/devcontainer-execute_in_wsl.png)
+
 Voir dans `.devcontainer` pour le detail. 📂
