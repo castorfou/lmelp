@@ -1,6 +1,4 @@
 import streamlit as st
-from git import Repo
-import os
 import sys
 from pathlib import Path
 
@@ -18,7 +16,6 @@ st.set_page_config(
 
 from mongo_episode import Episodes, Episode
 import pandas as pd
-from datetime import datetime
 
 import locale
 import plotly.express as px
