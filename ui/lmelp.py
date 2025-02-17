@@ -39,6 +39,7 @@ episodes = Episodes()
 
 import io
 import sys
+import subprocess
 
 # Bouton de rafraîchissement des épisodes avec affichage avancé de l'output
 if st.button("🔄 Rafraîchir Episodes"):
@@ -60,6 +61,29 @@ if st.button("🔄 Rafraîchir Episodes"):
     nb_episodes_after = episodes.len_total_entries()
     if nb_episodes_after > nb_episodes:
         st.success(f"{nb_episodes_after - nb_episodes} episodes mis à jour !")
+        if st.button("📥 Télécharger transcriptions "):
+            with st.spinner("Téléchargement des transcriptions en cours..."):
+                # Exécuter le script get_one_transcription.py situé dans le dossier scripts
+                episodes.get_missing_transcriptions()
+                if len(episodes) > 0:
+                    # on prend le dernier
+                    episode = episodes[-1]
+
+                    # Capturer la sortie de la fonction
+                    buf = io.StringIO()
+                    old_stdout = sys.stdout
+                    sys.stdout = buf
+                    try:
+                        episode.set_transcription(verbose=True)
+                    finally:
+                        sys.stdout = old_stdout
+                    output = buf.getvalue()
+                    if output:
+                        st.expander("Output du telechargement").code(
+                            output, language="None"
+                        )
+                else:
+                    st.warning("Il n'y a pas d'episodes sans transcriptions")
     else:
         st.warning("Pas de nouveaux épisodes aujourd'hui")
 
