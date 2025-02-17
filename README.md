@@ -12,6 +12,7 @@
     - [db info 🗄️](#db-info-️)
     - [llm, llamaindex, litellm 🤖](#llm-llamaindex-litellm-)
     - [websearch](#websearch)
+  - [streamlit 🖱️](#streamlit-️)
 
 
 # pour developper 💻
@@ -147,7 +148,8 @@ We need these 2 keys.
 
 ```GOOGLE_CUSTOM_SEARCH_API_KEY
 
-SEARCH_ENGINE_ID```
+SEARCH_ENGINE_ID
+```
 
 more details at [readme Google](docs/readme_google.md)
 
