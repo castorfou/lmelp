@@ -36,6 +36,7 @@ Select everything, modify using copilot with this prompt ✍️
 Add nice emojis to this markdown text.
 It has to be informative and helpful.
 No more than 1 emoji per line.
+I would like emojis at beginning of lines for titles or sections, and at end of line for regular lines.
 ```
 
 ## images 🖼️

@@ -15,6 +15,7 @@ nav:
       - To write markdown: readme_markdown.md
       - some vs_code hints: readme_vscode_hints.md
       - about Google services: readme_google.md
+      - data model: readme_data_model.md
 theme:
   name: material
 
