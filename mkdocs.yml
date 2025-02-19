@@ -10,9 +10,10 @@ nav:
       - Module mongo: mongo.md
       - Module mongo_episode: mongo_episode.md
       - Module mongo_auteur: mongo_auteur.md
+      - Module mongo_livre: mongo_livre.md
   - Other kind of docs:
-      - To manage doc: readme_doc.md
-      - To write markdown: readme_markdown.md
+      - manage doc: readme_doc.md
+      - write markdown: readme_markdown.md
       - some vs_code hints: readme_vscode_hints.md
       - about Google services: readme_google.md
       - data model: readme_data_model.md

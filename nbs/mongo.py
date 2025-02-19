@@ -110,16 +110,29 @@ class BaseEntity:
         """
         return self.collection.find_one({"nom": self.nom}) is not None
 
-    def keep(self) -> None:
-        """Inserts or updates the entity in the database.
-
-        If the entity does not exist, it is inserted; otherwise, it is updated.
+    def to_dict(self) -> dict:
         """
+        Sérialise l'instance en dictionnaire en excluant les attributs non désirés.
+        On exclut ici 'collection' par exemple.
+        """
+        # On récupère l'ensemble des attributs de l'objet
+        data = self.__dict__.copy()
+        # On retire attributes non serialisables
+        data.pop("collection", None)
+        return data
+
+    def keep(self) -> None:
+        """
+        Insert ou met à jour l'entité dans la base.
+        Utilise la sérialisation via to_dict() pour conserver tous les attributs serialisables.
+        """
+        data = self.to_dict()
         if not self.exists():
             mongolog("insert", self.collection.name, self.nom)
-            self.collection.insert_one({"nom": self.nom})
+            self.collection.insert_one(data)
         else:
             mongolog("update", self.collection.name, self.nom)
+            self.collection.replace_one({"nom": self.nom}, data)
 
     def remove(self) -> None:
         """Removes the entity from the database."""
