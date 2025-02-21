@@ -154,6 +154,7 @@ class BaseEntity:
     @classmethod
     def from_oid(cls: Type[T], oid: ObjectId) -> T:
         """Creates an instance of the derived class from a MongoDB ObjectId.
+        Returns None if the ObjectId is not found in the database or is None.
 
         Args:
             oid (ObjectId): The MongoDB ObjectId.
@@ -161,11 +162,15 @@ class BaseEntity:
         Returns:
             T: An instance of the derived class.
         """
+        if oid is None:
+            return None
         DB_HOST, DB_NAME, _ = get_DB_VARS()
         collection = get_collection(
             target_db=DB_HOST, client_name=DB_NAME, collection_name=cls.collection
         )
         document = collection.find_one({"_id": oid})
+        if document is None:
+            return None
         inst = cls(document.get("nom"))
         return inst
 
