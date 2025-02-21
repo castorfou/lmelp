@@ -7,6 +7,8 @@ sudo dpkg-reconfigure locales -f noninteractive
 pip install --upgrade pip
 pip install -r .devcontainer/requirements.txt
 pre-commit install
+pre-commit autoupdate
+
 sudo git config --system --add safe.directory '*'
 
 # Create Streamlit credentials file to avoid the email prompt
