@@ -17,3 +17,5 @@ cat << 'EOF' > ~/.streamlit/credentials.toml
 [general]
 email = "your_email@example.com"
 EOF
+
+/workspaces/lmelp/.devcontainer/setupZsh.sh
