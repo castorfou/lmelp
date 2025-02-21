@@ -166,7 +166,7 @@ class BaseEntity:
             target_db=DB_HOST, client_name=DB_NAME, collection_name=cls.collection
         )
         document = collection.find_one({"_id": oid})
-        inst = cls(nom=document.get("nom"))
+        inst = cls(document.get("nom"))
         return inst
 
     @classmethod
