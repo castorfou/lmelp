@@ -9,7 +9,7 @@ sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2
     -p git \
     -p python \
     -p history \
-    -p ssh-agent \
+    # -p ssh-agent \
     -p 'history-substring-search' \
     -p https://github.com/zsh-users/zsh-autosuggestions \
     -p https://github.com/zsh-users/zsh-completions
