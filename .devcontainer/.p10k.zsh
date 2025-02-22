@@ -3,6 +3,7 @@
 # Wizard options: powerline, rainbow, unicode, 24h time, angled separators, sharp heads,
 # blurred tails, 2 lines, dotted, right frame, darkest-ornaments, sparse, fluent,
 # transient_prompt, instant_prompt=verbose.
+
 # Type `p10k configure` to generate another config.
 #
 # Config for Powerlevel10k with powerline prompt style with colorful background.
@@ -33,6 +34,7 @@
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
     # os_icon               # os identifier
+
     dir                     # current directory
     vcs                     # git status
     # =========================[ Line #2 ]=========================
@@ -120,6 +122,7 @@
 
   # Defines character set used by powerlevel10k. It's best to let `p10k configure` set it for you.
   typeset -g POWERLEVEL9K_MODE=powerline
+
   # When set to `moderate`, some icons will have an extra space after them. This is meant to avoid
   # icon overlap when using non-monospace fonts. When set to `none`, spaces are not added.
   typeset -g POWERLEVEL9K_ICON_PADDING=none
@@ -175,6 +178,7 @@
   typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR='\uE0B0'
   # Separator between different-color segments on the right.
   typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR='\uE0B2'
+
   # To remove a separator between two segments, add "_joined" to the second segment name.
   # For example: POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(os_icon context_joined)
 
@@ -301,6 +305,7 @@
   # The default icon shown next to non-writable and non-existent directories when
   # POWERLEVEL9K_DIR_SHOW_WRITABLE is set to v3.
   typeset -g POWERLEVEL9K_LOCK_ICON='∅'
+
 
   # POWERLEVEL9K_DIR_CLASSES allows you to specify custom icons and colors for different
   # directories. It must be an array with 3 * N elements. Each triplet consists of:
@@ -763,7 +768,7 @@
   typeset -g POWERLEVEL9K_YAZI_BACKGROUND=0
   # Custom icon.
   typeset -g POWERLEVEL9K_YAZI_VISUAL_IDENTIFIER_EXPANSION='▲'
-  
+
   ######################[ nnn: nnn shell (https://github.com/jarun/nnn) ]#######################
   # Nnn shell color.
   typeset -g POWERLEVEL9K_NNN_FOREGROUND=0
