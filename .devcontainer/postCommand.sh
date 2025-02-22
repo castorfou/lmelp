@@ -14,8 +14,8 @@ uv venv
 source .venv/bin/activate
 uv pip install -r .devcontainer/requirements.txt
 
-uv pre-commit install
-uv pre-commit install
+uv run pre-commit install
+uv run pre-commit install
 
 sudo git config --system --add safe.directory '*'
 
