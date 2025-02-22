@@ -4,5 +4,5 @@
 export PATH="$HOME/.local/bin:$PATH"
 export GPG_TTY=$(tty)
 pushd /workspaces/lmelp/
-streamlit run ui/lmelp.py
+uv run streamlit run ui/lmelp.py
 popd

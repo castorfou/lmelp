@@ -5,9 +5,17 @@ sudo apt install -y locales
 sudo sed -i 's/^# *\(fr_FR.UTF-8\)/\1/' /etc/locale.gen
 sudo dpkg-reconfigure locales -f noninteractive
 pip install --upgrade pip
-pip install -r .devcontainer/requirements.txt
-pre-commit install
-pre-commit autoupdate
+
+
+# pip install -r .devcontainer/requirements.txt
+cd /workspaces/lmelp
+pip install uv
+uv venv
+source .venv/bin/activate
+uv pip install -r .devcontainer/requirements.txt
+
+uv run pre-commit install
+uv run pre-commit autoupdate
 
 sudo git config --system --add safe.directory '*'
 

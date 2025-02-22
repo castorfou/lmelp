@@ -22,6 +22,7 @@ while [ "$1" != "" ]; do
 done
 
 export GPG_TTY=$(tty)
-pushd /workspaces/lmelp/scripts
-python store_all_auteurs_from_all_episodes.py "${args[@]}"
-popd
+export PATH=$PATH:~/.local/bin
+source /workspaces/lmelp/.venv/bin/activate
+cd /workspaces/lmelp/
+uv run python scripts/store_all_auteurs_from_all_episodes.py "${args[@]}"

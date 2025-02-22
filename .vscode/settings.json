@@ -16,6 +16,7 @@
         "**/Thumbs.db": true,
         "**/__pycache__": true,
         "**/.ipynb_checkpoints": true,
+        "**/.venv": true,
     },
     "markdown.extension.toc.updateOnSave": true,
     "github-actions.workflows.pinned.workflows": [
