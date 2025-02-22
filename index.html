@@ -1,0 +1,816 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+        <link rel="next" href="config/">
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
+    
+    
+      
+        <title>Documentation des APIs du repo lmelp</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.8608ea7d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#welcome-to-mkdocs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="Documentation des APIs du repo lmelp" class="md-header__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation des APIs du repo lmelp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Accueil
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Documentation des APIs du repo lmelp" class="md-nav__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation des APIs du repo lmelp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Accueil
+    
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Modules
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Modules
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module config
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="llm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module llm
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="whisper/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module whisper
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="web/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module web
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rss/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module rss
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mongo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module mongo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mongo_episode/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module mongo_episode
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mongo_auteur/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module mongo_auteur
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mongo_livre/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module mongo_livre
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Other kind of docs
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Other kind of docs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="readme_doc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    manage doc
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="readme_markdown/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    write markdown
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="readme_vscode_hints/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    some vs_code hints
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="readme_google/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    about Google services
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="readme_data_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    data model
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="welcome-to-mkdocs">Welcome to MkDocs<a class="headerlink" href="#welcome-to-mkdocs" title="Permanent link">&para;</a></h1>
+<p>Here is the <code>README.md</code> of this project</p>
+<ul>
+<li><a href="#pour-developper-">pour developper 💻</a></li>
+<li><a href="#environnements-de-dev-python-">environnements de dev python 🐍</a></li>
+<li><a href="#pre-commit-️">pre-commit ⏱️</a></li>
+<li><a href="#config-vscode-️">config vscode 🖥️</a></li>
+<li><a href="#pour-utiliser-">pour utiliser 🚀</a></li>
+<li><a href="#ffmpeg-️">ffmpeg 🎞️</a></li>
+<li><a href="#locale-fr-">locale FR 🇫🇷</a></li>
+<li><a href="#ulimit-️">ulimit ⚙️</a></li>
+<li><a href="#env-"><code>.env</code> 🌐</a><ul>
+<li><a href="#rss-info-️">rss info 🎙️</a></li>
+<li><a href="#web-info-">web info 🌍</a></li>
+<li><a href="#db-info-️">db info 🗄️</a></li>
+<li><a href="#llm-llamaindex-litellm-">llm, llamaindex, litellm 🤖</a></li>
+<li><a href="#websearch">websearch</a></li>
+</ul>
+</li>
+<li><a href="#streamlit-️">streamlit 🖱️</a></li>
+</ul>
+<h1 id="pour-developper">pour developper 💻<a class="headerlink" href="#pour-developper" title="Permanent link">&para;</a></h1>
+<h2 id="environnements-de-dev-python">environnements de dev python 🐍<a class="headerlink" href="#environnements-de-dev-python" title="Permanent link">&para;</a></h2>
+<p>vscode utilisera automatiquement le devcontainer definit dans le repo sous <code>.devcontainer</code></p>
+<p>je garde quand meme le script de creation d'environnement whisper depuis <code>envs/whisper.txt</code> ✨  qui contient ce qu il faut pour whisper, feedparser, transformers (huggingface), dotenv, mongo, streamlit 🛠️</p>
+<h2 id="pre-commit">pre-commit ⏱️<a class="headerlink" href="#pre-commit" title="Permanent link">&para;</a></h2>
+<p>dans devcontainer, pre-commit est deja configure sinon</p>
+<p><code>pre-commit install</code> ✅</p>
+<h2 id="config-vscode">config vscode 🖥️<a class="headerlink" href="#config-vscode" title="Permanent link">&para;</a></h2>
+<p>en cas de message <code>"Visual Studio Code is unable to watch for file changes in this large workspace" (error ENOSPC)</code> <a href="https://code.visualstudio.com/docs/setup/linux#_visual-studio-code-is-unable-to-watch-for-file-changes-in-this-large-workspace-error-enospc">see vscode linux page</a> ⚠️</p>
+<pre><code class="language-bash"># add fs.inotify.max_user_watches=524288 to /etc/sysctl.conf
+sudo sysctl -p # to apply directly
+cat /proc/sys/fs/inotify/max_user_watches # to control it is applied
+</code></pre>
+<p>or add <code>files.watcherExclude</code> directive in <code>.vscode/settings.json</code> 📁</p>
+<h1 id="pour-utiliser">pour utiliser 🚀<a class="headerlink" href="#pour-utiliser" title="Permanent link">&para;</a></h1>
+<h2 id="ffmpeg">ffmpeg 🎞️<a class="headerlink" href="#ffmpeg" title="Permanent link">&para;</a></h2>
+<p>ffmpeg is required to load audio files from filename for whisper use (transcription d'un mp3) 🎧</p>
+<p>install, it is available in snap (4.3.1) 📦</p>
+<h2 id="locale-fr">locale FR 🇫🇷<a class="headerlink" href="#locale-fr" title="Permanent link">&para;</a></h2>
+<p>en cas d'erreur de type <code>locale.Error: unsupported locale setting</code> ❗</p>
+<p>verifier avec <code>locale -a</code> que <code>fr_FR.UTF-8</code> soit installée. 🔍</p>
+<p>Sinon le faire avec </p>
+<pre><code class="language-bash">sudo apt-get install language-pack-fr-base
+locale -a
+</code></pre>
+<h2 id="ulimit">ulimit ⚙️<a class="headerlink" href="#ulimit" title="Permanent link">&para;</a></h2>
+<p>j'ai du augmenter l'ulimit de mon systeme pour utiliser whisper pour eviter l'erreur <code>Too many open files</code> 🚫</p>
+<p>Avec ce parametre je n'ai plus le probleme: <code>ulimit -n 4096</code> ✔️<br />
+Je l'ai ajoute dans <code>.zshrc</code> 📝</p>
+<h2 id="env"><code>.env</code> 🌐<a class="headerlink" href="#env" title="Permanent link">&para;</a></h2>
+<p>https://pypi.org/project/python-dotenv/ 💡</p>
+<blockquote>
+<p>Python-dotenv reads key-value pairs from a .env file and can set them as environment variables. It helps in the development of applications following the 12-factor principles. 📋</p>
+</blockquote>
+<p>creer <code>.env</code> à la racine du repo avec 🏗️</p>
+<h3 id="rss-info">rss info 🎙️<a class="headerlink" href="#rss-info" title="Permanent link">&para;</a></h3>
+<p>L'adresse du flux RSS du podcast du Masque et la Plume 🎧</p>
+<p>si absent <code>https://radiofrance-podcast.net/podcast09/rss_14007.xml</code> est utilisé par defaut 🔄  </p>
+<pre><code>RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml
+</code></pre>
+<h3 id="web-info">web info 🌍<a class="headerlink" href="#web-info" title="Permanent link">&para;</a></h3>
+<p>Le lien vers la page web stockee du masque listant les episodes "legacy" historiques 📜</p>
+<p>si absent <code>db/À écouter plus tard I Radio France/À écouter plus tard I Radio France.html</code> est utilisé par defaut 🔄  </p>
+<pre><code>WEB_LMELP_FILENAME=db/À écouter plus tard I Radio France/À écouter plus tard I Radio France.html
+</code></pre>
+<h3 id="db-info">db info 🗄️<a class="headerlink" href="#db-info" title="Permanent link">&para;</a></h3>
+<p>pour tout ce qui concerne la base mongo 🛢️</p>
+<pre><code>DB_HOST=localhost # à changer avec nas923 par exemple
+DB_NAME=&quot;masque_et_la_plume&quot;
+DB_LOGS=true # si présent et valant true, va enregistrer toutes les operations dans la collection logs
+</code></pre>
+<h3 id="llm-llamaindex-litellm">llm, llamaindex, litellm 🤖<a class="headerlink" href="#llm-llamaindex-litellm" title="Permanent link">&para;</a></h3>
+<pre><code># gemini 
+GEMINI_API_KEY=
+# gemini vertex
+GOOGLE_PROJECT_ID=
+GOOGLE_AUTH_FILE=
+
+# openai
+OPENAI_API_KEY=
+
+# azure openai
+AZURE_API_KEY=
+AZURE_ENDPOINT=
+AZURE_API_VERSION=
+</code></pre>
+<p>gemini llm, GEMINI_API_KEY dispo à 🚀</p>
+<p>from https://console.cloud.google.com/apis/credentials 🔑</p>
+<p>gemini vertex (llamaindex), GOOGLE_PROJECT_ID 🧭</p>
+<p>from https://console.cloud.google.com 🌐</p>
+<p>gemini vertex (llamaindex), GOOGLE_AUTH_FILE 📂</p>
+<p>follow instructions at https://stackoverflow.com/a/69941050 📘</p>
+<p>Et pour les modeles locaux <strong>LiteLLM</strong></p>
+<pre><code>LITELLM_API_KEY
+</code></pre>
+<h3 id="websearch">websearch<a class="headerlink" href="#websearch" title="Permanent link">&para;</a></h3>
+<p>We need these 2 keys.</p>
+<pre><code class="language-GOOGLE_CUSTOM_SEARCH_API_KEY">
+SEARCH_ENGINE_ID
+</code></pre>
+<p>more details at <a href="docs/readme_google.md">readme Google</a></p>
+<h2 id="streamlit">streamlit 🖱️<a class="headerlink" href="#streamlit" title="Permanent link">&para;</a></h2>
+<p>3 ways to run it: from vscode, from devcontainer, from host</p>
+<p>from <strong>vscode</strong>: palette &gt; run task &gt; run streamlit 🚀</p>
+<p>from <strong>devcontainer</strong> terminal: <code>ui/lmelp_ui.sh</code> ⚡</p>
+<p>from <strong>host</strong> terminal: </p>
+<pre><code class="language-bash">#!/bin/bash 
+
+source ~/git/lmelp/scripts/from_host/get_container.sh
+
+container=$(get_container)
+echo &quot;Using container: $container&quot;
+
+# Execute the UI script in the found container as the user vscode.
+docker exec -u vscode &quot;$container&quot; /workspaces/lmelp/ui/lmelp_ui.sh
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.f1b6f286.min.js"></script>
+      
+    
+  </body>
+</html>
