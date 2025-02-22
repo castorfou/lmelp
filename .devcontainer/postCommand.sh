@@ -15,7 +15,7 @@ source .venv/bin/activate
 uv pip install -r .devcontainer/requirements.txt
 
 uv run pre-commit install
-uv run pre-commit install
+uv run pre-commit autoupdate
 
 sudo git config --system --add safe.directory '*'
 
