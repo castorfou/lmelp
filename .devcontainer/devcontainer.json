@@ -22,11 +22,9 @@
 				"ms-python.debugpy",
 				"ms-python.python",
 				"github.vscode-github-actions",
-				"ms-azuretools.vscode-docker",
 				"mikoz.black-py",
 				"vscode-icons-team.vscode-icons",
 				"mongodb.mongodb-vscode",
-				"equinusocio.vsc-material-theme-icons",
 				"yzhang.markdown-all-in-one",
 				"ukoloff.win-ca",
 				"ms-python.vscode-pylance",
@@ -37,10 +35,15 @@
 			]
 		}
 	},
+	"mounts": [
+		"type=bind,source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly"
+	],
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
-
+	"features": {
+		"ghcr.io/nils-geistmann/devcontainers-features/zsh:0": {}
+	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
     "forwardPorts": [8501],
 
