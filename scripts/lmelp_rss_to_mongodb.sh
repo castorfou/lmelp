@@ -1,5 +1,6 @@
 #!/bin/bash 
 export GPG_TTY=$(tty)
-pushd /workspaces/lmelp/scripts
-uv run python update_emissions.py
-popd
+export PATH=$PATH:~/.local/bin
+source /workspaces/lmelp/.venv/bin/activate
+cd /workspaces/lmelp/
+uv run python scripts/update_emissions.py
