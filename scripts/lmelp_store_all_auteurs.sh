@@ -23,5 +23,5 @@ done
 
 export GPG_TTY=$(tty)
 pushd /workspaces/lmelp/scripts
-python store_all_auteurs_from_all_episodes.py "${args[@]}"
+uv run python store_all_auteurs_from_all_episodes.py "${args[@]}"
 popd
