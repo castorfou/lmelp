@@ -24,5 +24,5 @@ done
 export GPG_TTY=$(tty)
 export PATH=$PATH:~/.local/bin
 source /workspaces/lmelp/.venv/bin/activate
-cd /workspaces/lmelp/
-uv run python scripts/store_all_auteurs_from_all_episodes.py "${args[@]}"
+cd /workspaces/lmelp/scripts
+uv run python store_all_auteurs_from_all_episodes.py "${args[@]}"
