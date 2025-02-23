@@ -152,5 +152,6 @@ if __name__ == "__main__":
             # on sauvegarde la date de traitement
             # le cache ne contient que cette date, rien d'autre
             with open(cache_filename, "w") as f:
-                f.write(episode.date.strftime("%d/%m/%Y"))
+                new_date = episode.date + datetime.timedelta(days=1)
+                f.write(new_date.strftime("%d/%m/%Y"))
     print("Fin du traitement")
