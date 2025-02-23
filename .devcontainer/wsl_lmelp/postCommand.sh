@@ -4,6 +4,7 @@ apt install -y libdbus-1-dev libdbus-glib-1-dev cmake
 apt install -y locales
 sed -i 's/^# *\(fr_FR.UTF-8\)/\1/' /etc/locale.gen
 dpkg-reconfigure locales -f noninteractive
+apt install -y ffmpeg
 pip install --upgrade pip
 
 # pip install -r .devcontainer/requirements.txt
@@ -15,7 +16,6 @@ uv pip install -r .devcontainer/requirements.txt
 
 uv run pre-commit install
 uv run pre-commit autoupdate
-
 
 git config --system --add safe.directory '*'
  
