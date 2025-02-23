@@ -87,6 +87,7 @@ if len(episodes) > 0:
                     st.expander("Output du telechargement").code(
                         output, language="None"
                     )
+                episodes.get_missing_transcriptions()
             else:
                 st.warning("Il n'y a pas d'episodes sans transcriptions")
 
