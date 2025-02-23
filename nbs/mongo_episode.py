@@ -80,7 +80,7 @@ def prevent_sleep(func: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-@prevent_sleep
+# @prevent_sleep
 def extract_whisper(mp3_filename: str) -> str:
     """
     Extract transcription text from an audio file using a Whisper model.
