@@ -1,10 +1,10 @@
 #!/bin/bash
-apt update
-apt install -y libdbus-1-dev libdbus-glib-1-dev cmake 
-apt install -y locales
-sed -i 's/^# *\(fr_FR.UTF-8\)/\1/' /etc/locale.gen
-dpkg-reconfigure locales -f noninteractive
-apt install -y ffmpeg
+sudo apt update
+sudo apt install -y libdbus-1-dev libdbus-glib-1-dev cmake 
+sudo apt install -y locales
+sudo sed -i 's/^# *\(fr_FR.UTF-8\)/\1/' /etc/locale.gen
+sudo dpkg-reconfigure locales -f noninteractive
+sudo apt install -y ffmpeg
 pip install --upgrade pip
 
 # pip install -r .devcontainer/requirements.txt
@@ -17,8 +17,8 @@ uv pip install -r .devcontainer/requirements.txt
 uv run pre-commit install
 uv run pre-commit autoupdate
 
-git config --system --add safe.directory '*'
- 
+sudo git config --system --add safe.directory '*'
+
 # Create Streamlit credentials file to avoid the email prompt
 mkdir -p ~/.streamlit
 cat << 'EOF' > ~/.streamlit/credentials.toml
@@ -26,4 +26,4 @@ cat << 'EOF' > ~/.streamlit/credentials.toml
 email = "your_email@example.com"
 EOF
 
-/workspaces/lmelp/.devcontainer/wsl_lmelp/setupZsh.sh
+/workspaces/lmelp/.devcontainer/linux/setupZsh.sh
