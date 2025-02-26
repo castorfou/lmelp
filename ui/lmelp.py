@@ -97,7 +97,7 @@ def affiche_episodes(episodes=episodes):
         title="# episodes",
         text=f"{episodes.len_total_entries()}",
         image="http://placekitten.com/300/250",
-        url="/st_episodes",
+        url="/episodes",
     )
 
 
@@ -113,7 +113,7 @@ def affiche_last_date(episodes=episodes):
         title="last episode",
         text=f"{episodes[0].to_dict().get('date').strftime(DATE_FORMAT)}",
         image="http://placekitten.com/300/250",
-        url="/st_episodes",
+        url="/episodes",
     )
 
 
@@ -123,7 +123,7 @@ def affiche_missing_transcription(episodes=episodes):
         title="# missing transcriptions",
         text=f"{len(episodes)}",
         image="http://placekitten.com/300/250",
-        url="/st_episodes",
+        url="/episodes",
     )
 
 
