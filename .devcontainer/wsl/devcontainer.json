@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
-	"name": "wsl explo",
+	"name": "lmelp (wsl)",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	// list all version of this image:
 	// https://artifactory-weu.michelin.com/ui/packages?name=python3.12-slim-bookworm-utils&type=packages
