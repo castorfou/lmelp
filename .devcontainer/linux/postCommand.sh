@@ -12,6 +12,7 @@ cd /workspaces/lmelp
 pip install uv
 uv venv
 source .venv/bin/activate
+export UV_LINK_MODE=copy
 uv pip install -r .devcontainer/requirements.txt
 
 uv run pre-commit install
