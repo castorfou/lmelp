@@ -34,7 +34,7 @@ dans devcontainer, pre-commit est deja configure sinon
 en cas de message `"Visual Studio Code is unable to watch for file changes in this large workspace" (error ENOSPC)` [see vscode linux page](https://code.visualstudio.com/docs/setup/linux#_visual-studio-code-is-unable-to-watch-for-file-changes-in-this-large-workspace-error-enospc) ⚠️
 
 ```bash
-# add fs.inotify.max_user_watches=524288 to /etc/sysctl.conf
+# add fs.inotify.max_user_watches=524288 to /etc/sysctl.d/99-custom-inotify.conf
 sudo sysctl -p # to apply directly
 cat /proc/sys/fs/inotify/max_user_watches # to control it is applied
 ```
