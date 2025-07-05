@@ -59,13 +59,14 @@ def afficher_selection_episode():
 
     # Préparer les données pour la sélection
     episodes_df = episodes_df.copy()
+
+    # Trier par date décroissante AVANT de convertir en string
+    episodes_df = episodes_df.sort_values("date", ascending=False)
+
     episodes_df["date"] = episodes_df["date"].apply(lambda x: x.strftime(DATE_FORMAT))
     episodes_df["selecteur"] = (
         episodes_df["date"] + " - " + episodes_df["titre"].str[:100]
     )
-
-    # Trier par date décroissante
-    episodes_df = episodes_df.sort_values("date", ascending=False)
 
     st.success(f"{len(episodes_df)} épisodes avec transcriptions disponibles")
 
