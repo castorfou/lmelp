@@ -6,7 +6,7 @@ __all__ = ["get_azure_llm", "get_gemini_llm", "get_vertex_llm"]
 # %% py llm helper.ipynb 4
 from llama_index.llms.azure_openai import AzureOpenAI
 from llama_index.core import Settings
-from config import get_azure_openai_keys
+from config import get_azure_openai_keys, get_gemini_api_key
 
 
 def get_azure_llm(engine="gpt-4o") -> AzureOpenAI:
@@ -25,8 +25,8 @@ def get_azure_llm(engine="gpt-4o") -> AzureOpenAI:
         api_key=AZURE_API_KEY,
         azure_endpoint=AZURE_ENDPOINT,
         api_version=AZURE_API_VERSION,
-        # increase timeout to 120 seconds to avoid timeout on scripts/store_all_auteurs_from_all_episodes.py
-        timeout=120.0,
+        # increase timeout to 300 seconds (5 minutes) to avoid timeout on long transcriptions
+        timeout=300.0,
     )
     Settings.llm = llm
     return llm

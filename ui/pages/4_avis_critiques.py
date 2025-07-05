@@ -28,13 +28,6 @@ locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
 st.title("📝 Avis Critiques")
 st.write("Générez des résumés d'avis critiques à partir des transcriptions d'épisodes")
 
-# Sidebar pour la navigation
-view_option = st.sidebar.selectbox(
-    "Vue",
-    ["Sélectionner un épisode", "Vue d'ensemble des résumés"],
-    help="Choisissez comment afficher les épisodes",
-)
-
 
 DATE_FORMAT = "%d %b %Y"
 
@@ -105,17 +98,19 @@ def check_existing_summaries(episodes_df):
         existing_oids = {summary["episode_oid"] for summary in existing_summaries}
 
         # Ajouter une colonne pour indiquer si un résumé existe
-        episodes_df["has_critique_summary"] = (
-            episodes_df["oid"].astype(str).isin(existing_oids)
+        episodes_df_copy = episodes_df.copy()
+        episodes_df_copy["has_critique_summary"] = (
+            episodes_df_copy["oid"].astype(str).isin(existing_oids)
         )
 
-        return episodes_df
+        return episodes_df_copy
 
     except Exception as e:
         st.warning(f"Impossible de vérifier les résumés existants: {str(e)}")
         # En cas d'erreur, créer une colonne avec False partout
-        episodes_df["has_critique_summary"] = False
-        return episodes_df
+        episodes_df_copy = episodes_df.copy()
+        episodes_df_copy["has_critique_summary"] = False
+        return episodes_df_copy
 
 
 def afficher_selection_episode():
@@ -129,7 +124,7 @@ def afficher_selection_episode():
         )
         return None
 
-    # Vérifier quels épisodes ont déjà des résumés
+    # Vérifier quels épisodes ont déjà des résumés (toujours en temps réel)
     episodes_df = check_existing_summaries(episodes_df)
 
     # Préparer les données pour la sélection
@@ -144,9 +139,11 @@ def afficher_selection_episode():
     def format_episode_selector(row):
         base_text = f"{row['date']} - {row['titre'][:100]}"
         if row["has_critique_summary"]:
-            return f"📊 {base_text}"  # Icône pour indiquer qu'un résumé existe
+            return f"🟢 {base_text}"  # Icône verte pour indiquer qu'un résumé existe
         else:
-            return f"📝 {base_text}"  # Icône pour indiquer qu'aucun résumé n'existe
+            return (
+                f"⚪ {base_text}"  # Icône grise pour indiquer qu'aucun résumé n'existe
+            )
 
     episodes_df["selecteur"] = episodes_df.apply(format_episode_selector, axis=1)
 
@@ -159,12 +156,12 @@ def afficher_selection_episode():
     with col1:
         st.metric("📚 Total épisodes", total_episodes)
     with col2:
-        st.metric("📊 Avec résumé", episodes_with_summaries)
+        st.metric("🟢 Avec résumé", episodes_with_summaries)
     with col3:
-        st.metric("📝 Sans résumé", episodes_without_summaries)
+        st.metric("⚪ Sans résumé", episodes_without_summaries)
 
     # Légende pour les icônes
-    st.caption("📊 = Résumé d'avis critiques disponible | 📝 = Résumé à générer")
+    st.caption("🟢 = Résumé d'avis critiques disponible | ⚪ = Résumé à générer")
 
     selected = st.selectbox("Sélectionnez un épisode", episodes_df["selecteur"])
 
@@ -176,10 +173,10 @@ def afficher_selection_episode():
 
         # Afficher le titre avec un indicateur visuel
         if episode["has_critique_summary"]:
-            st.write(f"### 📊 {episode['titre']}")
+            st.write(f"### 🟢 {episode['titre']}")
             st.success("✅ Un résumé d'avis critiques existe déjà pour cet épisode")
         else:
-            st.write(f"### 📝 {episode['titre']}")
+            st.write(f"### ⚪ {episode['titre']}")
             st.info(
                 "💡 Aucun résumé d'avis critiques pour cet épisode - vous pouvez en générer un"
             )
@@ -189,11 +186,7 @@ def afficher_selection_episode():
         st.write(f"**Description**: {episode['description']}")
 
         # Récupérer l'OID de l'épisode pour le cache
-        episode_oid = str(episode["oid"])  # Utiliser l'OID de la colonne
-
-        # Initialiser la variable de session pour la régénération
-        if "regenerating" not in st.session_state:
-            st.session_state.regenerating = False
+        episode_oid = str(episode["oid"])
 
         # Vérifier si un résumé existe déjà dans le cache
         cached_summary = get_summary_from_cache(episode_oid)
@@ -201,7 +194,7 @@ def afficher_selection_episode():
         # Bouton pour regénérer le résumé (affiché en premier si un résumé existe)
         regenerate_clicked = False
         if cached_summary:
-            regenerate_clicked = st.button("� Regénérer le résumé", type="secondary")
+            regenerate_clicked = st.button("🔄 Regénérer le résumé", type="secondary")
 
         # Bouton pour générer le résumé (affiché si pas de résumé en cache)
         generate_clicked = False
@@ -262,6 +255,11 @@ def afficher_selection_episode():
 
                         st.subheader("📊 Résumé des avis critiques")
                         st.markdown(summary, unsafe_allow_html=True)
+
+                        # Message simple pour l'utilisateur
+                        st.info(
+                            "💡 Résumé généré avec succès ! Rechargez la page (F5) pour voir la mise à jour des indicateurs."
+                        )
 
                 except Exception as e:
                     # Nettoyer les indicateurs de progression en cas d'erreur
@@ -479,9 +477,9 @@ Ne genere pas de code python, juste les 2 tableaux markdown avec leurs titres re
 """
 
     try:
-        # Utiliser Azure OpenAI avec timeout configuré dans llm.py (120 secondes)
+        # Utiliser Azure OpenAI avec timeout configuré dans llm.py (300 secondes)
         model = get_azure_llm()
-        st.info("🔧 Utilisation du timeout Azure OpenAI (120 secondes)")
+        st.info("🔧 Utilisation du timeout Azure OpenAI (300 secondes / 5 minutes)")
         response = model.complete(prompt)
 
         # Post-traiter pour corriger le tri
@@ -496,7 +494,7 @@ Ne genere pas de code python, juste les 2 tableaux markdown avec leurs titres re
 
         # Ajouter plus de détails sur l'erreur
         if "timeout" in error_msg or "timed out" in error_msg:
-            st.warning("⏰ Timeout: La génération a pris trop de temps (>120 secondes)")
+            st.warning("⏰ Timeout: La génération a pris trop de temps (>300 secondes)")
             st.info("💡 Essayez avec un épisode plus court ou réessayez plus tard")
         elif "rate limit" in error_msg:
             st.warning(
