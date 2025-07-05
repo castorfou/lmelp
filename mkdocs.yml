@@ -17,6 +17,7 @@ nav:
       - some vs_code hints: readme_vscode_hints.md
       - about Google services: readme_google.md
       - data model: readme_data_model.md
+      - github: readme_github.md
 theme:
   name: material
 
