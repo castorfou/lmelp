@@ -25,6 +25,9 @@ st.page_link("lmelp.py", label="Home", icon="🏠")
 st.page_link("pages/1_episodes.py", label="episodes", icon=":material/music_note:")
 st.page_link("pages/2_auteurs.py", label="auteurs", icon=":material/person:")
 st.page_link("pages/3_livres.py", label="livres", icon=":material/menu_book:")
+st.page_link(
+    "pages/4_avis_critiques.py", label="avis critiques", icon=":material/rate_review:"
+)
 
 st.write("## Contenu (a mettre sous forme de cartes)")
 st.write(f"Auteurs tbd")
