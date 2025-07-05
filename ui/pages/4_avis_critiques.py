@@ -26,30 +26,99 @@ st.title("📝 Avis Critiques")
 st.write("Générez des résumés d'avis critiques à partir des transcriptions d'épisodes")
 
 
+DATE_FORMAT = "%d %b %Y"
+
+
 @st.cache_data
 def get_episodes_with_transcriptions():
-    """Récupère les épisodes qui ont des transcriptions disponibles"""
+    """Récupère tous les épisodes et filtre ceux qui ont des transcriptions"""
     episodes = Episodes()
     episodes.get_entries()
+    all_episodes = [Episode.from_oid(oid) for oid in episodes.oid_episodes]
+    episodes_df = pd.DataFrame([episode.to_dict() for episode in all_episodes])
+    episodes_df["duree (min)"] = (episodes_df["duree"] / 60).round(1)
 
-    episodes_with_transcriptions = []
-    for oid in episodes.oid_episodes:
-        episode = Episode.from_oid(oid)
-        if hasattr(episode, "whisper") and episode.whisper:
-            episodes_with_transcriptions.append(
-                {
-                    "oid": str(oid),
-                    "titre": episode.title,
-                    "date": episode.date,
-                    "description": (
-                        episode.description[:100] + "..."
-                        if len(episode.description) > 100
-                        else episode.description
-                    ),
-                }
-            )
+    # Filtrer seulement les épisodes avec transcriptions
+    episodes_with_transcriptions = episodes_df[
+        episodes_df["transcription"].notna()
+    ].copy()
 
-    return pd.DataFrame(episodes_with_transcriptions)
+    return episodes_with_transcriptions
+
+
+def afficher_selection_episode():
+    """Affiche la sélection d'épisode similaire à la page episodes"""
+    episodes_df = get_episodes_with_transcriptions()
+
+    if episodes_df.empty:
+        st.warning("Aucun épisode avec transcription disponible")
+        st.info(
+            "Veuillez d'abord générer des transcriptions pour les épisodes sur la page d'accueil"
+        )
+        return None
+
+    # Préparer les données pour la sélection
+    episodes_df = episodes_df.copy()
+    episodes_df["date"] = episodes_df["date"].apply(lambda x: x.strftime(DATE_FORMAT))
+    episodes_df["selecteur"] = (
+        episodes_df["date"] + " - " + episodes_df["titre"].str[:100]
+    )
+
+    # Trier par date décroissante
+    episodes_df = episodes_df.sort_values("date", ascending=False)
+
+    st.success(f"{len(episodes_df)} épisodes avec transcriptions disponibles")
+
+    selected = st.selectbox("Sélectionnez un épisode", episodes_df["selecteur"])
+
+    # Filtrer le DataFrame pour trouver la ligne correspondant à la sélection
+    episode = episodes_df[episodes_df["selecteur"] == selected]
+
+    if not episode.empty:
+        episode = episode.iloc[0]
+        st.write(f"### {episode['titre']}")
+        st.write(f"**Date**: {episode['date']}")
+        st.write(f"**Durée**: {episode['duree (min)']} minutes")
+        st.write(f"**Description**: {episode['description']}")
+
+        # Bouton pour générer le résumé
+        if st.button("🚀 Générer le résumé des avis critiques", type="primary"):
+            with st.spinner(
+                "Génération du résumé en cours... Cela peut prendre quelques minutes."
+            ):
+                try:
+                    # Récupération de la transcription complète
+                    transcription = episode["transcription"]
+
+                    if not transcription:
+                        st.error(
+                            "La transcription n'est pas disponible pour cet épisode"
+                        )
+                    else:
+                        # Génération du résumé
+                        summary = generate_critique_summary(transcription)
+
+                        # Affichage du résumé
+                        st.subheader("📊 Résumé des avis critiques")
+                        st.markdown(summary)
+
+                        # Option pour télécharger le résumé
+                        st.download_button(
+                            label="💾 Télécharger le résumé",
+                            data=summary,
+                            file_name=f"avis_critiques_{episode['date'].replace(' ', '_')}_{episode['titre'][:50]}.md",
+                            mime="text/markdown",
+                        )
+
+                except Exception as e:
+                    st.error(f"Erreur lors de la génération du résumé: {str(e)}")
+                    st.info(
+                        "Vérifiez que la clé API Gemini est correctement configurée dans votre fichier .env"
+                    )
+    else:
+        st.write("Aucun épisode trouvé pour cette sélection.")
+
+    return episode if not episode.empty else None
 
 
 def generate_critique_summary(transcription):
@@ -90,77 +159,7 @@ Ne genere pas de code python, juste le tableau markdown.
 
 # Interface principale
 try:
-    episodes_df = get_episodes_with_transcriptions()
-
-    if episodes_df.empty:
-        st.warning("Aucun épisode avec transcription disponible")
-        st.info(
-            "Veuillez d'abord générer des transcriptions pour les épisodes sur la page d'accueil"
-        )
-    else:
-        st.success(f"{len(episodes_df)} épisodes avec transcriptions disponibles")
-
-        # Sélection de l'épisode
-        st.subheader("Sélectionner un épisode")
-
-        # Tri par date décroissante
-        episodes_df = episodes_df.sort_values("date", ascending=False)
-
-        # Affichage des épisodes pour sélection
-        selected_episode = st.selectbox(
-            "Choisir un épisode:",
-            episodes_df.index,
-            format_func=lambda x: f"{episodes_df.loc[x, 'date'].strftime('%d/%m/%Y')} - {episodes_df.loc[x, 'titre']}",
-        )
-
-        if selected_episode is not None:
-            episode_info = episodes_df.loc[selected_episode]
-
-            # Affichage des informations de l'épisode sélectionné
-            st.write("### Épisode sélectionné")
-            col1, col2 = st.columns(2)
-            with col1:
-                st.write(f"**Date:** {episode_info['date'].strftime('%d %B %Y')}")
-                st.write(f"**Titre:** {episode_info['titre']}")
-            with col2:
-                st.write(f"**Description:** {episode_info['description']}")
-
-            # Bouton pour générer le résumé
-            if st.button("🚀 Générer le résumé des avis critiques", type="primary"):
-                with st.spinner(
-                    "Génération du résumé en cours... Cela peut prendre quelques minutes."
-                ):
-                    try:
-                        # Récupération de la transcription complète
-                        episode = Episode.from_oid(episode_info["oid"])
-                        transcription = episode.whisper
-
-                        if not transcription:
-                            st.error(
-                                "La transcription n'est pas disponible pour cet épisode"
-                            )
-                        else:
-                            # Génération du résumé
-                            summary = generate_critique_summary(transcription)
-
-                            # Affichage du résumé
-                            st.subheader("📊 Résumé des avis critiques")
-                            st.markdown(summary)
-
-                            # Option pour télécharger le résumé
-                            st.download_button(
-                                label="💾 Télécharger le résumé",
-                                data=summary,
-                                file_name=f"avis_critiques_{episode_info['date'].strftime('%Y%m%d')}_{episode_info['titre'][:50]}.md",
-                                mime="text/markdown",
-                            )
-
-                    except Exception as e:
-                        st.error(f"Erreur lors de la génération du résumé: {str(e)}")
-                        st.info(
-                            "Vérifiez que la clé API Gemini est correctement configurée dans votre fichier .env"
-                        )
-
+    afficher_selection_episode()
 except Exception as e:
     st.error(f"Erreur lors du chargement des épisodes: {str(e)}")
     st.info("Vérifiez que la base de données MongoDB est accessible")
