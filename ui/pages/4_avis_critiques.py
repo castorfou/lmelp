@@ -132,8 +132,12 @@ Cet episode dure 1h et porte sur des livres. Il y a des intervenants qui parlent
 Voici la transcription:
 {transcription}
 
-Je veux que tu identifies l'ensemble des livres dont on parle dans cette emission.
-Et que tu me restitues cette liste de livres en separant auteur et titre. Si l'editeur est mentionne tu peux aussi le noter.
+Je veux que tu identifies l'ensemble des livres dont on parle dans cette emission et que tu les sépares en 2 catégories :
+
+## 1. LIVRES DISCUTÉS AU PROGRAMME
+Ce sont les livres qui font l'objet de discussions approfondies entre plusieurs critiques.
+
+Pour ces livres, je veux que tu me restitues cette liste en separant auteur et titre. Si l'editeur est mentionne tu peux aussi le noter.
 
 Concernant les avis des critiques, je veux que tu en fasses une forme de synthese en donnant une note de 1 à 10 (1 etant la note la plus basse et 10 la note la plus haute) utilisant les regles suivantes:
 - la note 1 est vraiment pour les livres a eviter, les purges
@@ -143,14 +147,26 @@ Concernant les avis des critiques, je veux que tu en fasses une forme de synthes
 - les notations seront assez severes, ne garde la note 10 vraiment que pour les chefs d'oeuvre
 - si un seul critique donne son avis, tu prendras sa note
 - si plusieurs critiques se prononcent, tu prendras la moyenne de leurs notes
+
 Je veux que tu conserves l'avis de chaque critique avec son prenom et son nom.
 et que tu donnes la note moyenne obtenue pour chaque livre.
 tu rajouteras une colonne pour dire le nombre de critiques qui ont donne leur avis sur le livre.
 Puis si un des critiques a vraiment adore le livre (ce qui correspond a une note de 9 ou 10), tu mentionneras les noms des critiques dans une colonne "coup de coeur" a part.
 Enfin si un des critiques fait etat d'un chef d'oeuvre (note 10), tu mentionneras cela dans une colonne "chef d'oeuvre" a part.
-Tu me restitueras cette liste sous la forme d'un tableau au format markdown.
 
-Ne genere pas de code python, juste le tableau markdown.
+## 2. COUPS DE COEUR DES CRITIQUES
+Ce sont les livres mentionnés rapidement par un seul critique comme recommandation personnelle, souvent en fin d'émission.
+
+Pour ces livres, affiche seulement :
+- Auteur
+- Titre
+- Éditeur (si mentionné)
+- Critique qui le recommande
+- Sa note (entre 8 et 10, car c'est un coup de coeur)
+
+Tu me restitueras ces 2 listes sous la forme de 2 tableaux séparés au format markdown.
+
+Ne genere pas de code python, juste les 2 tableaux markdown avec leurs titres respectifs.
 """
 
     model = get_azure_llm()
