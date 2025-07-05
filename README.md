@@ -2,6 +2,7 @@
   - [environnements de dev python 🐍](#environnements-de-dev-python-)
   - [pre-commit ⏱️](#pre-commit-️)
   - [config vscode 🖥️](#config-vscode-️)
+- [😀 à propos de la doc](#-à-propos-de-la-doc)
 - [pour utiliser 🚀](#pour-utiliser-)
   - [💾 base de données mongodb](#-base-de-données-mongodb)
   - [ffmpeg 🎞️](#ffmpeg-️)
@@ -42,11 +43,25 @@ cat /proc/sys/fs/inotify/max_user_watches # to control it is applied
   
 or add `files.watcherExclude` directive in `.vscode/settings.json` 📁
 
+pour quelques astuces liées à vscode : [Vscode hints (sur github pages)](https://castorfou.github.io/lmelp/readme_vscode_hints/)
+
+# 😀 à propos de la doc
+
+on change la doc depuis `docs` (génie) 😊
+
+- APIs 🚀
+- Quelques astuces ou choix de conception 🔍
+
+Mkdocs+github actions ramasse tout cela (branche main uniquement) et publie sur le [github pages du projet](https://castorfou.github.io/lmelp/) 📦
+
+Expliqué à https://castorfou.github.io/lmelp/readme_doc/ 👍
+
+
 # pour utiliser 🚀
 
 ## 💾 base de données mongodb
 
-mongodb est utilisée pour conserver toutes les données de l'application. 📊  
+mongodb est utilisée pour conserver toutes les données de l'application ([voir schéma](https://castorfou.github.io/lmelp/readme_data_model/)). 📊  
 pour conserver une sauvegarde de la base, lancer depuis devcontainer `scripts/backup_mongodb.sh` 🚀
 
 si les liens ont été faits dans `~/bin/lmelp`, alors lancer depuis host `~/bin/lmelp/backup_mongodb.sh`
