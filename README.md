@@ -3,6 +3,7 @@
   - [pre-commit ⏱️](#pre-commit-️)
   - [config vscode 🖥️](#config-vscode-️)
 - [pour utiliser 🚀](#pour-utiliser-)
+  - [💾 base de données mongodb](#-base-de-données-mongodb)
   - [ffmpeg 🎞️](#ffmpeg-️)
   - [locale FR 🇫🇷](#locale-fr-)
   - [ulimit ⚙️](#ulimit-️)
@@ -42,6 +43,11 @@ cat /proc/sys/fs/inotify/max_user_watches # to control it is applied
 or add `files.watcherExclude` directive in `.vscode/settings.json` 📁
 
 # pour utiliser 🚀
+
+## 💾 base de données mongodb
+
+mongodb est utilisée pour conserver toutes les données de l'application. 📊  
+pour conserver une sauvegarde de la base, lancer `scripts/backup_mongodb.sh` 🚀
 
 ## ffmpeg 🎞️
 
