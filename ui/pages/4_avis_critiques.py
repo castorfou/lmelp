@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 from mongo_episode import Episodes, Episode
-from llm import get_gemini_llm
+from llm import get_azure_llm
 import pandas as pd
 import locale
 
@@ -153,8 +153,8 @@ Tu me restitueras cette liste sous la forme d'un tableau au format markdown.
 Ne genere pas de code python, juste le tableau markdown.
 """
 
-    model = get_gemini_llm()
-    response = model.generate_content(prompt)
+    model = get_azure_llm()
+    response = model.complete(prompt)
     return response.text
 
 
