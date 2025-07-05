@@ -16,8 +16,11 @@ st.set_page_config(
 
 from mongo_episode import Episodes, Episode
 from llm import get_azure_llm
+from mongo import get_collection
 import pandas as pd
 import locale
+from datetime import datetime
+from bson import ObjectId
 
 # Définir la locale en français
 locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
@@ -29,6 +32,42 @@ st.write("Générez des résumés d'avis critiques à partir des transcriptions 
 DATE_FORMAT = "%d %b %Y"
 
 
+def get_summary_from_cache(episode_oid):
+    """Récupère un résumé existant depuis MongoDB"""
+    try:
+        collection = get_collection(collection_name="avis_critiques")
+        cached_summary = collection.find_one({"episode_oid": episode_oid})
+        return cached_summary
+    except Exception as e:
+        st.error(f"Erreur lors de la récupération du cache: {str(e)}")
+        return None
+
+
+def save_summary_to_cache(episode_oid, episode_title, episode_date, summary):
+    """Sauvegarde un résumé dans MongoDB"""
+    try:
+        collection = get_collection(collection_name="avis_critiques")
+
+        # Supprimer l'ancien résumé s'il existe
+        collection.delete_one({"episode_oid": episode_oid})
+
+        # Insérer le nouveau résumé
+        summary_doc = {
+            "episode_oid": episode_oid,
+            "episode_title": episode_title,
+            "episode_date": episode_date,
+            "summary": summary,
+            "created_at": datetime.now(),
+            "updated_at": datetime.now(),
+        }
+
+        collection.insert_one(summary_doc)
+        st.success("Résumé sauvegardé dans le cache!")
+
+    except Exception as e:
+        st.error(f"Erreur lors de la sauvegarde du cache: {str(e)}")
+
+
 @st.cache_data
 def get_episodes_with_transcriptions():
     """Récupère tous les épisodes et filtre ceux qui ont des transcriptions"""
@@ -37,6 +76,9 @@ def get_episodes_with_transcriptions():
     all_episodes = [Episode.from_oid(oid) for oid in episodes.oid_episodes]
     episodes_df = pd.DataFrame([episode.to_dict() for episode in all_episodes])
     episodes_df["duree (min)"] = (episodes_df["duree"] / 60).round(1)
+
+    # Ajouter les OIDs comme colonne
+    episodes_df["oid"] = episodes.oid_episodes
 
     # Filtrer seulement les épisodes avec transcriptions
     episodes_with_transcriptions = episodes_df[
@@ -82,40 +124,79 @@ def afficher_selection_episode():
         st.write(f"**Durée**: {episode['duree (min)']} minutes")
         st.write(f"**Description**: {episode['description']}")
 
-        # Bouton pour générer le résumé
-        if st.button("🚀 Générer le résumé des avis critiques", type="primary"):
-            with st.spinner(
-                "Génération du résumé en cours... Cela peut prendre quelques minutes."
-            ):
-                try:
-                    # Récupération de la transcription complète
-                    transcription = episode["transcription"]
+        # Récupérer l'OID de l'épisode pour le cache
+        episode_oid = str(episode["oid"])  # Utiliser l'OID de la colonne
 
-                    if not transcription:
-                        st.error(
-                            "La transcription n'est pas disponible pour cet épisode"
+        # Vérifier si un résumé existe déjà dans le cache
+        cached_summary = get_summary_from_cache(episode_oid)
+
+        if cached_summary:
+            # Afficher le résumé en cache
+            st.info(
+                f"� Résumé existant (généré le {cached_summary['created_at'].strftime('%d %B %Y à %H:%M')})"
+            )
+            st.subheader("📊 Résumé des avis critiques")
+            st.markdown(cached_summary["summary"])
+
+            # Bouton pour regénérer le résumé
+            if st.button("🔄 Regénérer le résumé", type="secondary"):
+                with st.spinner(
+                    "Régénération du résumé en cours... Cela peut prendre quelques minutes."
+                ):
+                    try:
+                        transcription = episode["transcription"]
+                        if not transcription:
+                            st.error(
+                                "La transcription n'est pas disponible pour cet épisode"
+                            )
+                        else:
+                            # Génération du nouveau résumé
+                            summary = generate_critique_summary(transcription)
+
+                            # Sauvegarde dans le cache
+                            save_summary_to_cache(
+                                episode_oid, episode["titre"], episode["date"], summary
+                            )
+
+                            # Affichage du nouveau résumé
+                            st.subheader("📊 Nouveau résumé des avis critiques")
+                            st.markdown(summary)
+
+                    except Exception as e:
+                        st.error(f"Erreur lors de la régénération du résumé: {str(e)}")
+                        st.info(
+                            "Vérifiez que la clé API Azure OpenAI est correctement configurée dans votre fichier .env"
                         )
-                    else:
-                        # Génération du résumé
-                        summary = generate_critique_summary(transcription)
+        else:
+            # Pas de résumé en cache, afficher le bouton pour générer
+            if st.button("� Générer le résumé des avis critiques", type="primary"):
+                with st.spinner(
+                    "Génération du résumé en cours... Cela peut prendre quelques minutes."
+                ):
+                    try:
+                        transcription = episode["transcription"]
+                        if not transcription:
+                            st.error(
+                                "La transcription n'est pas disponible pour cet épisode"
+                            )
+                        else:
+                            # Génération du résumé
+                            summary = generate_critique_summary(transcription)
 
-                        # Affichage du résumé
-                        st.subheader("📊 Résumé des avis critiques")
-                        st.markdown(summary)
+                            # Sauvegarde dans le cache
+                            save_summary_to_cache(
+                                episode_oid, episode["titre"], episode["date"], summary
+                            )
 
-                        # Option pour télécharger le résumé
-                        st.download_button(
-                            label="💾 Télécharger le résumé",
-                            data=summary,
-                            file_name=f"avis_critiques_{episode['date'].replace(' ', '_')}_{episode['titre'][:50]}.md",
-                            mime="text/markdown",
+                            # Affichage du résumé
+                            st.subheader("📊 Résumé des avis critiques")
+                            st.markdown(summary)
+
+                    except Exception as e:
+                        st.error(f"Erreur lors de la génération du résumé: {str(e)}")
+                        st.info(
+                            "Vérifiez que la clé API Azure OpenAI est correctement configurée dans votre fichier .env"
                         )
-
-                except Exception as e:
-                    st.error(f"Erreur lors de la génération du résumé: {str(e)}")
-                    st.info(
-                        "Vérifiez que la clé API Gemini est correctement configurée dans votre fichier .env"
-                    )
     else:
         st.write("Aucun épisode trouvé pour cette sélection.")
 
