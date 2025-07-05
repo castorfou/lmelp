@@ -47,7 +47,11 @@ or add `files.watcherExclude` directive in `.vscode/settings.json` 📁
 ## 💾 base de données mongodb
 
 mongodb est utilisée pour conserver toutes les données de l'application. 📊  
-pour conserver une sauvegarde de la base, lancer `scripts/backup_mongodb.sh` 🚀
+pour conserver une sauvegarde de la base, lancer depuis devcontainer `scripts/backup_mongodb.sh` 🚀
+
+si les liens ont été faits dans `~/bin/lmelp`, alors lancer depuis host `~/bin/lmelp/backup_mongodb.sh`
+
+penser à le faire réguiliérement, il n'y a aucun rappel.
 
 ## ffmpeg 🎞️
 
