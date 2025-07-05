@@ -28,6 +28,13 @@ locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
 st.title("📝 Avis Critiques")
 st.write("Générez des résumés d'avis critiques à partir des transcriptions d'épisodes")
 
+# Sidebar pour la navigation
+view_option = st.sidebar.selectbox(
+    "Vue",
+    ["Sélectionner un épisode", "Vue d'ensemble des résumés"],
+    help="Choisissez comment afficher les épisodes",
+)
+
 
 DATE_FORMAT = "%d %b %Y"
 
@@ -88,6 +95,29 @@ def get_episodes_with_transcriptions():
     return episodes_with_transcriptions
 
 
+def check_existing_summaries(episodes_df):
+    """Vérifie quels épisodes ont déjà des résumés d'avis critiques"""
+    try:
+        collection = get_collection(collection_name="avis_critiques")
+
+        # Récupérer tous les OIDs d'épisodes qui ont des résumés
+        existing_summaries = collection.find({}, {"episode_oid": 1})
+        existing_oids = {summary["episode_oid"] for summary in existing_summaries}
+
+        # Ajouter une colonne pour indiquer si un résumé existe
+        episodes_df["has_critique_summary"] = (
+            episodes_df["oid"].astype(str).isin(existing_oids)
+        )
+
+        return episodes_df
+
+    except Exception as e:
+        st.warning(f"Impossible de vérifier les résumés existants: {str(e)}")
+        # En cas d'erreur, créer une colonne avec False partout
+        episodes_df["has_critique_summary"] = False
+        return episodes_df
+
+
 def afficher_selection_episode():
     """Affiche la sélection d'épisode similaire à la page episodes"""
     episodes_df = get_episodes_with_transcriptions()
@@ -99,6 +129,9 @@ def afficher_selection_episode():
         )
         return None
 
+    # Vérifier quels épisodes ont déjà des résumés
+    episodes_df = check_existing_summaries(episodes_df)
+
     # Préparer les données pour la sélection
     episodes_df = episodes_df.copy()
 
@@ -106,11 +139,32 @@ def afficher_selection_episode():
     episodes_df = episodes_df.sort_values("date", ascending=False)
 
     episodes_df["date"] = episodes_df["date"].apply(lambda x: x.strftime(DATE_FORMAT))
-    episodes_df["selecteur"] = (
-        episodes_df["date"] + " - " + episodes_df["titre"].str[:100]
-    )
 
-    st.success(f"{len(episodes_df)} épisodes avec transcriptions disponibles")
+    # Ajouter des indicateurs visuels dans le sélecteur
+    def format_episode_selector(row):
+        base_text = f"{row['date']} - {row['titre'][:100]}"
+        if row["has_critique_summary"]:
+            return f"📊 {base_text}"  # Icône pour indiquer qu'un résumé existe
+        else:
+            return f"📝 {base_text}"  # Icône pour indiquer qu'aucun résumé n'existe
+
+    episodes_df["selecteur"] = episodes_df.apply(format_episode_selector, axis=1)
+
+    # Afficher un résumé des statistiques
+    total_episodes = len(episodes_df)
+    episodes_with_summaries = episodes_df["has_critique_summary"].sum()
+    episodes_without_summaries = total_episodes - episodes_with_summaries
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("📚 Total épisodes", total_episodes)
+    with col2:
+        st.metric("📊 Avec résumé", episodes_with_summaries)
+    with col3:
+        st.metric("📝 Sans résumé", episodes_without_summaries)
+
+    # Légende pour les icônes
+    st.caption("📊 = Résumé d'avis critiques disponible | 📝 = Résumé à générer")
 
     selected = st.selectbox("Sélectionnez un épisode", episodes_df["selecteur"])
 
@@ -119,7 +173,17 @@ def afficher_selection_episode():
 
     if not episode.empty:
         episode = episode.iloc[0]
-        st.write(f"### {episode['titre']}")
+
+        # Afficher le titre avec un indicateur visuel
+        if episode["has_critique_summary"]:
+            st.write(f"### 📊 {episode['titre']}")
+            st.success("✅ Un résumé d'avis critiques existe déjà pour cet épisode")
+        else:
+            st.write(f"### 📝 {episode['titre']}")
+            st.info(
+                "💡 Aucun résumé d'avis critiques pour cet épisode - vous pouvez en générer un"
+            )
+
         st.write(f"**Date**: {episode['date']}")
         st.write(f"**Durée**: {episode['duree (min)']} minutes")
         st.write(f"**Description**: {episode['description']}")
