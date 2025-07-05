@@ -10,7 +10,6 @@ from ui_tools import add_to_sys_path
 
 from mongo_livre import Livre
 
-
 add_to_sys_path()
 
 
