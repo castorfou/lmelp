@@ -61,31 +61,35 @@ if st.button("🔄 Rafraîchir Episodes"):
     nb_episodes_after = episodes.len_total_entries()
     if nb_episodes_after > nb_episodes:
         st.success(f"{nb_episodes_after - nb_episodes} episodes mis à jour !")
-        if st.button("📥 Télécharger transcriptions "):
-            with st.spinner("Téléchargement des transcriptions en cours..."):
-                # Exécuter le script get_one_transcription.py situé dans le dossier scripts
-                episodes.get_missing_transcriptions()
-                if len(episodes) > 0:
-                    # on prend le dernier
-                    episode = episodes[-1]
-
-                    # Capturer la sortie de la fonction
-                    buf = io.StringIO()
-                    old_stdout = sys.stdout
-                    sys.stdout = buf
-                    try:
-                        episode.set_transcription(verbose=True)
-                    finally:
-                        sys.stdout = old_stdout
-                    output = buf.getvalue()
-                    if output:
-                        st.expander("Output du telechargement").code(
-                            output, language="None"
-                        )
-                else:
-                    st.warning("Il n'y a pas d'episodes sans transcriptions")
     else:
         st.warning("Pas de nouveaux épisodes aujourd'hui")
+
+episodes.get_missing_transcriptions()
+if len(episodes) > 0:
+    if st.button("📥 Télécharger transcriptions "):
+        with st.spinner("Téléchargement des transcriptions en cours..."):
+            # Exécuter le script get_one_transcription.py situé dans le dossier scripts
+            episodes.get_missing_transcriptions()
+            if len(episodes) > 0:
+                # on prend le dernier
+                episode = episodes[-1]
+
+                # Capturer la sortie de la fonction
+                buf = io.StringIO()
+                old_stdout = sys.stdout
+                sys.stdout = buf
+                try:
+                    episode.set_transcription(verbose=True)
+                finally:
+                    sys.stdout = old_stdout
+                output = buf.getvalue()
+                if output:
+                    st.expander("Output du telechargement").code(
+                        output, language="None"
+                    )
+                episodes.get_missing_transcriptions()
+            else:
+                st.warning("Il n'y a pas d'episodes sans transcriptions")
 
 
 def affiche_episodes(episodes=episodes):
@@ -93,7 +97,7 @@ def affiche_episodes(episodes=episodes):
         title="# episodes",
         text=f"{episodes.len_total_entries()}",
         image="http://placekitten.com/300/250",
-        url="/st_episodes",
+        url="/episodes",
     )
 
 
@@ -109,18 +113,17 @@ def affiche_last_date(episodes=episodes):
         title="last episode",
         text=f"{episodes[0].to_dict().get('date').strftime(DATE_FORMAT)}",
         image="http://placekitten.com/300/250",
-        url="/st_episodes",
+        url="/episodes",
     )
 
 
 def affiche_missing_transcription(episodes=episodes):
     episodes.get_missing_transcriptions()
-
     card(
         title="# missing transcriptions",
         text=f"{len(episodes)}",
         image="http://placekitten.com/300/250",
-        url="/st_episodes",
+        url="/episodes",
     )
 
 

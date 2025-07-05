@@ -108,15 +108,6 @@ if __name__ == "__main__":
             "si le fichier `store_all_auteurs_from_all_episodes.txt` existe et contient une date, on reprend de cette date"
         ),
     )
-    # lis le contenu du fichier cache_filename s'il existe
-    if os.path.exists(cache_filename):
-        with open(cache_filename, "r") as f:
-            date_cache = datetime.datetime.strptime(f.read(), "%d/%m/%Y")
-            print(f"Reprise du traitement à partir de la date {date_cache}")
-    else:
-        # 1er episode date de 1958
-        date_cache = datetime.date(1950, 1, 1)
-
     parser.add_argument(
         "-d",
         "--date",
@@ -140,6 +131,16 @@ if __name__ == "__main__":
     else:
         date = datetime.datetime(1950, 1, 1)
 
+    # lis le contenu du fichier cache_filename s'il existe
+    if os.path.exists(cache_filename):
+        with open(cache_filename, "r") as f:
+            date_cache = datetime.datetime.strptime(f.read(), "%d/%m/%Y")
+            print(f"Reprise du traitement à partir de la date {date_cache}")
+    else:
+        # 1er episode date de 1958
+        print(f"Pas de fichier cache")
+        date_cache = datetime.datetime(1950, 1, 1)
+
     # on prend la date la plus recente entre date et date_cache
     date = date if date > date_cache else date_cache
     episodes = Episodes()
@@ -151,5 +152,6 @@ if __name__ == "__main__":
             # on sauvegarde la date de traitement
             # le cache ne contient que cette date, rien d'autre
             with open(cache_filename, "w") as f:
-                f.write(episode.date.strftime("%d/%m/%Y"))
+                new_date = episode.date + datetime.timedelta(days=1)
+                f.write(new_date.strftime("%d/%m/%Y"))
     print("Fin du traitement")

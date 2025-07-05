@@ -2,7 +2,9 @@
   - [environnements de dev python 🐍](#environnements-de-dev-python-)
   - [pre-commit ⏱️](#pre-commit-️)
   - [config vscode 🖥️](#config-vscode-️)
+- [😀 à propos de la doc](#-à-propos-de-la-doc)
 - [pour utiliser 🚀](#pour-utiliser-)
+  - [💾 base de données mongodb](#-base-de-données-mongodb)
   - [ffmpeg 🎞️](#ffmpeg-️)
   - [locale FR 🇫🇷](#locale-fr-)
   - [ulimit ⚙️](#ulimit-️)
@@ -34,14 +36,37 @@ dans devcontainer, pre-commit est deja configure sinon
 en cas de message `"Visual Studio Code is unable to watch for file changes in this large workspace" (error ENOSPC)` [see vscode linux page](https://code.visualstudio.com/docs/setup/linux#_visual-studio-code-is-unable-to-watch-for-file-changes-in-this-large-workspace-error-enospc) ⚠️
 
 ```bash
-# add fs.inotify.max_user_watches=524288 to /etc/sysctl.conf
+# add fs.inotify.max_user_watches=524288 to /etc/sysctl.d/99-custom-inotify.conf
 sudo sysctl -p # to apply directly
 cat /proc/sys/fs/inotify/max_user_watches # to control it is applied
 ```
   
 or add `files.watcherExclude` directive in `.vscode/settings.json` 📁
 
+pour quelques astuces liées à vscode : [Vscode hints (sur github pages)](https://castorfou.github.io/lmelp/readme_vscode_hints/)
+
+# 😀 à propos de la doc
+
+on change la doc depuis `docs` (génie) 😊
+
+- APIs 🚀
+- Quelques astuces ou choix de conception 🔍
+
+Mkdocs+github actions ramasse tout cela (branche main uniquement) et publie sur le [github pages du projet](https://castorfou.github.io/lmelp/) 📦
+
+Expliqué à https://castorfou.github.io/lmelp/readme_doc/ 👍
+
+
 # pour utiliser 🚀
+
+## 💾 base de données mongodb
+
+mongodb est utilisée pour conserver toutes les données de l'application ([voir schéma](https://castorfou.github.io/lmelp/readme_data_model/)). 📊  
+pour conserver une sauvegarde de la base, lancer depuis devcontainer `scripts/backup_mongodb.sh` 🚀
+
+si les liens ont été faits dans `~/bin/lmelp`, alors lancer depuis host `~/bin/lmelp/backup_mongodb.sh`
+
+penser à le faire réguiliérement, il n'y a aucun rappel.
 
 ## ffmpeg 🎞️
 

@@ -1,13 +1,17 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
-	"name": "Python 3 for lmelp (WSL)",
+	"name": "lmelp (wsl)",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	// list all version of this image:
+	// https://artifactory-weu.michelin.com/ui/packages?name=python3.12-slim-bookworm-utils&type=packages
 	"image": "docker.artifactory.michelin.com/michelin/hub/python3.12-slim-bookworm-utils:bib-1.14",
 	"runArgs": [
 		"--network=host",
 		"--label", "com.centurylinklabs.watchtower.enable=false",
-		"--env", "CONTAINER_NAME=vscode-dev-container-lmelp"
+		// TO_DO: append by your container name --> vscode-dev-container_vscode_exploration-template
+		// run update_repo_config.sh
+		"--env", "CONTAINER_NAME=vscode-dev-container_lmelp"
 	],
 	"shutdownAction": "none",
 	"customizations": {
@@ -43,14 +47,16 @@
 	],
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+	"features": {
+		"ghcr.io/nils-geistmann/devcontainers-features/zsh:0": {}
+	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
     "forwardPorts": [8501],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": 
-		"./.devcontainer/wsl_lmelp/postCommand.sh"
+		"./.devcontainer/wsl/postCommand.sh"
 	
 	// "postStartCommand": "source .venv/bin/activate",
 
