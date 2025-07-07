@@ -59,21 +59,20 @@ def is_summary_truncated(summary_text):
     if "Réponse de l'IA tronquée. Veuillez réessayer." in summary_text:
         return True
 
-    # Vérifier la longueur minimale
-    if len(summary_text) < 300:
+    # Vérifier la longueur minimale (réduite car un résumé avec un seul livre peut être court)
+    if len(summary_text) < 200:
         return True
 
-    # Vérifier les fins brutales typiques de troncature
+    # Vérifier les fins brutales typiques de troncature (mais pas le pipe seul qui peut être normal)
     if (
         summary_text.endswith("**")
         or summary_text.endswith("→")
         or summary_text.endswith("...")
-        or summary_text.endswith("|")
     ):
         return True
 
-    # Vérifier qu'il y a au moins un tableau complet
-    if "| Auteur |" not in summary_text or "## 1." not in summary_text:
+    # Vérifier qu'il y a au moins un titre de section
+    if "## 1." not in summary_text:
         return True
 
     # Vérifier que le résumé se termine correctement (pas au milieu d'un tableau)
@@ -84,11 +83,90 @@ def is_summary_truncated(summary_text):
             last_non_empty_line = line.strip()
             break
 
-    # Si la dernière ligne est une ligne de tableau incomplète
-    if last_non_empty_line.startswith("|") and last_non_empty_line.count("|") < 3:
-        return True
+    # Si la dernière ligne est une ligne de tableau incomplète (moins de 3 pipes OU juste des pipes sans contenu)
+    if last_non_empty_line.startswith("|"):
+        # Compter les segments entre les pipes
+        segments = last_non_empty_line.split("|")
+        # Filtrer les segments vides (au début et à la fin)
+        non_empty_segments = [seg.strip() for seg in segments if seg.strip()]
+
+        # Si il y a moins de 2 colonnes avec du contenu, c'est probablement tronqué
+        if len(non_empty_segments) < 2:
+            return True
+
+        # Si la ligne se termine bizarrement (par exemple juste "|" ou "| |")
+        if last_non_empty_line.strip() in ["|", "| |", "||"]:
+            return True
 
     return False
+
+
+def debug_truncation_detection(summary_text):
+    """Fonction de débogage pour comprendre pourquoi un résumé est considéré comme tronqué"""
+    debug_info = []
+
+    if not summary_text or isinstance(summary_text, str) and summary_text.strip() == "":
+        debug_info.append("❌ Résumé vide ou None")
+        return debug_info
+
+    debug_info.append(f"📏 Longueur: {len(summary_text)} caractères")
+
+    # Vérifier le message d'erreur
+    if "Réponse de l'IA tronquée. Veuillez réessayer." in summary_text:
+        debug_info.append("❌ Contient le message d'erreur de troncature")
+
+    # Vérifier la longueur minimale
+    if len(summary_text) < 200:
+        debug_info.append("❌ Trop court (< 200 caractères)")
+    else:
+        debug_info.append("✅ Longueur suffisante")
+
+    # Vérifier les fins brutales
+    endings = []
+    if summary_text.endswith("**"):
+        endings.append("**")
+    if summary_text.endswith("→"):
+        endings.append("→")
+    if summary_text.endswith("..."):
+        endings.append("...")
+
+    if endings:
+        debug_info.append(f"❌ Se termine par: {', '.join(endings)}")
+    else:
+        debug_info.append("✅ Fin normale")
+
+    # Vérifier la structure
+    if "## 1." not in summary_text:
+        debug_info.append("❌ Pas de titre de section '## 1.'")
+    else:
+        debug_info.append("✅ Contient un titre de section")
+
+    # Analyser la dernière ligne
+    lines = summary_text.strip().split("\n")
+    last_non_empty_line = ""
+    for line in reversed(lines):
+        if line.strip():
+            last_non_empty_line = line.strip()
+            break
+
+    debug_info.append(f"🔍 Dernière ligne: '{last_non_empty_line[:100]}...'")
+
+    if last_non_empty_line.startswith("|"):
+        segments = last_non_empty_line.split("|")
+        non_empty_segments = [seg.strip() for seg in segments if seg.strip()]
+        debug_info.append(f"📊 Segments du tableau: {len(non_empty_segments)} colonnes")
+
+        if len(non_empty_segments) < 2:
+            debug_info.append("❌ Tableau incomplet (< 2 colonnes)")
+        else:
+            debug_info.append("✅ Tableau semble complet")
+
+        if last_non_empty_line.strip() in ["|", "| |", "||"]:
+            debug_info.append("❌ Ligne de tableau vide/malformée")
+    else:
+        debug_info.append("✅ Ne se termine pas par une ligne de tableau")
+
+    return debug_info
 
 
 def save_summary_to_cache(episode_oid, episode_title, episode_date, summary):
@@ -99,6 +177,13 @@ def save_summary_to_cache(episode_oid, episode_title, episode_date, summary):
             st.warning(
                 "⚠️ Résumé tronqué détecté - sauvegarde annulée pour préserver la qualité des données"
             )
+
+            # Afficher les détails de débogage
+            debug_info = debug_truncation_detection(summary)
+            with st.expander("🔍 Détails de la détection (cliquez pour déboguer)"):
+                for info in debug_info:
+                    st.write(info)
+
             st.info(
                 "💡 Le résumé ne sera pas sauvegardé dans la base de données. Réessayez pour obtenir un résumé complet."
             )
@@ -839,6 +924,74 @@ Sois EXHAUSTIF et PRÉCIS. Capture TOUS les livres, TOUS les critiques, et TOUS 
             st.error(f"Détails techniques: {str(e)}")
 
         raise e
+
+
+def debug_truncation_detection(summary_text):
+    """Fonction de débogage pour comprendre pourquoi un résumé est considéré comme tronqué"""
+    debug_info = []
+
+    if not summary_text or isinstance(summary_text, str) and summary_text.strip() == "":
+        debug_info.append("❌ Résumé vide ou None")
+        return debug_info
+
+    debug_info.append(f"📏 Longueur: {len(summary_text)} caractères")
+
+    # Vérifier le message d'erreur
+    if "Réponse de l'IA tronquée. Veuillez réessayer." in summary_text:
+        debug_info.append("❌ Contient le message d'erreur de troncature")
+
+    # Vérifier la longueur minimale
+    if len(summary_text) < 200:
+        debug_info.append("❌ Trop court (< 200 caractères)")
+    else:
+        debug_info.append("✅ Longueur suffisante")
+
+    # Vérifier les fins brutales
+    endings = []
+    if summary_text.endswith("**"):
+        endings.append("**")
+    if summary_text.endswith("→"):
+        endings.append("→")
+    if summary_text.endswith("..."):
+        endings.append("...")
+
+    if endings:
+        debug_info.append(f"❌ Se termine par: {', '.join(endings)}")
+    else:
+        debug_info.append("✅ Fin normale")
+
+    # Vérifier la structure
+    if "## 1." not in summary_text:
+        debug_info.append("❌ Pas de titre de section '## 1.'")
+    else:
+        debug_info.append("✅ Contient un titre de section")
+
+    # Analyser la dernière ligne
+    lines = summary_text.strip().split("\n")
+    last_non_empty_line = ""
+    for line in reversed(lines):
+        if line.strip():
+            last_non_empty_line = line.strip()
+            break
+
+    debug_info.append(f"🔍 Dernière ligne: '{last_non_empty_line[:100]}...'")
+
+    if last_non_empty_line.startswith("|"):
+        segments = last_non_empty_line.split("|")
+        non_empty_segments = [seg.strip() for seg in segments if seg.strip()]
+        debug_info.append(f"📊 Segments du tableau: {len(non_empty_segments)} colonnes")
+
+        if len(non_empty_segments) < 2:
+            debug_info.append("❌ Tableau incomplet (< 2 colonnes)")
+        else:
+            debug_info.append("✅ Tableau semble complet")
+
+        if last_non_empty_line.strip() in ["|", "| |", "||"]:
+            debug_info.append("❌ Ligne de tableau vide/malformée")
+    else:
+        debug_info.append("✅ Ne se termine pas par une ligne de tableau")
+
+    return debug_info
 
 
 # Interface principale
