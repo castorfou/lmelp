@@ -19,6 +19,7 @@ from llm import get_azure_llm
 from mongo import get_collection
 import pandas as pd
 import locale
+import re
 from datetime import datetime
 from bson import ObjectId
 
@@ -49,9 +50,60 @@ def get_summary_from_cache(episode_oid):
         return None
 
 
+def is_summary_truncated(summary_text):
+    """Vérifie si un résumé semble tronqué et ne devrait pas être sauvegardé"""
+    if not summary_text or isinstance(summary_text, str) and summary_text.strip() == "":
+        return True
+
+    # Vérifier si c'est le message d'erreur pour résumé tronqué
+    if "Réponse de l'IA tronquée. Veuillez réessayer." in summary_text:
+        return True
+
+    # Vérifier la longueur minimale
+    if len(summary_text) < 300:
+        return True
+
+    # Vérifier les fins brutales typiques de troncature
+    if (
+        summary_text.endswith("**")
+        or summary_text.endswith("→")
+        or summary_text.endswith("...")
+        or summary_text.endswith("|")
+    ):
+        return True
+
+    # Vérifier qu'il y a au moins un tableau complet
+    if "| Auteur |" not in summary_text or "## 1." not in summary_text:
+        return True
+
+    # Vérifier que le résumé se termine correctement (pas au milieu d'un tableau)
+    lines = summary_text.strip().split("\n")
+    last_non_empty_line = ""
+    for line in reversed(lines):
+        if line.strip():
+            last_non_empty_line = line.strip()
+            break
+
+    # Si la dernière ligne est une ligne de tableau incomplète
+    if last_non_empty_line.startswith("|") and last_non_empty_line.count("|") < 3:
+        return True
+
+    return False
+
+
 def save_summary_to_cache(episode_oid, episode_title, episode_date, summary):
-    """Sauvegarde un résumé dans MongoDB"""
+    """Sauvegarde un résumé dans MongoDB seulement s'il n'est pas tronqué"""
     try:
+        # Vérifier si le résumé est tronqué avant de le sauvegarder
+        if is_summary_truncated(summary):
+            st.warning(
+                "⚠️ Résumé tronqué détecté - sauvegarde annulée pour préserver la qualité des données"
+            )
+            st.info(
+                "💡 Le résumé ne sera pas sauvegardé dans la base de données. Réessayez pour obtenir un résumé complet."
+            )
+            return False
+
         collection = get_collection(collection_name="avis_critiques")
 
         # Supprimer l'ancien résumé s'il existe
@@ -68,10 +120,12 @@ def save_summary_to_cache(episode_oid, episode_title, episode_date, summary):
         }
 
         collection.insert_one(summary_doc)
-        st.success("Résumé sauvegardé dans le cache!")
+        st.success("✅ Résumé complet sauvegardé dans le cache!")
+        return True
 
     except Exception as e:
         st.error(f"Erreur lors de la sauvegarde du cache: {str(e)}")
+        return False
 
 
 @st.cache_data
@@ -295,8 +349,8 @@ def afficher_selection_episode():
                         progress_bar.progress(80)
                         status_text.text("💾 Sauvegarde dans le cache...")
 
-                        # Sauvegarde dans le cache
-                        save_summary_to_cache(
+                        # Sauvegarde dans le cache seulement si le résumé n'est pas tronqué
+                        save_success = save_summary_to_cache(
                             episode_oid, episode["titre"], episode["date"], summary
                         )
 
@@ -310,17 +364,36 @@ def afficher_selection_episode():
 
                         # Affichage immédiat du nouveau résumé
                         if regenerate_clicked:
-                            st.success("✅ Résumé régénéré avec succès!")
+                            if save_success:
+                                st.success(
+                                    "✅ Résumé régénéré et sauvegardé avec succès!"
+                                )
+                            else:
+                                st.warning(
+                                    "⚠️ Résumé régénéré mais non sauvegardé (résumé incomplet)"
+                                )
                         else:
-                            st.success("✅ Résumé généré avec succès!")
+                            if save_success:
+                                st.success(
+                                    "✅ Résumé généré et sauvegardé avec succès!"
+                                )
+                            else:
+                                st.warning(
+                                    "⚠️ Résumé généré mais non sauvegardé (résumé incomplet)"
+                                )
 
                         st.subheader("📊 Résumé des avis critiques")
                         st.markdown(summary, unsafe_allow_html=True)
 
-                        # Message simple pour l'utilisateur
-                        st.info(
-                            "💡 Résumé généré avec succès ! Rechargez la page (F5) pour voir la mise à jour des indicateurs."
-                        )
+                        # Message approprié selon le statut de sauvegarde
+                        if save_success:
+                            st.info(
+                                "💡 Résumé généré avec succès ! Rechargez la page (F5) pour voir la mise à jour des indicateurs."
+                            )
+                        else:
+                            st.warning(
+                                "⚠️ Résumé affiché mais non sauvegardé car il semble incomplet. Réessayez pour obtenir un résumé complet qui sera sauvegardé."
+                            )
 
                 except Exception as e:
                     # Nettoyer les indicateurs de progression en cas d'erreur
