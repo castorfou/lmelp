@@ -361,9 +361,17 @@ def afficher_selection_episode():
     return episode if not episode.empty else None
 
 
-def post_process_and_sort_summary(summary_text):
-    """Post-traite le résumé pour corriger le tri des notes et supprimer les phrases explicatives"""
+def post_process_and_sort_summary(summary_text, episode_date=None):
+    """Post-traite le résumé pour corriger le tri des notes, supprimer les phrases explicatives et ajouter la date"""
     import re
+
+    # Formater la date pour l'insertion dans les titres
+    date_str = ""
+    if episode_date:
+        if isinstance(episode_date, str):
+            date_str = f" du {episode_date}"
+        else:
+            date_str = f" du {episode_date.strftime('%d %B %Y')}"
 
     # Supprimer diverses phrases explicatives que l'IA pourrait générer
     phrases_to_remove = [
@@ -386,6 +394,22 @@ def post_process_and_sort_summary(summary_text):
     summary_text = re.sub(r"^.*[Aa]nalyse.*\n", "", summary_text, flags=re.MULTILINE)
     summary_text = re.sub(r"^.*[Dd]\'après.*\n", "", summary_text, flags=re.MULTILINE)
     summary_text = re.sub(r"^.*[Bb]asé sur.*\n", "", summary_text, flags=re.MULTILINE)
+
+    # NOUVEAU: Forcer l'ajout de la date dans les titres des tableaux si elle n'y est pas
+    if date_str:
+        # Ajouter la date au titre du programme principal si elle n'y est pas déjà
+        summary_text = re.sub(
+            r"(## 1\. LIVRES DISCUTÉS AU PROGRAMME)(?! du)",
+            r"\1" + date_str,
+            summary_text,
+        )
+
+        # Ajouter la date au titre des coups de cœur si elle n'y est pas déjà
+        summary_text = re.sub(
+            r"(## 2\. COUPS DE C[ŒO]EUR DES CRITIQUES)(?! du)",
+            r"\1" + date_str,
+            summary_text,
+        )
 
     # Nettoyer les lignes vides multiples
     summary_text = re.sub(r"\n\s*\n", "\n\n", summary_text)
@@ -707,7 +731,7 @@ Sois EXHAUSTIF et PRÉCIS. Capture TOUS les livres, TOUS les critiques, et TOUS 
 
         # Le nouveau format nécessite un post-traitement pour corriger le tri
         st.info("🔄 Correction automatique du tri par notes décroissantes...")
-        sorted_summary = post_process_and_sort_summary(response_text)
+        sorted_summary = post_process_and_sort_summary(response_text, episode_date)
 
         st.info("✅ Résumé détaillé généré avec noms des critiques et avis individuels")
         return sorted_summary
