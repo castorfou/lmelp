@@ -28,6 +28,12 @@ locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
 st.title("📝 Avis Critiques")
 st.write("Générez des résumés d'avis critiques à partir des transcriptions d'épisodes")
 
+# Afficher la date actuelle pour les captures d'écran
+from datetime import datetime
+
+current_date = datetime.now().strftime("%d %B %Y")
+st.caption(f"📅 {current_date}")
+
 
 DATE_FORMAT = "%d %b %Y"
 
@@ -163,7 +169,60 @@ def afficher_selection_episode():
     # Légende pour les icônes
     st.caption("🟢 = Résumé d'avis critiques disponible | ⚪ = Résumé à générer")
 
-    selected = st.selectbox("Sélectionnez un épisode", episodes_df["selecteur"])
+    # Navigation et sélection d'épisode avec alignement vertical
+    col_nav1, col_nav2, col_nav3 = st.columns([1, 4, 1])
+
+    # Initialiser l'index sélectionné dans le session state
+    if "selected_episode_index" not in st.session_state:
+        st.session_state.selected_episode_index = 0
+
+    # Sélecteur d'épisode (colonne centrale)
+    with col_nav2:
+        # S'assurer que l'index est dans les limites
+        if st.session_state.selected_episode_index >= len(episodes_df):
+            st.session_state.selected_episode_index = 0
+
+        selected = st.selectbox(
+            "Sélectionnez un épisode",
+            episodes_df["selecteur"],
+            index=st.session_state.selected_episode_index,
+            key="episode_selector",
+        )
+
+        # Mettre à jour l'index si l'utilisateur change la sélection
+        current_index = episodes_df[episodes_df["selecteur"] == selected].index[0]
+        actual_index = episodes_df.index.get_loc(current_index)
+        if actual_index != st.session_state.selected_episode_index:
+            st.session_state.selected_episode_index = actual_index
+
+    # Boutons de navigation alignés verticalement avec la selectbox
+    with col_nav1:
+        # Petit espace pour aligner avec le label de la selectbox
+        st.write("")
+        if st.button(
+            "⬅️ Précédent",
+            disabled=(st.session_state.selected_episode_index >= len(episodes_df) - 1),
+            use_container_width=True,
+            key="prev_btn",
+        ):
+            st.session_state.selected_episode_index = min(
+                len(episodes_df) - 1, st.session_state.selected_episode_index + 1
+            )
+            st.rerun()
+
+    with col_nav3:
+        # Petit espace pour aligner avec le label de la selectbox
+        st.write("")
+        if st.button(
+            "Suivant ➡️",
+            disabled=(st.session_state.selected_episode_index == 0),
+            use_container_width=True,
+            key="next_btn",
+        ):
+            st.session_state.selected_episode_index = max(
+                0, st.session_state.selected_episode_index - 1
+            )
+            st.rerun()
 
     # Filtrer le DataFrame pour trouver la ligne correspondant à la sélection
     episode = episodes_df[episodes_df["selecteur"] == selected]
@@ -227,8 +286,10 @@ def afficher_selection_episode():
                         progress_bar.progress(30)
                         status_text.text("🤖 Génération du résumé avec l'IA...")
 
-                        # Génération du résumé
-                        summary = generate_critique_summary(transcription)
+                        # Génération du résumé avec la date de l'épisode
+                        summary = generate_critique_summary(
+                            transcription, episode["date"]
+                        )
 
                         # Étape 3: Sauvegarde
                         progress_bar.progress(80)
@@ -301,8 +362,47 @@ def afficher_selection_episode():
 
 
 def post_process_and_sort_summary(summary_text):
-    """Post-traite le résumé pour corriger le tri des notes"""
+    """Post-traite le résumé pour corriger le tri des notes et supprimer les phrases explicatives"""
     import re
+
+    # Supprimer diverses phrases explicatives que l'IA pourrait générer
+    phrases_to_remove = [
+        "Les livres discutés au programme principal sont classés par note décroissante, avec des avis détaillés et des notes attribuées par chaque critique. Les coups de cœur personnels sont également classés par note décroissante, avec des commentaires sur les raisons de leur recommandation.",
+        "Les livres sont classés par note décroissante.",
+        "Voici l'analyse de la transcription",
+        "En résumé,",
+        "Voici les tableaux demandés",
+        "Analyse de l'émission",
+        "D'après la transcription",
+        "Basé sur la transcription fournie",
+        "Voici l'analyse des avis critiques",
+    ]
+
+    for phrase in phrases_to_remove:
+        summary_text = summary_text.replace(phrase, "")
+
+    # Supprimer les phrases introductives génériques avec regex
+    summary_text = re.sub(r"^.*[Vv]oici.*\n", "", summary_text, flags=re.MULTILINE)
+    summary_text = re.sub(r"^.*[Aa]nalyse.*\n", "", summary_text, flags=re.MULTILINE)
+    summary_text = re.sub(r"^.*[Dd]\'après.*\n", "", summary_text, flags=re.MULTILINE)
+    summary_text = re.sub(r"^.*[Bb]asé sur.*\n", "", summary_text, flags=re.MULTILINE)
+
+    # Nettoyer les lignes vides multiples
+    summary_text = re.sub(r"\n\s*\n", "\n\n", summary_text)
+    summary_text = summary_text.strip()
+
+    # S'assurer que le texte commence par un titre de section
+    if not summary_text.startswith("##"):
+        # Chercher le premier titre de section et commencer à partir de là
+        lines = summary_text.split("\n")
+        for i, line in enumerate(lines):
+            if line.strip().startswith("## 1."):
+                summary_text = "\n".join(lines[i:])
+                break
+
+    # Si le résumé ne contient pas de tableaux avec des notes, le retourner tel quel
+    if not re.search(r"<span[^>]*>(\d+\.?\d*)</span>", summary_text):
+        return summary_text
 
     lines = summary_text.split("\n")
     result_lines = []
@@ -356,8 +456,10 @@ def post_process_and_sort_summary(summary_text):
                 separator_line = line
                 continue
 
-            # Si c'est une ligne de données du tableau (contient des notes colorées)
-            elif re.search(r"<span[^>]*>(\d+\.?\d*)</span>", line):
+            # Si c'est une ligne de données du tableau (contient des notes colorées OU des données)
+            elif re.search(r"<span[^>]*>(\d+\.?\d*)</span>", line) or (
+                "|" in line and line.strip() != ""
+            ):
                 if in_main_table:
                     main_table_lines.append(line)
                 else:
@@ -380,9 +482,11 @@ def post_process_and_sort_summary(summary_text):
 def sort_table_by_rating(table_lines, header_line, separator_line):
     """Trie les lignes d'un tableau par note décroissante"""
     import re
+    import re
 
-    # Extraire les notes et associer aux lignes
+    # Séparer les lignes avec notes de celles sans notes
     lines_with_ratings = []
+    lines_without_ratings = []
 
     for line in table_lines:
         # Chercher la note dans les spans HTML
@@ -390,8 +494,10 @@ def sort_table_by_rating(table_lines, header_line, separator_line):
         if rating_match:
             rating = float(rating_match.group(1))
             lines_with_ratings.append((rating, line))
+        else:
+            lines_without_ratings.append(line)
 
-    # Trier par note décroissante
+    # Trier par note décroissante seulement les lignes avec notes
     lines_with_ratings.sort(key=lambda x: x[0], reverse=True)
 
     # Reconstruire le tableau
@@ -402,90 +508,208 @@ def sort_table_by_rating(table_lines, header_line, separator_line):
     if separator_line:
         result.append(separator_line)
 
-    # Ajouter les lignes triées
+    # Ajouter d'abord les lignes triées par note
     for rating, line in lines_with_ratings:
+        result.append(line)
+
+    # Puis ajouter les lignes sans notes (si il y en a)
+    for line in lines_without_ratings:
         result.append(line)
 
     return result
 
 
-def generate_critique_summary(transcription):
+def generate_critique_summary(transcription, episode_date=None):
     """Génère un résumé des avis critiques à partir d'une transcription"""
 
+    # Vérifier que la transcription n'est pas vide ou trop courte
+    if not transcription or len(transcription.strip()) < 100:
+        raise ValueError(
+            "La transcription est trop courte ou vide pour générer un résumé"
+        )
+
     # Limiter la taille de la transcription si elle est trop longue
-    max_chars = 50000  # Limite pour éviter les timeouts
+    max_chars = 100000  # Augmentation de la limite pour capturer les coups de cœur en fin d'émission
     if len(transcription) > max_chars:
         transcription = transcription[:max_chars] + "... [transcription tronquée]"
         st.warning(
             f"⚠️ Transcription tronquée à {max_chars} caractères pour éviter les timeouts"
         )
 
+    # Vérifier si la transcription contient des mots-clés liés aux livres
+    book_keywords = [
+        "livre",
+        "auteur",
+        "roman",
+        "critique",
+        "littérature",
+        "publication",
+        "édition",
+        "éditeur",
+    ]
+    transcription_lower = transcription.lower()
+    keyword_count = sum(
+        1 for keyword in book_keywords if keyword in transcription_lower
+    )
+
+    if keyword_count < 3:
+        st.warning(
+            "⚠️ Cette transcription ne semble pas contenir beaucoup de discussions sur les livres"
+        )
+
+    # Formater la date pour l'insertion dans les titres
+    date_str = ""
+    if episode_date:
+        if isinstance(episode_date, str):
+            date_str = f" du {episode_date}"
+        else:
+            date_str = f" du {episode_date.strftime('%d %B %Y')}"
+
     prompt = f"""
-Je vais te donner la transcription d'un episode d'une emission de radio qui s'appelle le masque et la plume sur France Inter.
-Cet episode dure 1h et porte sur des livres. Il y a des intervenants qui parlent des livres qu'ils ont lus. Ils ne sont parfois pas d'accord.
+Tu es un expert en critique littéraire qui analyse la transcription de l'émission "Le Masque et la Plume" sur France Inter.
+
+IMPORTANT: Si cette transcription ne contient PAS de discussions sur des livres, réponds simplement:
+"Aucun livre discuté dans cet épisode. Cette émission semble porter sur d'autres sujets (cinéma, théâtre, musique)."
 
 Voici la transcription:
 {transcription}
 
-Je veux que tu identifies l'ensemble des livres dont on parle dans cette emission et que tu les sépares en 2 catégories :
+CONSIGNE PRINCIPALE:
+Identifie TOUS les livres discutés et crée 2 tableaux détaillés et complets:
 
-## 1. LIVRES DISCUTÉS AU PROGRAMME
-Ce sont les livres qui font l'objet de discussions approfondies entre plusieurs critiques.
+1. **LIVRES DU PROGRAMME PRINCIPAL**: Tous les livres qui font l'objet d'une discussion approfondie entre plusieurs critiques
+2. **COUPS DE CŒUR PERSONNELS**: UNIQUEMENT les livres mentionnés rapidement par un critique comme recommandation personnelle (différents du programme principal)
 
-Pour ces livres, je veux que tu me restitues cette liste en separant auteur et titre. Si l'editeur est mentionne tu peux aussi le noter.
+⚠️ CONSIGNE CRUCIALE: NE RETOURNE QUE LES DEUX TABLEAUX, SANS AUCUNE PHRASE D'EXPLICATION, SANS COMMENTAIRE, SANS PHRASE INTRODUCTIVE. COMMENCE DIRECTEMENT PAR "## 1. LIVRES DISCUTÉS AU PROGRAMME" et termine par le dernier tableau.
 
-Concernant les avis des critiques, je veux que tu en fasses une forme de synthese en donnant une note de 1 à 10 (1 etant la note la plus basse et 10 la note la plus haute) utilisant les regles suivantes:
-- la note 1 est vraiment pour les livres a eviter, les purges
-- la note 10 est pour les livres a lire absolument, les chefs d'oeuvre
-- la note 9 est pour les livres excellents, 
-- la note 5 est pour les livres moyens, sans plus. pas horrible mais pas genial non plus
-- les notations seront assez severes, ne garde la note 10 vraiment que pour les chefs d'oeuvre
-- si un seul critique donne son avis, tu prendras sa note
-- si plusieurs critiques se prononcent, tu prendras la moyenne de leurs notes
+---
 
-Je veux que tu conserves l'avis de chaque critique avec son prenom et son nom.
-et que tu donnes la note moyenne obtenue pour chaque livre.
-tu rajouteras une colonne pour dire le nombre de critiques qui ont donne leur avis sur le livre.
-Puis si un des critiques a vraiment adore le livre (ce qui correspond a une note de 9 ou 10), tu mentionneras les noms des critiques dans une colonne "coup de coeur" a part.
-Enfin si un des critiques fait etat d'un chef d'oeuvre (note 10), tu mentionneras cela dans une colonne "chef d'oeuvre" a part.
+## 1. LIVRES DISCUTÉS AU PROGRAMME{date_str}
 
-Pour la colonne "Note moyenne", utilise un code couleur HTML avec un fond coloré selon cette échelle :
-- 9.0-10.0 : <span style="background-color: #00C851; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">NOTE</span> (vert foncé)
-- 8.0-8.9 : <span style="background-color: #4CAF50; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">NOTE</span> (vert)
-- 7.0-7.9 : <span style="background-color: #8BC34A; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">NOTE</span> (vert clair)
-- 6.0-6.9 : <span style="background-color: #CDDC39; color: black; padding: 2px 6px; border-radius: 3px; font-weight: bold;">NOTE</span> (jaune-vert)
-- 5.0-5.9 : <span style="background-color: #FFEB3B; color: black; padding: 2px 6px; border-radius: 3px; font-weight: bold;">NOTE</span> (jaune)
-- 4.0-4.9 : <span style="background-color: #FF9800; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">NOTE</span> (orange)
-- 3.0-3.9 : <span style="background-color: #FF5722; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">NOTE</span> (rouge-orange)
-- 1.0-2.9 : <span style="background-color: #F44336; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">NOTE</span> (rouge)
+Format de tableau markdown OBLIGATOIRE avec HTML pour les couleurs:
 
-## 2. COUPS DE COEUR DES CRITIQUES
-Ce sont les livres mentionnés rapidement par un seul critique comme recommandation personnelle, souvent en fin d'émission.
+| Auteur | Titre | Éditeur | Avis détaillés des critiques | Note moyenne | Nb critiques | Coup de cœur | Chef d'œuvre |
+|--------|-------|---------|------------------------------|--------------|-------------|-------------|-------------|
+| [Nom auteur] | [Titre livre] | [Éditeur] | **[Nom COMPLET critique 1]**: [avis détaillé et note] <br>**[Nom COMPLET critique 2]**: [avis détaillé et note] <br>**[Nom COMPLET critique 3]**: [avis détaillé et note] | [Note colorée] | [Nombre] | [Noms si note ≥9] | [Noms si note=10] |
 
-Pour ces livres, affiche seulement :
-- Auteur
-- Titre
-- Éditeur (si mentionné)
-- Critique qui le recommande
-- Sa note (entre 8 et 10, car c'est un coup de coeur)
+⚠️ IMPORTANT: CLASSE LES LIVRES PAR NOTE DÉCROISSANTE (meilleure note d'abord, pire note en dernier).
 
-Applique le même code couleur pour la colonne Note que ci-dessus.
+RÈGLES DE NOTATION STRICTES:
+- Note 1-2: Livres détestés, "purges", "ennuyeux", "raté"
+- Note 3-4: Livres décevants, "pas terrible", "problématique"
+- Note 5-6: Livres moyens, "correct sans plus", "mitigé"
+- Note 7-8: Bons livres, "plaisant", "réussi", "bien écrit"
+- Note 9: Excellents livres, "formidable", "remarquable", "coup de cœur"
+- Note 10: Chefs-d'œuvre, "génial", "exceptionnel", "chef-d'œuvre"
 
-Tu me restitueras ces 2 listes sous la forme de 2 tableaux séparés au format markdown avec le HTML pour les couleurs.
+COULEURS HTML OBLIGATOIRES pour la Note moyenne:
+- 9.0-10.0: <span style="background-color: #00C851; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">X.X</span>
+- 8.0-8.9: <span style="background-color: #4CAF50; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">X.X</span>
+- 7.0-7.9: <span style="background-color: #8BC34A; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">X.X</span>
+- 6.0-6.9: <span style="background-color: #CDDC39; color: black; padding: 2px 6px; border-radius: 3px; font-weight: bold;">X.X</span>
+- 5.0-5.9: <span style="background-color: #FFEB3B; color: black; padding: 2px 6px; border-radius: 3px; font-weight: bold;">X.X</span>
+- 4.0-4.9: <span style="background-color: #FF9800; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">X.X</span>
+- 3.0-3.9: <span style="background-color: #FF5722; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">X.X</span>
+- 1.0-2.9: <span style="background-color: #F44336; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold;">X.X</span>
 
-Ne genere pas de code python, juste les 2 tableaux markdown avec leurs titres respectifs et le code couleur HTML.
-"""
+INSTRUCTIONS DÉTAILLÉES POUR EXTRAIRE TOUS LES AVIS:
+1. Identifie TOUS les critiques qui parlent de chaque livre: Jérôme Garcin, Elisabeth Philippe, Frédéric Beigbeder, Michel Crépu, Arnaud Viviant, Judith Perrignon, Xavier Leherpeur, Patricia Martin, etc.
+2. Pour chaque critique, capture son NOM COMPLET (Prénom + Nom) 
+3. Cite leurs avis EXACTS avec leurs mots-clés d'appréciation
+4. Attribue une note individuelle basée sur leur vocabulaire (entre 1 et 10)
+5. Calcule la moyenne arithmétique précise (ex: 7.3, 8.7)
+6. Identifie les "coups de cœur" (critiques très enthousiastes, note ≥9)
+7. **CLASSE OBLIGATOIREMENT PAR NOTE DÉCROISSANTE** (meilleure note d'abord)
+
+---
+
+## 2. COUPS DE CŒUR DES CRITIQUES{date_str}
+
+⚠️ ATTENTION: Ce tableau contient UNIQUEMENT les livres/ouvrages mentionnés rapidement par les critiques comme recommandations personnelles supplémentaires (souvent en fin d'émission avec "mon coup de cœur", "je recommande", etc.). 
+Ce sont des ouvrages DIFFÉRENTS de ceux discutés au programme principal ci-dessus.
+INCLUT TOUS TYPES D'OUVRAGES : romans, essais, BD, guides, biographies, etc.
+
+Format de tableau pour ces recommandations personnelles:
+
+| Auteur | Titre | Éditeur | Critique | Note | Commentaire |
+|--------|-------|---------|----------|------|-------------|
+| [Nom] | [Titre] | [Éditeur] | [Nom COMPLET critique] | [Note colorée] | [Raison du coup de cœur] |
+
+⚠️ IMPORTANT: 
+- CLASSE LES COUPS DE CŒUR PAR NOTE DÉCROISSANTE AUSSI
+- N'INCLUS QUE les livres mentionnés comme recommandations PERSONNELLES, PAS ceux du programme principal
+- CHERCHE SPÉCIALEMENT en fin de transcription les sections "coups de cœur", "conseils de lecture", "recommandations"
+
+EXIGENCES QUALITÉ:
+- Noms COMPLETS de TOUS les critiques (Prénom + Nom)
+- Citations exactes des avis les plus marquants
+- Éditeurs mentionnés quand disponibles
+- Tableaux markdown parfaitement formatés
+- Couleurs HTML correctement appliquées
+- **CLASSEMENT OBLIGATOIRE PAR NOTE DÉCROISSANTE**
+- Capture de TOUS les avis individuels (pas seulement Elisabeth Philippe)
+- **RECHERCHE ACTIVE des coups de cœur en fin de transcription** : cherche "coups de cœur", "conseil de lecture", "je recommande", "mon choix"
+
+⚠️ SPÉCIAL COUPS DE CŒUR: Les critiques mentionnent souvent leurs recommandations personnelles vers la fin de l'émission. SCRUTE ATTENTIVEMENT la fin de la transcription pour ne pas les manquer !
+
+⚠️ FORMAT DE RÉPONSE: Retourne UNIQUEMENT les 2 tableaux markdown avec leurs titres. N'ajoute AUCUNE explication, phrase introductive, ou commentaire sur la méthode de génération. Commence directement par "## 1. LIVRES DISCUTÉS AU PROGRAMME" et termine par le dernier tableau.
+
+RAPPEL FINAL: NE RETOURNE AUCUN TEXTE EXPLICATIF AVANT OU APRÈS LES TABLEAUX. AUCUNE PHRASE COMME "voici l'analyse" ou "en résumé". COMMENCE IMMÉDIATEMENT PAR LE PREMIER TITRE DE TABLEAU.
+
+Sois EXHAUSTIF et PRÉCIS. Capture TOUS les livres, TOUS les critiques, et TOUS les avis individuels."""
 
     try:
         # Utiliser Azure OpenAI avec timeout configuré dans llm.py (300 secondes)
         model = get_azure_llm()
         st.info("🔧 Utilisation du timeout Azure OpenAI (300 secondes / 5 minutes)")
-        response = model.complete(prompt)
 
-        # Post-traiter pour corriger le tri
-        st.info("🔄 Correction automatique du tri des notes...")
-        sorted_summary = post_process_and_sort_summary(response.text)
+        # Configurer les paramètres pour obtenir une réponse plus longue et détaillée
+        response = model.complete(
+            prompt,
+            max_tokens=4000,  # Augmenter significativement la limite pour des résumés détaillés
+            temperature=0.1,  # Réduire la créativité pour plus de cohérence
+        )
 
+        # DEBUG: Affichage de la réponse brute pour le débogage
+        # Décommentez les lignes ci-dessous si vous avez besoin de déboguer la génération :
+        # - Pour voir la réponse complète de l'IA avant post-traitement
+        # - Pour vérifier si la réponse est tronquée
+        # - Pour analyser les problèmes de formatage ou de contenu
+
+        # response_text = response.text.strip()
+        # st.write("🔍 **DEBUG - Réponse brute de l'IA:**")
+        # st.code(response_text[:1000] + "..." if len(response_text) > 1000 else response_text, language="markdown")
+        # st.write(f"📊 **Longueur de la réponse:** {len(response_text)} caractères")
+
+        response_text = response.text.strip()
+
+        # Vérifier si la réponse semble tronquée
+        if (
+            len(response_text) < 300
+            or response_text.endswith("**")
+            or response_text.endswith("→")
+        ):
+            st.error(
+                "⚠️ La réponse de l'IA semble tronquée (trop courte ou se termine brutalement)"
+            )
+            st.info(
+                "💡 Cela peut être dû à une limite de tokens. Essayez avec un épisode plus court ou réessayez."
+            )
+            return "Réponse de l'IA tronquée. Veuillez réessayer."
+
+        # Vérifier si l'IA indique qu'aucun livre n'est discuté
+        if (
+            "Aucun livre discuté" in response_text
+            or "porte sur d'autres sujets" in response_text
+        ):
+            st.warning("📚 Aucun livre discuté dans cet épisode")
+            return response_text
+
+        # Le nouveau format nécessite un post-traitement pour corriger le tri
+        st.info("🔄 Correction automatique du tri par notes décroissantes...")
+        sorted_summary = post_process_and_sort_summary(response_text)
+
+        st.info("✅ Résumé détaillé généré avec noms des critiques et avis individuels")
         return sorted_summary
 
     except Exception as e:
@@ -493,7 +717,11 @@ Ne genere pas de code python, juste les 2 tableaux markdown avec leurs titres re
         st.error(f"Erreur lors de la génération avec l'IA: {str(e)}")
 
         # Ajouter plus de détails sur l'erreur
-        if "timeout" in error_msg or "timed out" in error_msg:
+        if "transcription est trop courte" in str(e):
+            st.warning(
+                "📝 La transcription est trop courte pour générer un résumé valide"
+            )
+        elif "timeout" in error_msg or "timed out" in error_msg:
             st.warning("⏰ Timeout: La génération a pris trop de temps (>300 secondes)")
             st.info("💡 Essayez avec un épisode plus court ou réessayez plus tard")
         elif "rate limit" in error_msg:
