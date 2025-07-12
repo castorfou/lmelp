@@ -40,4 +40,45 @@
 
 ---
 
-**Prochaine étape:** Création de la classe `EpisodeLivre` (`nbs/mongo_episode_livre.py`)
+### ✅ DONE - Création de la classe EpisodeLivre
+
+**Fichiers modifiés:**
+- `nbs/mongo_episode_livre.py` (NOUVEAU) - 430 lignes
+- `nbs/test_mongo_episode_livre.py` (NOUVEAU) - 225 lignes
+
+**Changements:**
+- Création de la classe `EpisodeLivre` héritant de `BaseEntity`
+- Collection `episode_livres` pour lier épisodes et livres (relation many-to-many)
+- Métadonnées optimisées : épisode (titre, date), livre (auteur, titre, éditeur), notes/critiques
+- Méthodes de recherche : `find_by_livre()`, `find_by_auteur()`, `find_by_episode()`
+- Recherche textuelle : `search_books_by_text()` pour autocomplétion
+- Intégration seamless avec `AvisCritiquesParser` via `extract_from_avis_summary()`
+- Validation de collection avec fonction utilitaire
+- Tests unitaires exhaustifs (12 tests, 100% de succès)
+
+**Impact:**
+- Infrastructure prête pour stockage des relations épisode ↔ livre
+- Méthodes de recherche optimisées pour la nouvelle interface utilisateur
+- Intégration validée avec le parser (test d'intégration réussi)
+- Pattern cohérent avec l'architecture BaseEntity existante
+- Support de recherche textuelle pour autocomplétion
+
+**Tests de non-régression:**
+- ✅ Tests unitaires (12/12 passés)
+- ✅ Test d'intégration avec AvisCritiquesParser (2 livres créés)
+- ✅ Vérification classes mongo existantes (Livre, Auteur, BaseEntity)
+- ✅ Aucune interférence avec code existant
+
+**Effets de bord découverts:**
+- Pattern BaseEntity nécessite nom unique → utilisation `episode_oid_livre_oid`
+- MongoDB ResourceWarnings dans tests (normaux pour tests unitaires)
+- Timestamps automatiques pour traçabilité des modifications
+
+**Rollback:**
+- Suppression des fichiers `nbs/mongo_episode_livre.py` et `nbs/test_mongo_episode_livre.py`
+- Drop de la collection `episode_livres` si créée
+- Aucun impact sur collections/code existant
+
+---
+
+**Prochaine étape:** Création du moteur de recherche `AvisSearchEngine` (`nbs/avis_search.py`)
