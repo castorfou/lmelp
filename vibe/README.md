@@ -61,5 +61,39 @@ Compile ensuite dans le repertoire vibe/<<<new branch>>>/Phase_1:
 2. impact-analysis.md : Analyse d'impact sur le code existant
 3. integration-strategy.md : Stratégie d'intégration
 ```
-## Phase 2 - Increment planification
+## Phase 2 - adapted Increment planification
 
+Prends cette spécification de modification et le contexte du projet :
+
+<MODIFICATION_SPEC>
+[Coller modification-spec.md]
+</MODIFICATION_SPEC>
+
+<PROJECT_CONTEXT>
+[Coller les parties pertinentes de output.txt ou project-summary.md]
+</PROJECT_CONTEXT>
+
+Crée un plan qui :
+1. Minimise les modifications du code existant
+2. Respecte les patterns et conventions actuels
+3. Permet un rollback facile si nécessaire
+
+Génère dans vibe/<<<new branch>>>/Phase_2:
+
+### modification-plan.csv
+Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
+TODO,CREATE/MODIFY/REFACTOR,[fichier],[New/Update/Refactor],HIGH,[Low/Medium/High],[état actuel],[état cible],[tests à modifier],[stratégie rollback]
+
+### incremental-prompts.md
+Des prompts pour chaque modification qui :
+- Incluent le contexte nécessaire du code existant
+- Définissent précisément les changements
+- Préservent la compatibilité
+- Incluent les tests de régression
+
+### migration-checklist.md
+- [ ] Backup du code actuel
+- [ ] Tests de régression passent
+- [ ] Nouvelles fonctionnalités implémentées
+- [ ] Documentation mise à jour
+- [ ] Code review effectuée

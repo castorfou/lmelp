@@ -1,0 +1,14 @@
+Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
+TODO,CREATE,nbs/avis_critiques_parser.py,New,HIGH,High,N/A,Parser pour extraire livres/auteurs des avis critiques existants,Nouveaux tests unitaires pour parser,Suppression du fichier
+TODO,CREATE,nbs/mongo_episode_livre.py,New,HIGH,Medium,N/A,Classe EpisodeLivre pour gérer collection episode_livres,Nouveaux tests unitaires pour EpisodeLivre,Suppression du fichier + drop collection
+TODO,CREATE,nbs/avis_search.py,New,HIGH,Medium,N/A,Moteur de recherche autocomplete fuzzy,Nouveaux tests unitaires pour recherche,Suppression du fichier
+TODO,CREATE,scripts/migrate_avis_to_episode_livres.py,New,HIGH,High,N/A,Script de migration one-shot des avis existants,Tests de validation migration,Suppression du fichier + drop collection
+TODO,CREATE,ui/components/book_autocomplete.py,New,MEDIUM,Medium,N/A,Composant Streamlit pour autocomplétion livre/auteur,Tests UI nouveaux,Suppression du fichier
+TODO,REFACTOR,ui/pages/4_avis_critiques.py,Refactor,HIGH,High,Page unique navigation épisodes,Page avec onglets Par Episode/Par Livre-Auteur,Tests non-régression onglet Episode,Git revert vers version précédente
+TODO,CREATE,scripts/create_mongodb_indexes.py,New,MEDIUM,Low,N/A,Script création index MongoDB optimisés,Tests performance requêtes,Suppression index + fichier
+TODO,CREATE,tests/test_avis_parser.py,New,MEDIUM,Medium,N/A,Tests unitaires parser avis critiques,N/A,Suppression du fichier
+TODO,CREATE,tests/test_episode_livre.py,New,MEDIUM,Medium,N/A,Tests unitaires classe EpisodeLivre,N/A,Suppression du fichier
+TODO,CREATE,tests/test_avis_search.py,New,MEDIUM,Medium,N/A,Tests unitaires moteur recherche,N/A,Suppression du fichier
+TODO,MODIFY,ui/pages/2_auteurs.py,Update,LOW,Low,Page simple affichage auteurs,Ajout liens vers avis critiques si disponibles,Tests existants + nouveaux,Git revert modifs
+TODO,MODIFY,ui/pages/3_livres.py,Update,LOW,Low,Page simple affichage livres,Ajout liens vers avis critiques si disponibles,Tests existants + nouveaux,Git revert modifs
+TODO,CREATE,docs/recherche_avis.md,New,LOW,Low,N/A,Documentation utilisateur nouvelle fonctionnalité,N/A,Suppression du fichier
