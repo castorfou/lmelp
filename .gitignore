@@ -9,3 +9,4 @@ nbs/french_authors_cache.json
 .vscode/settings.json
 .gitignore
 .venv/
+scripts/migration_avis_*.log
