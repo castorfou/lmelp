@@ -307,6 +307,9 @@ def afficher_selection_episode():
 
     # Légende pour les icônes
     st.caption("🟢 = Résumé d'avis critiques disponible | ⚪ = Résumé à générer")
+    st.caption(
+        "⌨️ **Navigation clavier** : utilisez les flèches ← → pour naviguer entre les épisodes"
+    )
 
     # Navigation et sélection d'épisode avec alignement vertical
     col_nav1, col_nav2, col_nav3 = st.columns([1, 4, 1])
@@ -362,6 +365,106 @@ def afficher_selection_episode():
                 0, st.session_state.selected_episode_index - 1
             )
             st.rerun()
+
+    # Ajouter la navigation clavier après que les boutons soient créés
+    st.components.v1.html(
+        """
+        <script>
+        // Attendre que la page soit complètement chargée
+        setTimeout(function() {
+            function findButtonByText(text) {
+                const buttons = window.parent.document.querySelectorAll('button');
+                for (let button of buttons) {
+                    if (button.textContent.includes(text)) {
+                        return button;
+                    }
+                }
+                return null;
+            }
+
+            // Gestionnaire d'événements pour les touches de clavier
+            function handleKeyboard(event) {
+                // Vérifier que l'utilisateur n'est pas en train de taper dans un champ
+                if (event.target.tagName.toLowerCase() === 'input' || 
+                    event.target.tagName.toLowerCase() === 'textarea' ||
+                    event.target.contentEditable === 'true') {
+                    return;
+                }
+                
+                if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    const prevBtn = findButtonByText('⬅️ Précédent');
+                    if (prevBtn && !prevBtn.disabled) {
+                        prevBtn.click();
+                        showNavigationFeedback('← Précédent');
+                    }
+                } else if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    const nextBtn = findButtonByText('Suivant ➡️');
+                    if (nextBtn && !nextBtn.disabled) {
+                        nextBtn.click();
+                        showNavigationFeedback('Suivant →');
+                    }
+                }
+            }
+
+            // Afficher un feedback visuel lors de la navigation
+            function showNavigationFeedback(text) {
+                // Supprimer l'ancien indicateur s'il existe
+                const existing = window.parent.document.getElementById('keyboard-nav-indicator');
+                if (existing) {
+                    existing.remove();
+                }
+
+                const indicator = window.parent.document.createElement('div');
+                indicator.id = 'keyboard-nav-indicator';
+                indicator.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: rgba(0, 123, 255, 0.9);
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 4px;
+                    z-index: 9999;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                    font-size: 14px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                    animation: slideIn 0.3s ease-out;
+                `;
+                indicator.textContent = text;
+                
+                // Ajouter l'animation CSS
+                const style = window.parent.document.createElement('style');
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                if (!window.parent.document.getElementById('keyboard-nav-styles')) {
+                    style.id = 'keyboard-nav-styles';
+                    window.parent.document.head.appendChild(style);
+                }
+                
+                window.parent.document.body.appendChild(indicator);
+                
+                setTimeout(() => {
+                    if (indicator.parentNode) {
+                        indicator.style.animation = 'slideIn 0.3s ease-out reverse';
+                        setTimeout(() => indicator.remove(), 300);
+                    }
+                }, 1500);
+            }
+
+            // Ajouter l'écouteur d'événements
+            window.parent.document.addEventListener('keydown', handleKeyboard);
+            
+        }, 100); // Petit délai pour s'assurer que les boutons sont rendus
+        </script>
+        """,
+        height=0,
+    )
 
     # Filtrer le DataFrame pour trouver la ligne correspondant à la sélection
     episode = episodes_df[episodes_df["selecteur"] == selected]
@@ -607,7 +710,7 @@ def post_process_and_sort_summary(summary_text, episode_date=None):
 
         # Détecter le début du tableau coups de cœur
         if (
-            "2. COUPS DE COEUR DES CRITIQUES" in line
+            "2. COUPS DE CŒUR DES CRITIQUES" in line
             or "2. COUPS DE CŒUR DES CRITIQUES" in line
         ):
             in_main_table = False
