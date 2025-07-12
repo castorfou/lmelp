@@ -97,3 +97,58 @@ Des prompts pour chaque modification qui :
 - [ ] Nouvelles fonctionnalités implémentées
 - [ ] Documentation mise à jour
 - [ ] Code review effectuée
+
+## Phase 3 - Exécution avec Préservation (Adaptée)
+
+
+Je vais modifier le projet existant. Pour chaque session :
+
+CONTEXTE ACTUEL :
+[Coller les fichiers pertinents actuels ou utiliser repomix]
+
+MODIFICATION À FAIRE :
+[Référencer la ligne du modification-plan.csv]
+
+Pour chaque modification :
+1. Montre d'abord les changements exacts (diff style)
+2. Explique pourquoi ces changements sont nécessaires
+3. Génère le code modifié complet
+4. Adapte/crée les tests
+5. Vérifie qu'aucune régression n'est introduite
+
+Après chaque modification, mets à jour :
+- modification-plan.csv : Status → DONE, ajoute Result Notes
+- Crée un git-friendly changelog entry
+- Note tout effet de bord découvert
+
+### Phase 4 : Documentation et Analyse Post-Modification
+
+Maintiens ces fichiers spécifiques aux modifications :
+
+dans vibe/<<<new branch>>>/Phase_4:
+
+## modification-log.md
+[Date] - [Feature/Fix]
+- Fichiers modifiés : [liste avec lignes changées]
+- Raison : [justification]
+- Impact : [effets sur le système]
+- Tests : [nouveaux/modifiés]
+- Rollback : [comment revenir en arrière]
+
+## regression-tests.md
+Liste des tests à exécuter pour vérifier qu'aucune régression :
+- [ ] [Test 1] - [Fichier] - [Résultat attendu]
+- [ ] [Test 2] - [Fichier] - [Résultat attendu]
+
+## technical-debt.md
+Dette technique ajoutée/résolue :
+- Résolue : [description]
+- Ajoutée : [description + plan pour la résoudre]
+- À surveiller : [points d'attention]
+
+## code-review-notes.md
+Points à vérifier en revue de code :
+- Respect des conventions existantes
+- Performance maintenue/améliorée
+- Sécurité préservée
+- Documentation à jour
