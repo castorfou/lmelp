@@ -21,13 +21,13 @@ Voici le code source de mon projet existant @vibe/<<<new branch>>>/output.txt.
 
 Analyse-le et génère :
 
-1. vibe/<<<new branch>>>/project-summary.md : Vue d'ensemble du projet
+1. vibe/<<<new branch>>>/Phase_0/project-summary.md : Vue d'ensemble du projet
    - Architecture actuelle
    - Technologies utilisées
    - Structure des fichiers
    - Patterns identifiés
    
-2. vibe/<<<new branch>>>/current-state.md : État actuel
+2. vibe/<<<new branch>>>/Phase_0/current-state.md : État actuel
    - Fonctionnalités existantes
    - Points forts du code
    - Problèmes identifiés
@@ -56,8 +56,10 @@ Pose-moi des questions pour comprendre :
 - Les risques de régression
 - La stratégie de migration si nécessaire
 
-Compile ensuite dans le repertoire vibe/<<<new branch>>>:
+Compile ensuite dans le repertoire vibe/<<<new branch>>>/Phase_1:
 1. modification-spec.md : Spécification des changements
 2. impact-analysis.md : Analyse d'impact sur le code existant
 3. integration-strategy.md : Stratégie d'intégration
 ```
+## Phase 2 - Increment planification
+
