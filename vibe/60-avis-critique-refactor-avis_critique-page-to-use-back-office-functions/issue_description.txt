@@ -1,0 +1,10 @@
+[avis critique] refactor avis_critique page to use back-office functions
+
+extract DB functions used to store transcriptions in avis_critique page
+
+use the same logic as the one in nbs/py mongo helper livres.ipynb
+
+create unit test for mongo_avis_critique.py
+
+create unit test for the ui page
+
