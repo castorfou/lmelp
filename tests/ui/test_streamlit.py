@@ -79,6 +79,79 @@ class TestStreamlitComponents:
         assert all("pages/" in page for page in expected_pages)
         assert all(page.endswith(".py") for page in expected_pages)
 
+    def test_pages_existence_and_completeness(self):
+        """Test que toutes les pages attendues existent et qu'il n'y en a pas d'autres"""
+        import os
+
+        pages_directory = "/workspaces/lmelp/ui/pages"
+        expected_pages = {
+            "1_episodes.py",
+            "2_auteurs.py",
+            "3_livres.py",
+            "4_avis_critiques.py",
+        }
+
+        # Vérifier que le répertoire pages existe
+        assert os.path.exists(
+            pages_directory
+        ), f"Le répertoire {pages_directory} n'existe pas"
+
+        # Lister tous les fichiers .py dans le répertoire pages
+        actual_pages = set()
+        for file in os.listdir(pages_directory):
+            if file.endswith(".py") and not file.startswith("__"):
+                actual_pages.add(file)
+
+        # Assert que les pages correspondent exactement
+        assert (
+            actual_pages == expected_pages
+        ), f"Pages attendues: {expected_pages}, Pages trouvées: {actual_pages}"
+
+        # Vérifier individuellement l'existence de chaque page
+        for page in expected_pages:
+            page_path = os.path.join(pages_directory, page)
+            assert os.path.isfile(
+                page_path
+            ), f"La page {page} n'existe pas à {page_path}"
+
+        # Vérifier qu'il n'y a pas de pages supplémentaires
+        extra_pages = actual_pages - expected_pages
+        assert len(extra_pages) == 0, f"Pages non attendues trouvées: {extra_pages}"
+
+        # Vérifier qu'aucune page attendue ne manque
+        missing_pages = expected_pages - actual_pages
+        assert len(missing_pages) == 0, f"Pages attendues manquantes: {missing_pages}"
+
+    def test_pages_content_basic_validation(self):
+        """Test que chaque page contient du contenu basique valide"""
+        import os
+
+        pages_directory = "/workspaces/lmelp/ui/pages"
+        expected_pages = [
+            "1_episodes.py",
+            "2_auteurs.py",
+            "3_livres.py",
+            "4_avis_critiques.py",
+        ]
+
+        for page in expected_pages:
+            page_path = os.path.join(pages_directory, page)
+
+            # Vérifier que le fichier existe et n'est pas vide
+            assert os.path.isfile(page_path), f"La page {page} n'existe pas"
+
+            # Lire le contenu du fichier
+            with open(page_path, "r", encoding="utf-8") as f:
+                content = f.read()
+
+            # Vérifier que le fichier n'est pas vide
+            assert len(content.strip()) > 0, f"La page {page} est vide"
+
+            # Vérifier que le fichier contient du code Python basique
+            assert (
+                "import" in content or "st." in content
+            ), f"La page {page} ne semble pas contenir de code Streamlit valide"
+
     def test_card_components_structure(self):
         """Test de la structure des composants card"""
         expected_cards = [
