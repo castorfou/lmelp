@@ -40,3 +40,27 @@ class TestFixturesPackage:
         """Test load_sample_text avec fichier inexistant"""
         with pytest.raises(FileNotFoundError, match="Fichier de test non trouvé"):
             load_sample_text("nonexistent.txt")
+
+    def test_sample_data_dir_exists(self):
+        """Test que le répertoire data existe après T014"""
+        assert SAMPLE_DATA_DIR.exists()
+        assert SAMPLE_DATA_DIR.is_dir()
+
+    def test_load_sample_config_json(self):
+        """Test load_sample_json avec le fichier sample_config.json créé par T014"""
+        # ACT : Charger le fichier de configuration d'exemple
+        config_data = load_sample_json("sample_config.json")
+
+        # ASSERT : Vérifier la structure attendue
+        assert isinstance(config_data, dict)
+        assert "_description" in config_data
+        assert "environment_variables" in config_data
+        assert "default_values" in config_data
+        assert "test_scenarios" in config_data
+        assert "validation_data" in config_data
+
+        # Vérifier quelques variables d'environnement spécifiques
+        env_vars = config_data["environment_variables"]
+        assert "RSS_LMELP_URL" in env_vars
+        assert "AZURE_API_KEY" in env_vars
+        assert "GEMINI_API_KEY" in env_vars

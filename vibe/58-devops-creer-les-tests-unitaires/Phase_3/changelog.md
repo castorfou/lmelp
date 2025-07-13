@@ -60,3 +60,71 @@
 - **Documentation** : Création de `docs/import-strategy.md`
 - **Test** : `pytest tests/unit/test_config.py -v`
 - **Rollback** : `git checkout tests/unit/test_config.py docs/import-strategy.md`
+
+### [T008] DONE - .gitignore pour tests
+- **Fichier modifié** : `.gitignore`
+- **Ajouté** : `.pytest_cache/`, `.coverage`, `.coverage.*`, `htmlcov/`
+- **Impact** : Exclusion des fichiers temporaires de tests
+- **Test** : Validation que pytest et coverage n'ajoutent plus de fichiers indésirables
+- **Rollback** : `git checkout .gitignore`
+
+### [T009] DONE - Documentation tests dans README
+- **Fichier modifié** : `README.md`
+- **Ajouté** : Section "Tests" sous "Pour développer" avec commandes de base
+- **Contenu** : pytest, coverage, liens vers guide détaillé
+- **Impact** : Documentation utilisateur accessible
+- **Test** : Validation cohérence des commandes documentées
+- **Rollback** : `git checkout README.md`
+
+### [T010] DONE - Guide complet des tests unitaires
+- **Fichier créé** : `docs/readme_unit_test.md`
+- **Contenu** : Guide détaillé patterns ARRANGE-ACT-ASSERT, mocking, fixtures, couverture
+- **Organisation** : Sections patterns, mocking, fixtures, coverage, troubleshooting
+- **Impact** : Documentation technique complète pour l'équipe
+- **Rollback** : `git rm docs/readme_unit_test.md`
+
+### [T011] DONE - Intégration documentation mkdocs
+- **Fichier modifié** : `mkdocs.yml`
+- **Ajouté** : Entrée "unit tests guide: readme_unit_test.md" dans navigation
+- **Impact** : Documentation tests accessible via site documentation
+- **Test** : Validation structure mkdocs
+- **Rollback** : `git checkout mkdocs.yml`
+
+### [T012] DONE - Tests config.py exhaustifs - 97% coverage !
+- **Fichier étendu** : `tests/unit/test_config.py` (18 tests finaux)
+- **Nouvelles fonctions** : get_DB_VARS, get_WEB_filename, toutes les clés API, get_git_root
+- **Organisation finale** : 5 classes (TestConfig, TestConfigAzureOpenAI, TestConfigAudioPath, TestConfigDatabaseWeb, TestConfigApiKeys, TestConfigGitRoot)
+- **Coverage** : 97% de nbs/config.py (60/62 lignes)
+- **Résultat** : ✅ 18/18 tests PASSED - EXCELLENT !
+- **Qualité** : Tests complets avec edge cases, mocking approprié
+- **Test** : `pytest tests/unit/test_config.py --cov=nbs.config`
+- **Rollback** : `git checkout tests/unit/test_config.py`
+
+### [T013] DONE - Package fixtures avec utilitaires
+- **Fichier créé** : `tests/fixtures/__init__.py`
+- **Contenu** : Package pour données de test avec load_sample_json/text utilities
+- **Structure** : FIXTURES_DIR, SAMPLE_DATA_DIR, fonctions de chargement avec gestion d'erreurs
+- **Documentation** : Commentaires détaillés usage et organisation
+- **Tests créés** : `tests/unit/test_fixtures.py` (6 tests de validation)
+- **Résultat** : ✅ 6/6 nouveaux tests PASSED + 18/18 tests config (aucune régression)
+- **Impact** : Infrastructure fixtures opérationnelle pour données de test centralisées
+- **Test** : `pytest tests/unit/test_fixtures.py -v`
+- **Rollback** : `rm -rf tests/fixtures/`
+
+### [T014] DONE - Configuration d'exemple pour tests
+- **Répertoire créé** : `tests/fixtures/data/`
+- **Fichier créé** : `tests/fixtures/data/sample_config.json` (77 lignes, 2091 bytes)
+- **Structure JSON** : 
+  - environment_variables (11 vars de test : RSS, Azure, Gemini, OpenAI, Google, DB)
+  - default_values (valeurs par défaut attendues)
+  - test_scenarios (3 scénarios : minimal, full_azure, missing_optional)
+  - validation_data (URLs et clés API valides/invalides)
+- **Tests ajoutés** : 2 nouveaux tests dans test_fixtures.py
+  - test_sample_data_dir_exists : Validation création répertoire data
+  - test_load_sample_config_json : Validation chargement JSON et structure
+- **Résultat** : ✅ 26/26 tests PASSED (18 config + 8 fixtures)
+- **Coverage maintenue** : 97% sur nbs/config.py (aucune régression)
+- **Impact** : Infrastructure fixtures complètement opérationnelle pour T015+ et modules futurs
+- **Usage** : `load_sample_json("sample_config.json")` maintenant fonctionnel
+- **Test** : `pytest tests/ -v`
+- **Rollback** : `rm -rf tests/fixtures/data/`
