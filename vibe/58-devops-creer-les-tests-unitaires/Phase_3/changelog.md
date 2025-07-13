@@ -1,5 +1,29 @@
 # Changelog - Tests Unitaires
 
+## 2025-07-13 - BOUCLE 7 FINALISÉE ✅
+
+### [T026] DONE - Documentation GitHub Actions étendue
+- **Fichier modifié** : `docs/readme_github.md` (+70 lignes)
+- **Contenu** : Section complète "Tests automatiques" avec structure, métriques, commandes
+- **Impact** : Documentation enrichie pour développeurs, référence claire CI/CD
+- **Régression** : Aucune - documentation uniquement
+- **Rollback** : `git checkout docs/readme_github.md`
+
+### [T025] DONE - Tests basiques interface Streamlit
+- **Fichier créé** : `tests/ui/test_streamlit.py` (9 tests)
+- **Contenu** : Tests configuration, composants, logique métier, intégration UI-backend
+- **Impact** : +9 tests UI, total 124 tests, mocking streamlit/streamlit_card/ui_tools
+- **Test** : `pytest tests/ui/test_streamlit.py -v` (9 passed)
+- **Régression** : Aucune - tous les 124 tests passent
+- **Rollback** : `rm -rf tests/ui/`
+
+### [T024] DONE - Package pour tests UI
+- **Fichier créé** : `tests/ui/__init__.py`
+- **Contenu** : Package Python avec documentation scope tests interface Streamlit
+- **Impact** : Structure organisée tests UI, cohérence avec tests/unit tests/integration
+- **Régression** : Aucune - package import successful
+- **Rollback** : `rm -rf tests/ui/`
+
 ## 2025-07-13
 
 ### [T001] DONE - Configuration pytest de base
