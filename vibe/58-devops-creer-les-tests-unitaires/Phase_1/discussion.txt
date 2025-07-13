@@ -1,0 +1,79 @@
+Questions pour comprendre l'intégration
+1. Stratégie de test pour les différents composants
+Vous mentionnez plusieurs types de composants. Pour chacun, quelle approche privilégiez-vous ?
+
+Modules Python (nbs/*.py) : Tests unitaires classiques avec pytest ?
+
+> oui restons classique
+
+Scripts (scripts/*.py) : Tests d'intégration ou tests unitaires des fonctions utilitaires ?
+
+> je dirai les 2 mais je ne connais pas bien les tests d'integration. Donc j'aurais besoin d'avoir une vue d'ensemble des possibilités et on décidera au cas par cas ?
+
+Pages Streamlit : Tests de l'interface ou uniquement de la logique métier sous-jacente ?
+
+> je dirai les 2. Et comment teste-t-on l'interface ?
+
+MongoDB : Tests avec une base de test locale, mocks, ou TestContainers ?
+
+> je ne sais pas non plus. Idealement je ne voudrais pas avoir des données de test dans ma base de donnée donc les mocks semblent seduisant. Et je ne connais pas TestContainers
+
+2. Contraintes de rétrocompatibilité
+
+Devez-vous maintenir la compatibilité avec les notebooks existants qui importent les modules .py ?
+
+> oui
+
+Y a-t-il des scripts en production qui ne doivent pas être cassés ?
+
+> oui mais à discuter
+
+L'API Streamlit actuelle doit-elle rester identique ?
+
+> je ne comprends pas la question
+
+3. Gestion des dépendances externes
+Votre projet utilise des APIs externes (Google Gemini, Azure OpenAI, MongoDB). Comment souhaitez-vous gérer cela dans les tests ?
+
+Mocking complet des APIs ?
+Tests d'intégration avec des clés de test ?
+Mix des deux approches ?
+
+> je dirai test d'integration mais je n'ai pas de clé de test, donc en CI/CD ca sera du mocking
+
+4. Infrastructure de test
+Préférez-vous pytest, unittest, ou autre framework ?
+
+> quel est celui le plus adapté à mon cas ?
+
+Souhaitez-vous des tests de performance en plus des tests fonctionnels ?
+
+> non
+
+Comment gérer les fichiers de test (données audio, transcriptions) ? Fixtures ou données générées ?
+
+> je ne sais pas
+
+5. CI/CD et branches
+
+Voulez-vous que les tests bloquent les merges en cas d'échec ?
+
+> oui
+
+Faut-il des seuils de couverture de code ?
+
+> non
+
+Les tests doivent-ils tourner sur tous les Python supportés ou juste une version ?
+
+> juste une version
+
+6. Migration progressive
+Étant donné l'absence actuelle de tests, préférez-vous :
+
+Commencer par les modules les plus critiques (mongo.py, llm.py) ?
+Ou implémenter une structure complète dès le départ ?
+
+> commencons avec les modules les plus critiques
+
+Ces informations m'aideront à créer des spécifications précises et une stratégie d'intégration adaptée à vos contraintes.

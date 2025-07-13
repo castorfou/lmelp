@@ -6,10 +6,10 @@
 
 from project repo
 
-gco <<<new branch>>>
+gco [BRANCH-NAME]
 
 ```bash
-repomix --output vibe/<<<new branch>>>/output.txt --ignore "node_modules,dist,build"
+repomix --output vibe/[BRANCH-NAME]/output.txt --ignore "node_modules,dist,build"
 ```
 
 ### Generate project summary and current state
@@ -17,17 +17,17 @@ repomix --output vibe/<<<new branch>>>/output.txt --ignore "node_modules,dist,bu
 using gemini-cli
 
 ```
-Voici le code source de mon projet existant @vibe/<<<new branch>>>/output.txt. 
+Voici le code source de mon projet existant @vibe/[BRANCH-NAME]/output.txt. 
 
 Analyse-le et génère :
 
-1. vibe/<<<new branch>>>/Phase_0/project-summary.md : Vue d'ensemble du projet
+1. vibe/[BRANCH-NAME]/Phase_0/project-summary.md : Vue d'ensemble du projet
    - Architecture actuelle
    - Technologies utilisées
    - Structure des fichiers
    - Patterns identifiés
    
-2. vibe/<<<new branch>>>/Phase_0/current-state.md : État actuel
+2. vibe/[BRANCH-NAME]/Phase_0/current-state.md : État actuel
    - Fonctionnalités existantes
    - Points forts du code
    - Problèmes identifiés
@@ -38,12 +38,12 @@ Analyse-le et génère :
 
 the overall new feature is in github/issues
 
-copy/paste this issue to vibe/<<<new branch>>>/issue_description.txt
+copy/paste this issue to `vibe/[BRANCH-NAME]/issue_description.txt`
 
 using github-copilot
 
 ```
-Je veux ajouter une nouvelle fonctionnalite a ce projet. Voici comment je l'ai decrite @vibe/<<<new branch>>>/issue_description.txt
+Je veux ajouter une nouvelle fonctionnalite a ce projet. Voici comment je l'ai decrite @vibe/[BRANCH-NAME]/issue_description.txt
 
 Contexte du projet :
 - [@ project-summary.md]
@@ -51,16 +51,29 @@ Contexte du projet :
 
 Pose-moi des questions pour comprendre :
 - Comment cette modification s'intègre dans l'existant
-- Quels fichiers seront impactés=/;
+- Quels fichiers seront impactés
 - Les contraintes de rétrocompatibilité
 - Les risques de régression
 - La stratégie de migration si nécessaire
 
-Compile ensuite dans le repertoire vibe/<<<new branch>>>/Phase_1:
+Compile ensuite dans le repertoire vibe/[BRANCH-NAME]/Phase_1:
 1. modification-spec.md : Spécification des changements
 2. impact-analysis.md : Analyse d'impact sur le code existant
 3. integration-strategy.md : Stratégie d'intégration
 ```
+
+### discussion
+
+copilot va poser de nombreuses questions.
+conserve les dans vibe/[BRANCH-NAME]/Phase_1/discussion.txt
+
+réponds à ce que tu peux dans ce meme fichier en préfixant tes réponses par >
+
+```
+voici mes réponses (partielles)
+j'ai repris toutes tes questions et j'ai commencé mes réponses par un chevron (>)
+```
+
 ## Phase 2 - adapted Increment planification
 
 Prends cette spécification de modification et le contexte du projet :
@@ -78,7 +91,7 @@ Crée un plan qui :
 2. Respecte les patterns et conventions actuels
 3. Permet un rollback facile si nécessaire
 
-Génère dans vibe/<<<new branch>>>/Phase_2:
+Génère dans vibe/[BRANCH-NAME]/Phase_2:
 
 ### modification-plan.csv
 Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
@@ -128,13 +141,13 @@ Compile ensuite dans le repertoire `vibe/[BRANCH-NAME]/Phase_1`:
 
 
 
-### Phase 4 : Documentation et Analyse Post-Modification
+## Phase 4 : Documentation et Analyse Post-Modification
 
 Maintiens ces fichiers spécifiques aux modifications :
 
-dans vibe/<<<new branch>>>/Phase_4:
+dans vibe/[BRANCH-NAME]/Phase_4:
 
-## modification-log.md
+### modification-log.md
 [Date] - [Feature/Fix]
 - Fichiers modifiés : [liste avec lignes changées]
 - Raison : [justification]
@@ -142,18 +155,18 @@ dans vibe/<<<new branch>>>/Phase_4:
 - Tests : [nouveaux/modifiés]
 - Rollback : [comment revenir en arrière]
 
-## regression-tests.md
+### regression-tests.md
 Liste des tests à exécuter pour vérifier qu'aucune régression :
 - [ ] [Test 1] - [Fichier] - [Résultat attendu]
 - [ ] [Test 2] - [Fichier] - [Résultat attendu]
 
-## technical-debt.md
+### technical-debt.md
 Dette technique ajoutée/résolue :
 - Résolue : [description]
 - Ajoutée : [description + plan pour la résoudre]
 - À surveiller : [points d'attention]
 
-## code-review-notes.md
+### code-review-notes.md
 Points à vérifier en revue de code :
 - Respect des conventions existantes
 - Performance maintenue/améliorée
