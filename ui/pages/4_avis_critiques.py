@@ -1137,9 +1137,7 @@ def render_par_livre_auteur_tab():
     # Utiliser le composant d'autocomplétion avec affichage des épisodes
     try:
         render_book_autocomplete_with_episodes(
-            key="avis_critiques_search",
-            label="Rechercher un livre ou auteur",
-            help_text="Tapez pour rechercher dans tous les avis critiques disponibles",
+            key="avis_critiques_search", label="Rechercher un livre ou auteur"
         )
     except Exception as e:
         st.error(f"Erreur lors du rendu du composant d'autocomplétion: {str(e)}")

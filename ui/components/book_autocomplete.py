@@ -104,7 +104,9 @@ class BookAutocompleteComponent:
             formatted_results = {}
 
             for result in results:
-                formatted = self.search_engine.format_suggestion(result)
+                formatted = self.search_engine.format_suggestion(
+                    result.auteur_nom, result.livre_titre
+                )
                 suggestions.append(formatted)
                 formatted_results[formatted] = result
 
