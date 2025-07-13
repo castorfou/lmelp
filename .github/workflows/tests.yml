@@ -35,16 +35,7 @@ jobs:
         
     - name: Run tests avec coverage
       run: |
-        python -m pytest tests/ --cov=nbs.config --cov-report=term-missing --cov-report=xml --cov-fail-under=90
-        
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      if: matrix.python-version == 3.12
-      with:
-        file: ./tests/coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: false
+        python -m pytest tests/ --cov=nbs.config --cov-report=term-missing --cov-fail-under=90
         
     - name: Test infrastructure CI/CD (.env.test robustness)
       run: |
