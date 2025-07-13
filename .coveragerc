@@ -1,0 +1,31 @@
+# Configuration pour la couverture de tests
+[run]
+# Stocker le fichier de données dans le dossier tests
+data_file = tests/.coverage
+
+# Sources à analyser
+source = nbs, ui, scripts
+
+# Fichiers à exclure
+omit = 
+    tests/*
+    setup.py
+    */migrations/*
+    */venv/*
+    */.venv/*
+
+[report]
+# Ne pas afficher les lignes manquantes pour ces fichiers
+skip_covered = False
+show_missing = True
+
+# Pourcentage minimum requis
+fail_under = 90
+
+[html]
+# Répertoire pour les rapports HTML
+directory = tests/htmlcov
+
+[xml]
+# Fichier pour les rapports XML (CI/CD)
+output = tests/coverage.xml

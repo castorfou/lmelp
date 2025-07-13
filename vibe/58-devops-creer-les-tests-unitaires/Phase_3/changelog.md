@@ -48,3 +48,15 @@
 - **Impact** : Premier code de test fonctionnel avec traçabilité claire !
 - **Test** : `pytest tests/unit/test_config.py -v`
 - **Rollback** : `rm tests/unit/test_config.py`
+
+### [T007] DONE - Tests étendus pour config.py + debugging avancé !
+- **Fichier étendu** : `tests/unit/test_config.py` (6 tests ajoutés)
+- **Contenu** : Tests pour `get_azure_openai_keys()` et `get_audio_path()`
+- **Nouvelles techniques** : Mock de `os.getenv()`, tests de tuples, classes de tests
+- **Debugging** : Résolution conflit conftest.py vs variables .env réelles
+- **Organisation** : 3 classes de tests (TestConfig, TestConfigAzureOpenAI, TestConfigAudioPath)
+- **Résultat** : ✅ 9/9 tests PASSED en 0.17s 
+- **Apprentissage** : Gestion des conflits environnement, stratégies de mocking
+- **Documentation** : Création de `docs/import-strategy.md`
+- **Test** : `pytest tests/unit/test_config.py -v`
+- **Rollback** : `git checkout tests/unit/test_config.py docs/import-strategy.md`

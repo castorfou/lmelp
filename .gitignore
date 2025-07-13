@@ -8,4 +8,10 @@ db/masque_et_la_plume
 nbs/french_authors_cache.json
 .vscode/settings.json
 .gitignore
+
+# Tests et couverture
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
 .venv/
