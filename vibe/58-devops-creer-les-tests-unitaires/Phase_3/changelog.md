@@ -281,3 +281,47 @@
 - **Impact** : Infrastructure complète transcription pour tests LLM analysis, synthèses, extraction entités
 - **Test** : `pytest tests/unit/test_fixtures.py -k transcription -v`
 - **Rollback** : `rm tests/fixtures/data/sample_transcription.txt`
+
+### [T020] DONE - Tests module RSS complets
+- **Fichier créé** : `tests/unit/test_rss.py` (310 lignes)
+- **Couverture** : nbs/rss.py 100% - 2 fonctions + 1 classe Podcast avec 4 méthodes
+- **6 classes de tests** :
+  - TestExtraireDureeSummary : 6 tests extraction durée regex (formats standard/court, espaces, non trouvée, invalide, vide)
+  - TestExtraireUrlsRss : 4 tests extraction URLs (épisodes longs >50min, aucun long, types non-audio, flux vide)
+  - TestPodcastInit : 2 tests initialisation Podcast (succès, erreurs)
+  - TestPodcastGetMostRecentEpisode : 2 tests récupération épisode récent (trouvé, non trouvé)
+  - TestPodcastListLastLargeEpisodes : 2 tests listing épisodes longs (nouveaux épisodes, pas de date DB)
+  - TestPodcastStoreLastLargeEpisodes : 2 tests stockage épisodes (succès, pas de MAJ)
+  - TestRSSConstantsAndImports : 2 tests constants + imports module
+- **Techniques avancées** :
+  - Mock sophistiqué sys.modules pour feedparser, pymongo.collection, mongo, config
+  - Exclusion pytz du mock global pour permettre timezone handling réel
+  - Mock feedparser.parse avec structure entries/enclosures réaliste
+  - Mock MongoDB collections avec find_one, insert_many, update_many
+  - Tests isolation complète (zero appels RSS réels)
+- **Résultat** : ✅ 101/101 tests PASSED (81 précédents + 20 RSS)
+- **Coverage parfaite** : nbs/rss.py 100% (toutes fonctions/méthodes testées)
+- **Impact** : MODULE RSS ENTIÈREMENT TESTÉ ! Fonctions extraction + classe Podcast complète
+- **Qualité** : Mocking isolation externe (HTTP, DB, config), patterns ARRANGE-ACT-ASSERT
+- **Test** : `pytest tests/unit/test_rss.py --cov=rss --cov-report=term-missing`
+- **Rollback** : `rm tests/unit/test_rss.py`
+
+### [T021] DONE - Flux RSS exemple pour tests
+- **Fichier créé** : `tests/fixtures/data/sample_rss_feed.xml` (118 lignes)
+- **Contenu RSS complet** : Flux "Le Masque et la Plume" authentique
+  - 8 épisodes avec métadonnées complètes (titre, description, durée, enclosure)
+  - Épisodes longs >50min : 58:23, 63:12, 75:22 (pour tests extraire_urls_rss)
+  - Épisodes courts <50min : 35:08, 18:45 (pour edge cases)
+  - Contenu non-audio : 1 vidéo mp4 (pour test filtrage types)
+  - Structure XML valide avec namespaces iTunes et Atom
+  - Dates pubDate correctes, descriptions réalistes
+- **Tests ajoutés** : 3 nouveaux tests dans test_fixtures.py
+  - test_load_sample_rss_feed_xml : Chargement et validation XML de base
+  - test_sample_rss_feed_structure : Validation structure RSS (channel, items, enclosures)
+  - test_sample_rss_feed_test_scenarios : Validation scénarios test (durées variées, types contenu)
+- **Patterns RSS** : "Livres:", "Théâtre:", "Cinéma:", durées variées, audio/mpeg + video/mp4
+- **Résultat** : ✅ 104/104 tests PASSED (101 précédents + 3 RSS fixtures)
+- **Usage** : `load_sample_text("sample_rss_feed.xml")` pour tests parsing RSS
+- **Impact** : Infrastructure complète RSS pour tests feedparser, extraction épisodes, filtrage
+- **Test** : `pytest tests/unit/test_fixtures.py -k rss -v`
+- **Rollback** : `rm tests/fixtures/data/sample_rss_feed.xml`

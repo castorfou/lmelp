@@ -418,3 +418,70 @@ class TestFixturesPackage:
         assert (
             len(found_editeurs) > 0
         ), "Au moins un éditeur connu devrait être mentionné"
+
+    def test_load_sample_rss_feed_xml(self):
+        """Test : charger le fichier RSS exemple"""
+        # ACT
+        rss_content = load_sample_text("sample_rss_feed.xml")
+
+        # ASSERT : Contenu XML valide
+        assert rss_content is not None, "Le contenu RSS ne doit pas être None"
+        assert len(rss_content) > 0, "Le contenu RSS ne doit pas être vide"
+        assert (
+            "<?xml" in rss_content
+        ), "Le fichier doit commencer par une déclaration XML"
+        assert "<rss" in rss_content, "Le fichier doit contenir une balise RSS"
+        assert "</rss>" in rss_content, "Le fichier doit se terminer par </rss>"
+
+    def test_sample_rss_feed_structure(self):
+        """Test : vérifier la structure du flux RSS exemple"""
+        # ACT
+        rss_content = load_sample_text("sample_rss_feed.xml")
+
+        # ASSERT : Structure RSS standard
+        required_elements = [
+            "<channel>",
+            "<title>Le Masque et la Plume</title>",
+            "<description>",
+            "<item>",
+            "<enclosure",
+            "<itunes:duration>",
+            "<pubDate>",
+        ]
+
+        for element in required_elements:
+            assert (
+                element in rss_content
+            ), f"L'élément '{element}' doit être présent dans le RSS"
+
+        # Vérifier qu'il y a plusieurs épisodes
+        episode_count = rss_content.count("<item>")
+        assert (
+            episode_count >= 5
+        ), f"Il devrait y avoir au moins 5 épisodes, trouvés: {episode_count}"
+
+    def test_sample_rss_feed_test_scenarios(self):
+        """Test : vérifier que le RSS contient les scénarios de test nécessaires"""
+        # ACT
+        rss_content = load_sample_text("sample_rss_feed.xml")
+
+        # ASSERT : Scénarios de test pour extraire_urls_rss()
+        # Épisodes longs (>50min)
+        assert "58:23" in rss_content, "Doit contenir un épisode de ~58 minutes"
+        assert "63:12" in rss_content, "Doit contenir un épisode de ~63 minutes"
+        assert "75:22" in rss_content, "Doit contenir un épisode de ~75 minutes"
+
+        # Épisodes courts (<50min)
+        assert "35:08" in rss_content, "Doit contenir un épisode de ~35 minutes"
+        assert "18:45" in rss_content, "Doit contenir un épisode de ~18 minutes"
+
+        # Contenu non-audio (pour test de filtrage)
+        assert (
+            "video/mp4" in rss_content
+        ), "Doit contenir un élément vidéo pour tester le filtrage"
+        assert "audio/mpeg" in rss_content, "Doit contenir des éléments audio normaux"
+
+        # Différents types de contenu
+        assert "Livres :" in rss_content, "Doit contenir des critiques de livres"
+        assert "Théâtre :" in rss_content, "Doit contenir des critiques de théâtre"
+        assert "Cinéma :" in rss_content, "Doit contenir des critiques de cinéma"
