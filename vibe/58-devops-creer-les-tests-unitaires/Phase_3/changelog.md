@@ -14,4 +14,9 @@
 - **Ajouté** : pytest>=7.0, pytest-mock>=3.10, pytest-env>=0.8, pytest-cov>=4.0
 - **Stratégie** : Intégration dans requirements existant (cohérent avec workflow uv)
 - **Impact** : Aucun - dépendances ajoutées uniquement  
-- **Rollback** : `git checkout .devcontainer/requirements.txt`
+### [T003] DONE - Package tests créé
+- **Fichier créé** : `tests/__init__.py`
+- **Contenu** : Commentaire descriptif pour package Python
+- **Impact** : Aucun - infrastructure de tests uniquement
+- **Test** : Import du package tests réussi
+- **Rollback** : `rm -rf tests/`

@@ -1,7 +1,7 @@
 ID,Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
 T001,DONE,CREATE,pytest.ini,New,BOUCLE1,Low,Inexistant,Configuration pytest avec paths et options - Créé avec testpaths=tests et options verbose,N/A,git rm pytest.ini
 T002,DONE,MODIFY,.devcontainer/requirements.txt,Update,BOUCLE1,Low,Requirements sans tests,Ajout dépendances pytest dans requirements existant (cohérent avec workflow uv),N/A,git checkout .devcontainer/requirements.txt
-T003,TODO,CREATE,tests/__init__.py,New,BOUCLE1,Low,Inexistant,Fichier vide pour package Python,N/A,Simple rm -rf tests/
+T003,DONE,CREATE,tests/__init__.py,New,BOUCLE1,Low,Inexistant,Package Python pour tests - Créé avec commentaire descriptif,N/A,Simple rm -rf tests/
 T004,TODO,CREATE,tests/conftest.py,New,BOUCLE1,Medium,Inexistant,Configuration pytest globale avec fixtures de base,N/A,Simple rm -rf tests/
 T005,TODO,CREATE,tests/unit/__init__.py,New,BOUCLE1,Low,Inexistant,Package pour tests unitaires,N/A,Simple rm -rf tests/
 T006,TODO,CREATE,tests/unit/test_simple.py,New,BOUCLE1,Low,Inexistant,Test ultra-simple pour valider la boucle (import config),N/A,Simple rm -rf tests/
