@@ -1,7 +1,7 @@
 ID,Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
 T001,DONE,CREATE,tests/fixtures/data/avis_critique_data.json,New,BOUCLE1,Low,N/A,Fixtures pour tests AvisCritique - 3 valides 7 tronqués 1 edge case,N/A,Suppression simple
 T002,DONE,CREATE,tests/unit/test_mongo_avis_critique.py,New,BOUCLE1,Medium,N/A,Tests unitaires complets classe AvisCritique,N/A,Suppression simple
-T003,TODO,CREATE,tests/unit/test_date_utils.py,New,BOUCLE1,Low,N/A,Tests unitaires pour utilitaires dates,N/A,Suppression simple
+T003,DONE,CREATE,tests/unit/test_date_utils.py,New,BOUCLE1,Low,N/A,Tests unitaires pour utilitaires dates,N/A,Suppression simple
 T004,TODO,CREATE,nbs/date_utils.py,New,BOUCLE1,Low,N/A,Utilitaire centralisation dates,tests/unit/test_date_utils.py,Suppression simple
 T005,TODO,REFACTOR,ui/pages/4_avis_critiques.py,Refactor,BOUCLE1,Medium,DATE_FORMAT hardcodé,Migration vers date_utils,tests/unit/test_date_utils.py,Restoration backup
 T006,TODO,SEARCH,grep -r "DATE_FORMAT\|%d %b %Y",Search,BOUCLE1,Low,Fonctions dates dispersées,Inventaire complet fonctions dates,N/A,N/A

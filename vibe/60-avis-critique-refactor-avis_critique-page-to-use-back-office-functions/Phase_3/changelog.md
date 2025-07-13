@@ -2,7 +2,7 @@
 
 ## [Phase 3] - 2025-07-13
 
-### T001 - Création des fixtures de test pour AvisCritique
+### T001 ✅ - Création des fixtures de test pour AvisCritique (2024-12-19)
 
 #### Added
 - `tests/fixtures/data/avis_critique_data.json` - Fixtures de test pour la classe AvisCritique
@@ -24,9 +24,52 @@
 - ObjectId MongoDB valides pour les tests
 - Couverture complète des cas de troncature identifiés dans le code existant
 
+### T002 ✅ - Création des tests unitaires AvisCritique (2024-12-19)
+
+#### Added
+- `tests/unit/test_mongo_avis_critique.py` - Tests unitaires complets pour AvisCritique
+  - Tests d'initialisation et constructeurs (avec/sans summary_text)
+  - Tests de validation (is_summary_truncated, debug_truncation_detection)
+  - Tests des méthodes de classe (from_oid, find_by_episode_and_entity, find_by_episode_id)
+  - Tests de représentation string et héritage BaseEntity
+  - Tests de cas limites (chaînes vides, caractères spéciaux, update_summary_text)
+  - Mock complet des dépendances MongoDB et config
+  - Intégration avec les fixtures de test
+
+#### Technical Details
+- Pattern TDD : 519 lignes de tests créés avant l'implémentation
+- Suit exactement les patterns de `test_mongo_livre.py`
+- Coverage complète des méthodes attendues d'AvisCritique
+- Mock sophistiqué pour BaseEntity et dépendances externes
+- Tests parametrés avec fixtures pour validation robuste
+
 #### Impact
-- Aucune régression : fichier de fixtures isolé
+- Aucune régression : tests isolés, pas d'impact sur l'existant
 - Base solide pour les tests TDD de la classe AvisCritique
 - Validation des patterns de détection de troncature existants
+
+### T003 ✅ - Création des tests unitaires pour date_utils (2024-12-19)
+
+#### Added
+- `tests/unit/test_date_utils.py` - Tests unitaires complets pour les utilitaires de dates
+  - Tests des constantes (DATE_FORMAT, LOCALE_FR)
+  - Tests de format_date() avec objets datetime/date et chaînes ISO
+  - Tests de parse_date() avec formats français, ISO et validation
+  - Tests de is_valid_date() avec validation robuste
+  - Tests de setup_french_locale() avec gestion des fallbacks
+  - Tests d'intégration (round-trip format/parse)
+  - Tests de cas limites (années bissextiles, limites d'années, tous les mois français)
+
+#### Technical Details
+- Pattern TDD : 31 tests créés avant l'implémentation du module date_utils
+- Couverture complète des fonctions de gestion des dates centralisées
+- Mock sophistiqué pour la gestion des locales système
+- Tests parametrés pour validation exhaustive des formats de dates
+- Gestion des erreurs et cas limites (None, chaînes vides, formats invalides)
+
+#### Impact  
+- Aucune régression : tests existants (test_mongo_livre.py) passent toujours
+- Base solide pour centralisation des fonctions de dates dispersées
+- Définition claire du comportement attendu pour les utilitaires de dates
 
 ---
