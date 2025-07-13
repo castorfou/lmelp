@@ -20,6 +20,7 @@ nav:
       - github: readme_github.md
       - uv devcontainer venv: readme_uv_devcontainer.md
       - import strategy: readme_import_strategy.md
+      - unit tests guide: readme_unit_test.md
 theme:
   name: material
 

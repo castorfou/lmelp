@@ -2,6 +2,7 @@
   - [environnements de dev python 🐍](#environnements-de-dev-python-)
   - [pre-commit ⏱️](#pre-commit-️)
   - [config vscode 🖥️](#config-vscode-️)
+  - [tests unitaires 🧪](#tests-unitaires-)
 - [😀 à propos de la doc](#-à-propos-de-la-doc)
 - [pour utiliser 🚀](#pour-utiliser-)
   - [💾 base de données mongodb](#-base-de-données-mongodb)
@@ -44,6 +45,33 @@ cat /proc/sys/fs/inotify/max_user_watches # to control it is applied
 or add `files.watcherExclude` directive in `.vscode/settings.json` 📁
 
 pour quelques astuces liées à vscode : [Vscode hints (sur github pages)](https://castorfou.github.io/lmelp/readme_vscode_hints/)
+
+## tests unitaires 🧪
+
+Le projet utilise **pytest** pour les tests unitaires avec une couverture de code élevée.
+
+```bash
+# Lancer tous les tests
+pytest
+
+# Tests avec couverture
+pytest --cov=nbs --cov-report=term-missing
+
+# Tests spécifiques
+pytest tests/unit/test_config.py -v
+
+# Rapport HTML de couverture
+pytest --cov=nbs --cov-report=html
+# Voir tests/htmlcov/index.html
+```
+
+**Structure des tests :**
+- `tests/unit/` : Tests unitaires par module
+- `tests/conftest.py` : Configuration et fixtures globales
+- `tests/.coverage` : Base de données de couverture
+- `tests/htmlcov/` : Rapports HTML de couverture
+
+**Documentation complète :** [Guide des tests unitaires](https://castorfou.github.io/lmelp/readme_unit_test/) 📋
 
 # 😀 à propos de la doc
 
