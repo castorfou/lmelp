@@ -1,105 +1,105 @@
 {
-  "valid_avis_critiques": [
+  "valid_avis": [
     {
       "_id": "507f1f77bcf86cd799439011",
-      "episode_oid": "676cc8e0f3e1a74b8c123456",
-      "episode_title": "Le Masque et la Plume du 15 janvier 2023",
-      "episode_date": "15 jan 2023",
-      "summary": "## 1. Livres présentés\n\n| Auteur | Titre | Genre | Note |\n|--------|-------|-------|------|\n| Victor Hugo | Les Misérables | Roman | ⭐⭐⭐⭐⭐ |\n| Marguerite Duras | L'Amant | Autobiographie | ⭐⭐⭐⭐ |\n| Albert Camus | L'Étranger | Roman philosophique | ⭐⭐⭐⭐⭐ |\n\n## 2. Avis critiques détaillés\n\n### Les Misérables - Victor Hugo\n\nExcellent roman qui traverse les siècles avec une pertinence remarquable. L'analyse sociale de Hugo reste d'une actualité saisissante. Les personnages de Jean Valjean et Javert incarnent parfaitement la dialectique entre justice et rédemption.\n\n### L'Amant - Marguerite Duras\n\nUn récit autobiographique d'une intensité rare. Duras maîtrise parfaitement l'art de la suggestion et de l'ellipse. Son style unique transforme une histoire personnelle en méditation universelle sur l'amour et la mémoire.\n\n### L'Étranger - Albert Camus\n\nChef-d'œuvre de la littérature française du XXe siècle. Camus développe avec brio la philosophie de l'absurde à travers le personnage de Meursault. Un livre essentiel qui questionne nos certitudes morales.\n\n## 3. Synthèse de l'émission\n\nÉmission de très haute qualité avec des analyses approfondies et nuancées. Les critiques ont su mettre en perspective ces œuvres majeures avec intelligence et passion.",
+      "episode_id": "676cc8e0f3e1a74b8c123456", 
+      "entity_type": "livre",
+      "entity_name": "Les Misérables",
+      "summary_text": "Excellent roman qui traverse les siècles avec une pertinence remarquable. L'analyse sociale de Hugo reste d'une actualité saisissante. Les personnages de Jean Valjean et Javert incarnent parfaitement la dialectique entre justice et rédemption.",
       "created_at": "2023-01-15T20:00:00Z",
       "updated_at": "2023-01-15T20:00:00Z"
     },
     {
       "_id": "507f1f77bcf86cd799439012",
-      "episode_oid": "676cc8e0f3e1a74b8c789012",
-      "episode_title": "Le Masque et la Plume du 8 mars 2023",
-      "episode_date": "8 mar 2023",
-      "summary": "## 1. Livres présentés\n\n| Auteur | Titre | Genre | Note |\n|--------|-------|-------|------|\n| Annie Ernaux | Les Années | Autobiographie | ⭐⭐⭐⭐⭐ |\n| Michel Houellebecq | Anéantir | Roman | ⭐⭐⭐ |\n\n## 2. Avis critiques détaillés\n\n### Les Années - Annie Ernaux\n\nUne œuvre magistrale qui capture l'évolution de la société française sur plusieurs décennies. Ernaux réinvente l'autobiographie en mêlant histoire personnelle et collective. Son style épuré sert parfaitement son propos sociologique.\n\n### Anéantir - Michel Houellebecq\n\nNouveau roman de Houellebecq qui confirme son talent pour décrypter les maux de la société contemporaine. Malgré quelques longueurs, l'auteur offre une vision lucide et grinçante de notre époque. Un style reconnaissable entre mille.\n\n## 3. Synthèse de l'émission\n\nÉmission équilibrée qui met en lumière deux approches différentes de la littérature contemporaine. Les débats ont été particulièrement enrichissants sur la question de l'engagement de l'écrivain.",
+      "episode_id": "676cc8e0f3e1a74b8c789012",
+      "entity_type": "livre", 
+      "entity_name": "Les Années",
+      "summary_text": "Une œuvre magistrale qui capture l'évolution de la société française sur plusieurs décennies. Ernaux réinvente l'autobiographie en mêlant histoire personnelle et collective. Son style épuré sert parfaitement son propos sociologique.",
       "created_at": "2023-03-08T20:00:00Z",
       "updated_at": "2023-03-08T20:00:00Z"
     },
     {
       "_id": "507f1f77bcf86cd799439013",
-      "episode_oid": "676cc8e0f3e1a74b8c345678",
-      "episode_title": "Le Masque et la Plume du 22 juin 2023",
-      "episode_date": "22 juin 2023",
-      "summary": "## 1. Livres présentés\n\n| Auteur | Titre | Genre | Note |\n|--------|-------|-------|------|\n| Leïla Slimani | Chanson douce | Thriller psychologique | ⭐⭐⭐⭐ |\n\n## 2. Avis critiques détaillés\n\n### Chanson douce - Leïla Slimani\n\nRoman percutant qui explore les relations de classe et les tensions sociales contemporaines. Slimani maîtrise parfaitement l'art du suspense psychologique. Une écriture ciselée au service d'un propos fort sur les inégalités modernes.\n\n## 3. Synthèse de l'émission\n\nÉmission courte mais intense, centrée sur un seul ouvrage analysé en profondeur. L'approche monographique permet une analyse plus fouillée.",
-      "created_at": "2023-06-22T20:00:00Z",
-      "updated_at": "2023-06-22T20:00:00Z"
+      "episode_id": "676cc8e0f3e1a74b8c345678",
+      "entity_type": "auteur",
+      "entity_name": "Albert Camus",
+      "summary_text": "Chef-d'œuvre de la littérature française du XXe siècle. Camus développe avec brio la philosophie de l'absurde à travers le personnage de Meursault. Un livre essentiel qui questionne nos certitudes morales.",
+      "created_at": "2023-04-12T20:00:00Z",
+      "updated_at": "2023-04-12T20:00:00Z"
     }
   ],
-  "truncated_avis_critiques": [
+  "truncated_avis": [
     {
       "_id": "507f1f77bcf86cd799439021",
-      "episode_oid": "676cc8e0f3e1a74b8c111111",
-      "episode_title": "Le Masque et la Plume du 10 avril 2023",
-      "episode_date": "10 avr 2023",
-      "summary": "## 1. Livres présentés\n\n| Auteur | Titre | Genre |\n|--------|-------|-------|\n| Patrick Modiano | Dans le café de la jeunesse perdue | Roman |\n\nRéponse de l'IA tronquée. Veuillez réessayer.",
-      "created_at": "2023-04-10T20:00:00Z",
-      "updated_at": "2023-04-10T20:00:00Z"
+      "episode_id": "676cc8e0f3e1a74b8c111111",
+      "entity_type": "livre",
+      "entity_name": "Roman Tronqué",
+      "summary_text": "**Erreur: La synthèse a été tronquée en raison de la limite de longueur. Veuillez relancer la génération pour obtenir une analyse complète.**",
+      "created_at": "2023-05-01T20:00:00Z",
+      "updated_at": "2023-05-01T20:00:00Z"
     },
     {
       "_id": "507f1f77bcf86cd799439022",
-      "episode_oid": "676cc8e0f3e1a74b8c222222",
-      "episode_title": "Le Masque et la Plume du 5 mai 2023",
-      "episode_date": "5 mai 2023",
-      "summary": "## 1. Livres présentés\n\n| Auteur | Titre**",
+      "episode_id": "676cc8e0f3e1a74b8c222222",
+      "entity_type": "livre",
+      "entity_name": "Analyse Incomplète",
+      "summary_text": "Ce livre présente des aspects intéressants mais l'analyse s'arrête brutalement en **",
+      "created_at": "2023-05-02T20:00:00Z",
+      "updated_at": "2023-05-02T20:00:00Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439023",
+      "episode_id": "676cc8e0f3e1a74b8c333333",
+      "entity_type": "livre",
+      "entity_name": "Résumé Court",
+      "summary_text": "Trop court",
+      "created_at": "2023-05-03T20:00:00Z",
+      "updated_at": "2023-05-03T20:00:00Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439024",
+      "episode_id": "676cc8e0f3e1a74b8c444444",
+      "entity_type": "livre",
+      "entity_name": "Continuation",
+      "summary_text": "Cette analyse continue mais s'arrête soudainement avec une flèche de continuation →",
+      "created_at": "2023-05-04T20:00:00Z",
+      "updated_at": "2023-05-04T20:00:00Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439025",
+      "episode_id": "676cc8e0f3e1a74b8c555555",
+      "entity_type": "livre",
+      "entity_name": "Tableau Incomplet",
+      "summary_text": "| Auteur | Titre | Note |\n|--------|-------|------|\n| Victor Hugo | Les Misérables |  |\n| Annie Ernaux |  |  |",
       "created_at": "2023-05-05T20:00:00Z",
       "updated_at": "2023-05-05T20:00:00Z"
     },
     {
-      "_id": "507f1f77bcf86cd799439023",
-      "episode_oid": "676cc8e0f3e1a74b8c333333",
-      "episode_title": "Le Masque et la Plume du 18 mai 2023",
-      "episode_date": "18 mai 2023",
-      "summary": "Court résumé incomplet",
-      "created_at": "2023-05-18T20:00:00Z",
-      "updated_at": "2023-05-18T20:00:00Z"
-    },
-    {
-      "_id": "507f1f77bcf86cd799439024",
-      "episode_oid": "676cc8e0f3e1a74b8c444444",
-      "episode_title": "Le Masque et la Plume du 3 juin 2023",
-      "episode_date": "3 juin 2023",
-      "summary": "## 1. Livres présentés\n\n→",
-      "created_at": "2023-06-03T20:00:00Z",
-      "updated_at": "2023-06-03T20:00:00Z"
-    },
-    {
-      "_id": "507f1f77bcf86cd799439025",
-      "episode_oid": "676cc8e0f3e1a74b8c555555",
-      "episode_title": "Le Masque et la Plume du 12 juillet 2023",
-      "episode_date": "12 juil 2023",
-      "summary": "## 1. Livres présentés\n\n| Auteur | Titre | Genre |\n|--------|-------|-------|\n| Amélie Nothomb | Premier sang | Roman |\n| David Foenkinos | |",
-      "created_at": "2023-07-12T20:00:00Z",
-      "updated_at": "2023-07-12T20:00:00Z"
-    },
-    {
       "_id": "507f1f77bcf86cd799439026",
-      "episode_oid": "676cc8e0f3e1a74b8c666666",
-      "episode_title": "Le Masque et la Plume du 25 août 2023",
-      "episode_date": "25 août 2023",
-      "summary": "",
-      "created_at": "2023-08-25T20:00:00Z",
-      "updated_at": "2023-08-25T20:00:00Z"
+      "episode_id": "676cc8e0f3e1a74b8c666666",
+      "entity_type": "livre",
+      "entity_name": "Résumé Vide",
+      "summary_text": "",
+      "created_at": "2023-05-06T20:00:00Z",
+      "updated_at": "2023-05-06T20:00:00Z"
     },
     {
       "_id": "507f1f77bcf86cd799439027",
-      "episode_oid": "676cc8e0f3e1a74b8c777777",
-      "episode_title": "Le Masque et la Plume du 15 septembre 2023",
-      "episode_date": "15 sep 2023",
-      "summary": "## 1. Livres présentés\n\n| Auteur | Titre | Genre |\n|--------|-------|-------|\n| Christine Angot | Un tournant de la vie |\n| ||",
-      "created_at": "2023-09-15T20:00:00Z",
-      "updated_at": "2023-09-15T20:00:00Z"
+      "episode_id": "676cc8e0f3e1a74b8c777777",
+      "entity_type": "livre",
+      "entity_name": "Tableau Malformé",
+      "summary_text": "| Auteur | Titre\n|--------|\n Victor Hugo | Les Misérables\n| Annie Ernaux",
+      "created_at": "2023-05-07T20:00:00Z",
+      "updated_at": "2023-05-07T20:00:00Z"
     }
   ],
   "edge_cases": [
     {
       "_id": "507f1f77bcf86cd799439031",
-      "episode_oid": "676cc8e0f3e1a74b8c999999",
-      "episode_title": "Le Masque et la Plume du 1er janvier 2023",
-      "episode_date": "1 jan 2023",
-      "summary": "## 1. Livres présentés\n\n(Aucun livre présenté dans cette émission spéciale)",
+      "episode_id": "676cc8e0f3e1a74b8c999999",
+      "entity_type": "émission",
+      "entity_name": "Émission spéc!@le Ñoël & été",
+      "summary_text": "Émission spéc!@le de Ñoël & été avec caractères spéciaux, accents et symboles divers: €£¥ 测试",
       "created_at": "2023-01-01T20:00:00Z",
       "updated_at": "2023-01-01T20:00:00Z"
     }
