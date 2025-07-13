@@ -18,6 +18,7 @@ nav:
       - about Google services: readme_google.md
       - data model: readme_data_model.md
       - github: readme_github.md
+      - uv devcontainer venv: readme_uv_devcontainer.md
 theme:
   name: material
 
