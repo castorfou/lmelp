@@ -3,7 +3,7 @@ T001,DONE,CREATE,tests/fixtures/data/avis_critique_data.json,New,BOUCLE1,Low,N/A
 T002,DONE,CREATE,tests/unit/test_mongo_avis_critique.py,New,BOUCLE1,Medium,N/A,Tests unitaires complets classe AvisCritique,N/A,Suppression simple
 T003,DONE,CREATE,tests/unit/test_date_utils.py,New,BOUCLE1,Low,N/A,Tests unitaires pour utilitaires dates,N/A,Suppression simple
 T004,DONE,CREATE,nbs/date_utils.py,New,BOUCLE1,Low,N/A,Utilitaire centralisation dates,tests/unit/test_date_utils.py,Suppression simple
-T005,TODO,REFACTOR,ui/pages/4_avis_critiques.py,Refactor,BOUCLE1,Medium,DATE_FORMAT hardcodé,Migration vers date_utils,tests/unit/test_date_utils.py,Restoration backup
+T005,DONE,REFACTOR,ui/pages/4_avis_critiques.py,Refactor,BOUCLE1,Medium,DATE_FORMAT hardcodé,Migration vers date_utils,tests/unit/test_date_utils.py,Restoration backup
 T006,TODO,SEARCH,grep -r "DATE_FORMAT\|%d %b %Y",Search,BOUCLE1,Low,Fonctions dates dispersées,Inventaire complet fonctions dates,N/A,N/A
 T007,TODO,REFACTOR,Multiple files,Refactor,BOUCLE1,Medium,Fonctions dates dispersées,Utilisation date_utils centralisé,tests/unit/test_date_utils.py,Restoration backup
 T008,TODO,TEST,pytest tests/unit/test_date_utils.py,Test,BOUCLE1,Medium,N/A,Tous tests date_utils passent,N/A,N/A

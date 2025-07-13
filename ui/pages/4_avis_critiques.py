@@ -17,6 +17,7 @@ st.set_page_config(
 from mongo_episode import Episodes, Episode
 from llm import get_azure_llm
 from mongo import get_collection
+from nbs.date_utils import DATE_FORMAT, format_date
 import pandas as pd
 import locale
 import re
@@ -32,11 +33,8 @@ st.write("Générez des résumés d'avis critiques à partir des transcriptions 
 # Afficher la date actuelle pour les captures d'écran
 from datetime import datetime
 
-current_date = datetime.now().strftime("%d %B %Y")
+current_date = format_date(datetime.now(), "%d %B %Y")
 st.caption(f"📅 {current_date}")
-
-
-DATE_FORMAT = "%d %b %Y"
 
 
 def get_summary_from_cache(episode_oid):
@@ -278,7 +276,7 @@ def afficher_selection_episode():
     # Trier par date décroissante AVANT de convertir en string
     episodes_df = episodes_df.sort_values("date", ascending=False)
 
-    episodes_df["date"] = episodes_df["date"].apply(lambda x: x.strftime(DATE_FORMAT))
+    episodes_df["date"] = episodes_df["date"].apply(lambda x: format_date(x))
 
     # Ajouter des indicateurs visuels dans le sélecteur
     def format_episode_selector(row):
@@ -612,7 +610,7 @@ def afficher_selection_episode():
         # Afficher le résumé en cache uniquement si aucun bouton n'a été cliqué
         elif cached_summary:
             st.info(
-                f"📄 Résumé existant (généré le {cached_summary['created_at'].strftime('%d %B %Y à %H:%M')})"
+                f"📄 Résumé existant (généré le {format_date(cached_summary['created_at'], '%d %B %Y à %H:%M')})"
             )
             st.subheader("📊 Résumé des avis critiques")
             st.markdown(cached_summary["summary"], unsafe_allow_html=True)
@@ -632,7 +630,7 @@ def post_process_and_sort_summary(summary_text, episode_date=None):
         if isinstance(episode_date, str):
             date_str = f" du {episode_date}"
         else:
-            date_str = f" du {episode_date.strftime('%d %B %Y')}"
+            date_str = f" du {format_date(episode_date, '%d %B %Y')}"
 
     # Supprimer diverses phrases explicatives que l'IA pourrait générer
     phrases_to_remove = [
@@ -848,7 +846,7 @@ def generate_critique_summary(transcription, episode_date=None):
         if isinstance(episode_date, str):
             date_str = f" du {episode_date}"
         else:
-            date_str = f" du {episode_date.strftime('%d %B %Y')}"
+            date_str = f" du {format_date(episode_date, '%d %B %Y')}"
 
     prompt = f"""
 Tu es un expert en critique littéraire qui analyse la transcription de l'émission "Le Masque et la Plume" sur France Inter.

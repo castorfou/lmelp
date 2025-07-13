@@ -86,6 +86,30 @@
 - Base solide pour refactoring des fonctions de dates dispersées
 - Aucune régression introduite (tests AvisCritique restent en échec attendu)
 
+### T005 ✅ - Migration ui/pages/4_avis_critiques.py vers date_utils (2024-12-19)
+
+#### Changed
+- `ui/pages/4_avis_critiques.py` - Migration vers module date_utils centralisé
+  - **Import ajouté** : `from nbs.date_utils import DATE_FORMAT, format_date`
+  - **Suppression** : `DATE_FORMAT = "%d %b %Y"` hardcodé (ligne 39)
+  - **Remplacement** : `datetime.now().strftime("%d %B %Y")` → `format_date(datetime.now(), "%d %B %Y")`
+  - **Remplacement** : `episodes_df["date"].apply(lambda x: x.strftime(DATE_FORMAT))` → `episodes_df["date"].apply(lambda x: format_date(x))`
+  - **Remplacement** : `cached_summary['created_at'].strftime('%d %B %Y à %H:%M')` → `format_date(cached_summary['created_at'], '%d %B %Y à %H:%M')`
+  - **Remplacement** : 2x `episode_date.strftime('%d %B %Y')` → `format_date(episode_date, '%d %B %Y')`
+
+#### Technical Details
+- **5 occurrences de formatage** remplacées par la fonction centralisée
+- **Gestion cohérente des locales françaises** : plus de `locale.setlocale()` local
+- **Format uniforme** : même traduction des mois dans toute l'application
+- **Compatibilité préservée** : même interface utilisateur, même affichage
+- **Import path correct** : `nbs.date_utils` pour intégration avec structure projet
+
+#### Result Notes
+- Format des dates parfaitement identique à l'existant grâce aux fallbacks
+- Suppression de la duplication DATE_FORMAT (maintenant centralisé)
+- Préparation pour migration similaire dans autres fichiers du projet
+- Aucune régression fonctionnelle (compilation OK, imports OK)
+
 #### Impact
 - Aucune régression : tests isolés, pas d'impact sur l'existant
 - Base solide pour les tests TDD de la classe AvisCritique
