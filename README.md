@@ -53,7 +53,8 @@ Le projet utilise **pytest** pour les tests unitaires avec une couverture de cod
 **Infrastructure CI/CD :**
 - ✅ **GitHub Actions** : Tests automatiques sur chaque push/PR
 - ✅ **Dépendances optimisées** : `tests/requirements.txt` (sans PyTorch/ML)
-- ✅ **Coverage 90%+** : Couverture minimale requise
+- ✅ **Mocking avancé** : torch, transformers, dbus mockés pour CI/CD
+- ✅ **Coverage 72%+** : Couverture actuelle avec 214 tests
 - ✅ **Linting automatique** : flake8, black, isort
 
 ```bash

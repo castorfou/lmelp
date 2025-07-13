@@ -39,10 +39,12 @@ mock_torch.float16 = "float16"
 
 mock_transformers = MagicMock()
 mock_datasets = MagicMock()
+mock_dbus = MagicMock()
 
 sys.modules["torch"] = mock_torch
 sys.modules["transformers"] = mock_transformers
 sys.modules["datasets"] = mock_datasets
+sys.modules["dbus"] = mock_dbus
 sys.modules["transformers.models"] = MagicMock()
 sys.modules["transformers.models.auto"] = MagicMock()
 sys.modules["transformers.models.auto.modeling_auto"] = MagicMock()
