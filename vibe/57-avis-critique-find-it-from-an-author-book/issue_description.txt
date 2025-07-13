@@ -1,0 +1,13 @@
+former implementation was to offer avis_critique from an episode
+and it had 2 functions:
+
+- to (re)generate a page of avis critique, in 2 parts ; LIVRES DISCUTÉS AU PROGRAMME and COUPS DE CŒUR DES CRITIQUES
+- or load an existing page of avis critique
+
+existing avis critique pages are stored in mongodb / avis_critique collection
+one entry per episode
+
+In this new feature,
+I would like to offer a new access to avis_critique from a book
+
+It would be a new page or subpage in streamlit

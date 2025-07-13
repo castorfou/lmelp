@@ -1,0 +1,165 @@
+ *******************************************************
+ *                                                     *
+ *        ADAPTATION POUR PROJETS EXISTANTS            *
+ *                                                     *
+ *          Auteur : Korben                            *
+ *          Fait avec ❤️ pour les Patreons             *
+ *                                                     *
+ ******************************************************/
+
+Phase 0 : Capture du Contexte (Nouvelle phase préalable)
+
+Utilisez un outil comme Repomix pour capturer votre codebase :
+# Installer repomix globalement
+npm install -g repomix
+
+# Générer output.txt avec le contexte du projet
+repomix --output output.txt --ignore "node_modules,dist,build"
+
+Prompt de contextualisation :
+
+Voici le code source de mon projet existant. Analyse-le et génère :
+
+1. **project-summary.md** : Vue d'ensemble du projet
+   - Architecture actuelle
+   - Technologies utilisées
+   - Structure des fichiers
+   - Patterns identifiés
+   
+2. **current-state.md** : État actuel
+   - Fonctionnalités existantes
+   - Points forts du code
+   - Problèmes identifiés
+   - Dette technique
+
+<CODE>
+[Coller output.txt ou utiliser la fonction de lecture de fichiers]
+</CODE>
+
+==============================
+
+Phase 1 : Spécification des Modifications (Adaptée)
+
+J'ai un projet existant [décrire brièvement] et je veux [VOTRE NOUVELLE FONCTIONNALITÉ/MODIFICATION].
+
+Contexte du projet :
+- [Coller project-summary.md]
+- [Coller current-state.md si pertinent]
+
+Pose-moi des questions pour comprendre :
+- Comment cette modification s'intègre dans l'existant
+- Quels fichiers seront impactés
+- Les contraintes de rétrocompatibilité
+- Les risques de régression
+- La stratégie de migration si nécessaire
+
+Compile ensuite :
+1. **modification-spec.md** : Spécification des changements
+2. **impact-analysis.md** : Analyse d'impact sur le code existant
+3. **integration-strategy.md** : Stratégie d'intégration
+
+==============================
+Phase 2 : Planification Incrémentale (Adaptée)
+
+Prends cette spécification de modification et le contexte du projet :
+
+<MODIFICATION_SPEC>
+[Coller modification-spec.md]
+</MODIFICATION_SPEC>
+
+<PROJECT_CONTEXT>
+[Coller les parties pertinentes de output.txt ou project-summary.md]
+</PROJECT_CONTEXT>
+
+Crée un plan qui :
+1. Minimise les modifications du code existant
+2. Respecte les patterns et conventions actuels
+3. Permet un rollback facile si nécessaire
+
+Génère :
+
+## modification-plan.csv
+Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
+TODO,CREATE/MODIFY/REFACTOR,[fichier],[New/Update/Refactor],HIGH,[Low/Medium/High],[état actuel],[état cible],[tests à modifier],[stratégie rollback]
+
+## incremental-prompts.md
+Des prompts pour chaque modification qui :
+- Incluent le contexte nécessaire du code existant
+- Définissent précisément les changements
+- Préservent la compatibilité
+- Incluent les tests de régression
+
+## migration-checklist.md
+- [ ] Backup du code actuel
+- [ ] Tests de régression passent
+- [ ] Nouvelles fonctionnalités implémentées
+- [ ] Documentation mise à jour
+- [ ] Code review effectuée
+
+==============================
+
+Phase 3 : Exécution avec Préservation (Adaptée)
+Je vais modifier le projet existant. Pour chaque session :
+
+CONTEXTE ACTUEL :
+[Coller les fichiers pertinents actuels ou utiliser repomix]
+
+MODIFICATION À FAIRE :
+[Référencer la ligne du modification-plan.csv]
+
+Pour chaque modification :
+1. Montre d'abord les changements exacts (diff style)
+2. Explique pourquoi ces changements sont nécessaires
+3. Génère le code modifié complet
+4. Adapte/crée les tests
+5. Vérifie qu'aucune régression n'est introduite
+
+Après chaque modification, mets à jour :
+- modification-plan.csv : Status → DONE, ajoute Result Notes
+- Crée un git-friendly changelog entry
+- Note tout effet de bord découvert
+
+==============================
+Phase 4 : Documentation et Analyse Post-Modification
+
+Maintiens ces fichiers spécifiques aux modifications :
+
+## modification-log.md
+[Date] - [Feature/Fix]
+- Fichiers modifiés : [liste avec lignes changées]
+- Raison : [justification]
+- Impact : [effets sur le système]
+- Tests : [nouveaux/modifiés]
+- Rollback : [comment revenir en arrière]
+
+## regression-tests.md
+Liste des tests à exécuter pour vérifier qu'aucune régression :
+- [ ] [Test 1] - [Fichier] - [Résultat attendu]
+- [ ] [Test 2] - [Fichier] - [Résultat attendu]
+
+## technical-debt.md
+Dette technique ajoutée/résolue :
+- Résolue : [description]
+- Ajoutée : [description + plan pour la résoudre]
+- À surveiller : [points d'attention]
+
+## code-review-notes.md
+Points à vérifier en revue de code :
+- Respect des conventions existantes
+- Performance maintenue/améliorée
+- Sécurité préservée
+- Documentation à jour
+
+==============================
+
+💡 Conseils Pratiques en bonus !
+
+1. Utilisez des branches Git : Créez une nouvelle branche pour chaque session de modification
+2. Contexte sélectif : Ne donnez que les parties pertinentes du code pour économiser les tokens# Exemple : capturer seulement certains dossiers repomix src/components src/api --output context.txt
+3. Tests de régression d'abord : Avant toute modification, vérifiez que les tests existants passent
+4. Commits atomiques : Committez après chaque fichier modifié avec succès
+5. Prompts spécialisés pour l'analyse :Analyse ce code et génère :
+6. - Les tests manquants
+7. - Les problèmes de sécurité
+8. - Les opportunités de refactoring
+9. - Les violations des patterns existants
