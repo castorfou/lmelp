@@ -26,11 +26,13 @@ addopts = -v --tb=short
 filterwarnings = ignore::DeprecationWarning
 ```
 
-T002 - requirements-test.txt :
+T002 - .devcontainer/requirements.txt (ajout dépendances test) :
 ```
+# Test dependencies  
 pytest>=7.0
 pytest-mock>=3.10
 pytest-env>=0.8
+pytest-cov>=4.0
 ```
 
 T003-T005 - Structure tests/ avec __init__.py vides
@@ -74,8 +76,9 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt || echo "requirements.txt not found"
-          pip install -r requirements-test.txt
+          source .venv/bin/activate
+          export UV_LINK_MODE=copy
+          uv pip install -r .devcontainer/requirements.txt
       - name: Run tests
         env:
           TEST_MODE: true

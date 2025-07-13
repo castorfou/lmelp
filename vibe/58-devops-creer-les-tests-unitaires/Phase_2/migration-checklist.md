@@ -21,7 +21,7 @@
 
 ### Infrastructure de base (T001-T006)
 - [ ] **T001** : Créer `pytest.ini` avec configuration de base
-- [ ] **T002** : Créer `requirements-test.txt` (pytest, pytest-mock, pytest-env)
+- [ ] **T002** : Ajouter dépendances test dans `.devcontainer/requirements.txt`
 - [ ] **T003** : Créer `tests/__init__.py`
 - [ ] **T004** : Créer `tests/conftest.py` avec fixtures basiques
 - [ ] **T005** : Créer `tests/unit/__init__.py`
