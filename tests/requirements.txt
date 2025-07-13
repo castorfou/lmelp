@@ -19,3 +19,7 @@ pytz>=2021.1
 
 # Pour les tests futures (léger)
 requests>=2.25.0
+
+# Dependencies mockées mais parfois référencées
+# Note: Ces modules sont mockés dans les tests, pas vraiment installés
+beautifulsoup4>=4.0.0

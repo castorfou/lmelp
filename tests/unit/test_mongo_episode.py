@@ -30,7 +30,25 @@ nbs_path = Path(__file__).parent.parent.parent / "nbs"
 if str(nbs_path) not in sys.path:
     sys.path.insert(0, str(nbs_path))
 
-# Import du module mongo_episode pour le rendre disponible globalement
+# Mock des dépendances AVANT l'import du module pour éviter les erreurs
+# Mocker torch et les autres dépendances ML qui ne sont pas disponibles dans GitHub Actions
+mock_torch = MagicMock()
+mock_torch.cuda.is_available.return_value = False
+mock_torch.float32 = "float32"
+mock_torch.float16 = "float16"
+
+mock_transformers = MagicMock()
+mock_datasets = MagicMock()
+
+sys.modules["torch"] = mock_torch
+sys.modules["transformers"] = mock_transformers
+sys.modules["datasets"] = mock_datasets
+sys.modules["transformers.models"] = MagicMock()
+sys.modules["transformers.models.auto"] = MagicMock()
+sys.modules["transformers.models.auto.modeling_auto"] = MagicMock()
+sys.modules["transformers.models.auto.processing_auto"] = MagicMock()
+
+# Maintenant on peut importer le module mongo_episode
 try:
     import nbs.mongo_episode as mongo_episode_module
 except ImportError:

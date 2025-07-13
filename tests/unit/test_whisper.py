@@ -25,6 +25,21 @@ nbs_path = Path(__file__).parent.parent.parent / "nbs"
 if str(nbs_path) not in sys.path:
     sys.path.insert(0, str(nbs_path))
 
+# Mock des dépendances ML AVANT toute importation pour GitHub Actions
+mock_torch = MagicMock()
+mock_torch.cuda.is_available.return_value = False
+mock_torch.float32 = "float32"
+mock_torch.float16 = "float16"
+
+mock_transformers = MagicMock()
+mock_datasets = MagicMock()
+mock_pymongo = MagicMock()
+
+sys.modules["torch"] = mock_torch
+sys.modules["transformers"] = mock_transformers
+sys.modules["datasets"] = mock_datasets
+sys.modules["pymongo"] = mock_pymongo
+
 
 @pytest.fixture(autouse=True)
 def mock_whisper_dependencies():
