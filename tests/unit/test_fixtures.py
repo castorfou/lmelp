@@ -485,3 +485,141 @@ class TestFixturesPackage:
         assert "Livres :" in rss_content, "Doit contenir des critiques de livres"
         assert "Théâtre :" in rss_content, "Doit contenir des critiques de théâtre"
         assert "Cinéma :" in rss_content, "Doit contenir des critiques de cinéma"
+
+
+class TestSampleAuthorFixture:
+    """Tests pour les données d'auteur fixtures"""
+
+    def test_sample_author_loading(self):
+        """Test : chargement du fichier sample_author.json"""
+        # ACT
+        author_data = load_sample_json("sample_author.json")
+
+        # ASSERT
+        assert author_data is not None
+        assert isinstance(author_data, dict)
+
+    def test_sample_author_structure(self):
+        """Test : vérifier la structure des données d'auteur"""
+        # ACT
+        author_data = load_sample_json("sample_author.json")
+
+        # ASSERT : Structure attendue
+        required_keys = [
+            "sample_authors",
+            "reference_authors_list",
+            "test_scenarios",
+            "google_search_mock_responses",
+            "llm_mock_responses",
+            "validation_data",
+        ]
+
+        for key in required_keys:
+            assert key in author_data, f"Clé manquante: {key}"
+
+    def test_sample_author_content(self):
+        """Test : vérifier le contenu des auteurs examples"""
+        # ACT
+        author_data = load_sample_json("sample_author.json")
+
+        # ASSERT : Auteurs français classiques
+        sample_authors = author_data["sample_authors"]
+        assert len(sample_authors) >= 4
+
+        author_names = [author["name"] for author in sample_authors]
+        assert "Victor Hugo" in author_names
+        assert "Marcel Proust" in author_names
+        assert "Simone de Beauvoir" in author_names
+        assert "Albert Camus" in author_names
+
+        # ASSERT : Structure de chaque auteur
+        for author in sample_authors:
+            assert "name" in author
+            assert "normalized_name" in author
+            assert "fuzzy_variants" in author
+            assert isinstance(author["fuzzy_variants"], list)
+
+    def test_author_test_scenarios(self):
+        """Test : vérifier les scénarios de test fuzzy matching"""
+        # ACT
+        author_data = load_sample_json("sample_author.json")
+
+        # ASSERT
+        scenarios = author_data["test_scenarios"]
+        assert len(scenarios) >= 3
+
+        for scenario in scenarios:
+            assert "input" in scenario
+            assert "expected_match" in scenario  # peut être null
+            assert "expected_score_range" in scenario
+            assert "description" in scenario
+
+            # Vérifier les ranges de score
+            score_range = scenario["expected_score_range"]
+            assert len(score_range) == 2
+            assert score_range[0] <= score_range[1]
+            assert 0 <= score_range[0] <= 100
+            assert 0 <= score_range[1] <= 100
+
+    def test_google_search_mock_responses(self):
+        """Test : vérifier les réponses mock de Google Search"""
+        # ACT
+        author_data = load_sample_json("sample_author.json")
+
+        # ASSERT
+        mock_responses = author_data["google_search_mock_responses"]
+        assert len(mock_responses) >= 1
+
+        for response in mock_responses:
+            assert "query" in response
+            assert "items" in response
+            assert isinstance(response["items"], list)
+
+            for item in response["items"]:
+                assert "title" in item
+                assert "snippet" in item
+                assert "link" in item
+
+    def test_llm_mock_responses(self):
+        """Test : vérifier les réponses mock du LLM"""
+        # ACT
+        author_data = load_sample_json("sample_author.json")
+
+        # ASSERT
+        llm_responses = author_data["llm_mock_responses"]
+        assert len(llm_responses) >= 2
+
+        for response in llm_responses:
+            assert "input_text" in response
+            assert "response" in response
+
+            llm_response = response["response"]
+            assert "auteur" in llm_response
+            assert "certitude" in llm_response
+            assert "analyse" in llm_response
+
+            # Vérifier que la certitude est un pourcentage valide
+            certitude = llm_response["certitude"]
+            assert isinstance(certitude, int)
+            assert 0 <= certitude <= 100
+
+    def test_validation_data(self):
+        """Test : vérifier les données de validation"""
+        # ACT
+        author_data = load_sample_json("sample_author.json")
+
+        # ASSERT
+        validation = author_data["validation_data"]
+
+        assert "min_author_name_length" in validation
+        assert "max_author_name_length" in validation
+        assert "valid_characters" in validation
+        assert "score_thresholds" in validation
+
+        # Vérifier les seuils de score
+        thresholds = validation["score_thresholds"]
+        assert thresholds["excellent"] > thresholds["good"]
+        assert thresholds["good"] > thresholds["fair"]
+        assert thresholds["fair"] > thresholds["poor"]
+        assert thresholds["excellent"] <= 100
+        assert thresholds["poor"] >= 0

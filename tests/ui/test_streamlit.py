@@ -51,10 +51,14 @@ class TestStreamlitConfiguration:
         ):
             # Import du module UI après le mocking
             import importlib.util
+            import os
 
-            spec = importlib.util.spec_from_file_location(
-                "lmelp_ui", "/workspaces/lmelp/ui/lmelp.py"
-            )
+            # Utiliser un chemin relatif
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            project_root = os.path.dirname(os.path.dirname(current_dir))
+            lmelp_ui_path = os.path.join(project_root, "ui", "lmelp.py")
+
+            spec = importlib.util.spec_from_file_location("lmelp_ui", lmelp_ui_path)
             lmelp_ui = importlib.util.module_from_spec(spec)
 
             # Pas d'exécution complète, juste vérification d'imports
@@ -83,7 +87,13 @@ class TestStreamlitComponents:
         """Test que toutes les pages attendues existent et qu'il n'y en a pas d'autres"""
         import os
 
-        pages_directory = "/workspaces/lmelp/ui/pages"
+        # Utiliser un chemin relatif basé sur la position du fichier de test
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(
+            os.path.dirname(current_dir)
+        )  # Remonte de tests/ui vers la racine
+        pages_directory = os.path.join(project_root, "ui", "pages")
+
         expected_pages = {
             "1_episodes.py",
             "2_auteurs.py",
@@ -126,7 +136,13 @@ class TestStreamlitComponents:
         """Test que chaque page contient du contenu basique valide"""
         import os
 
-        pages_directory = "/workspaces/lmelp/ui/pages"
+        # Utiliser un chemin relatif basé sur la position du fichier de test
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(
+            os.path.dirname(current_dir)
+        )  # Remonte de tests/ui vers la racine
+        pages_directory = os.path.join(project_root, "ui", "pages")
+
         expected_pages = [
             "1_episodes.py",
             "2_auteurs.py",

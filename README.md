@@ -65,10 +65,6 @@ pytest --cov=nbs --cov-report=term-missing
 
 # Tests spécifiques
 pytest tests/unit/test_config.py -v
-
-# Rapport HTML de couverture
-pytest --cov=nbs.config --cov-report=html
-# Voir htmlcov/index.html
 ```
 
 **Structure des tests :**
