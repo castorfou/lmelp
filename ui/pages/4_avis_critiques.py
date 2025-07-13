@@ -23,6 +23,18 @@ import re
 from datetime import datetime
 from bson import ObjectId
 
+# Import du composant d'autocomplétion
+try:
+    # Ajouter le chemin vers les composants
+    components_path = Path(__file__).resolve().parent.parent / "components"
+    if str(components_path) not in sys.path:
+        sys.path.insert(0, str(components_path))
+
+    from book_autocomplete import render_book_autocomplete_with_episodes
+except ImportError as e:
+    st.error(f"Erreur d'import du composant book_autocomplete: {e}")
+    render_book_autocomplete_with_episodes = None
+
 # Définir la locale en français
 locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
 
@@ -1097,9 +1109,64 @@ def debug_truncation_detection(summary_text):
     return debug_info
 
 
+def render_par_episode_tab():
+    """Rend l'onglet 'Par Episode' avec l'interface de navigation d'épisodes existante"""
+    try:
+        afficher_selection_episode()
+    except Exception as e:
+        st.error(f"Erreur lors du chargement des épisodes: {str(e)}")
+        st.info("Vérifiez que la base de données MongoDB est accessible")
+
+
+def render_par_livre_auteur_tab():
+    """Rend l'onglet 'Par Livre-Auteur' avec l'interface de recherche par livre/auteur"""
+    if render_book_autocomplete_with_episodes is None:
+        st.error("❌ Composant d'autocomplétion non disponible")
+        st.info("Vérifiez que le module book_autocomplete est correctement installé")
+        return
+
+    st.markdown(
+        """
+    ### 🔍 Recherche par Livre ou Auteur
+    
+    Utilisez cette interface pour rechercher directement un livre ou un auteur 
+    et voir tous les épisodes où il a été discuté avec les avis critiques correspondants.
+    """
+    )
+
+    # Utiliser le composant d'autocomplétion avec affichage des épisodes
+    try:
+        render_book_autocomplete_with_episodes(
+            key="avis_critiques_search",
+            label="Rechercher un livre ou auteur",
+            help_text="Tapez pour rechercher dans tous les avis critiques disponibles",
+        )
+    except Exception as e:
+        st.error(f"Erreur lors du rendu du composant d'autocomplétion: {str(e)}")
+        st.info("Contactez l'administrateur si le problème persiste")
+
+
+def render_main_interface():
+    """Interface principale avec onglets"""
+    # Créer les onglets
+    tab1, tab2 = st.tabs(["📺 Par Episode", "📚 Par Livre-Auteur"])
+
+    with tab1:
+        st.markdown(
+            """
+        ### Navigation par épisode
+        Sélectionnez un épisode pour voir ou générer son résumé d'avis critiques.
+        """
+        )
+        render_par_episode_tab()
+
+    with tab2:
+        render_par_livre_auteur_tab()
+
+
 # Interface principale
 try:
-    afficher_selection_episode()
+    render_main_interface()
 except Exception as e:
-    st.error(f"Erreur lors du chargement des épisodes: {str(e)}")
-    st.info("Vérifiez que la base de données MongoDB est accessible")
+    st.error(f"Erreur critique lors du chargement de l'interface: {str(e)}")
+    st.info("Contactez l'administrateur si le problème persiste")
