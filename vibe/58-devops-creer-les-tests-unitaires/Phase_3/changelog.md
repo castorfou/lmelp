@@ -37,3 +37,14 @@
 - **Impact** : Aucun - infrastructure de tests uniquement
 - **Test** : Import tests.unit réussi, structure tree propre
 - **Rollback** : `rm -rf tests/unit/`
+
+### [T006] DONE - Premier test unitaire concret !
+- **Fichier créé** : `tests/unit/test_config.py` (renommé depuis test_simple.py)
+- **Contenu** : 3 tests pour `get_RSS_URL()` de nbs/config.py
+- **Tests** : env var définie, env var absente, type de retour + validation URL
+- **Pattern** : ARRANGE-ACT-ASSERT avec monkeypatch
+- **Traçabilité** : Convention test_config.py ↔ nbs/config.py
+- **Résultat** : ✅ 3/3 tests PASSED en 0.16s 
+- **Impact** : Premier code de test fonctionnel avec traçabilité claire !
+- **Test** : `pytest tests/unit/test_config.py -v`
+- **Rollback** : `rm tests/unit/test_config.py`
