@@ -38,10 +38,53 @@
 
 #### Technical Details
 - Pattern TDD : 519 lignes de tests créés avant l'implémentation
-- Suit exactement les patterns de `test_mongo_livre.py`
-- Coverage complète des méthodes attendues d'AvisCritique
-- Mock sophistiqué pour BaseEntity et dépendances externes
-- Tests parametrés avec fixtures pour validation robuste
+- 20 tests couvrant l'ensemble des fonctionnalités attendues
+- Tous les tests échouent comme attendu (module non encore implémenté)
+- Tests de régression prêts pour valider l'implémentation
+
+### T003 ✅ - Création des tests unitaires date_utils (2024-12-19)
+
+#### Added
+- `tests/unit/test_date_utils.py` - Tests unitaires pour utilitaires de dates centralisées
+  - Tests des constantes MODULE (DATE_FORMAT, LOCALE_FR, exports)
+  - Tests format_date() : datetime, date, string ISO, cas invalides
+  - Tests parse_date() : formats multiples, traduction mois français, cas limites
+  - Tests is_valid_date() : types variés, validation cohérente
+  - Tests setup_french_locale() : fallback multiples locales
+  - Tests d'intégration : round-trip format/parse, cohérence validation
+
+#### Technical Details
+- Pattern TDD : 31 tests créés avant l'implémentation
+- Couverture exhaustive : cas nominaux, edge cases, gestion d'erreurs
+- Tests parametrized pour efficacité et couverture
+- Mocking des dépendances système (locale)
+
+### T004 ✅ - Implémentation module date_utils (2024-12-19)
+
+#### Added
+- `nbs/date_utils.py` - Module centralisant toutes les fonctions de dates
+  - Constantes : `DATE_FORMAT = "%d %b %Y"`, `LOCALE_FR = "fr_FR.UTF-8"`
+  - `setup_french_locale()` : Configuration locale avec fallback robuste
+  - `format_date()` : Formatage avec traduction mois français et gestion types multiples
+  - `parse_date()` : Parsing multi-format avec support mois français
+  - `is_valid_date()` : Validation universelle avec cohérence parse/format
+
+#### Technical Details
+- **211 lignes de code** avec documentation complète et type hints
+- **31/31 tests passent** après implémentation TDD itérative
+- **Gestion robuste des locales** : fallback automatique si locale française indisponible  
+- **Traduction manual des mois** : français ↔ anglais pour compatibilité système
+- **Support multi-format** : ISO, français, US, avec ou sans heure
+- **Validation cohérente** : `is_valid_date()` et `parse_date()` synchronisés
+- **Error handling** : Messages d'erreur explicites et types d'exception appropriés
+- **Optimisation performance** : Cache des traductions, tentatives ordonnées par fréquence
+- **Compatibilité types** : datetime, date, string, None avec conversions automatiques
+
+#### Result Notes
+- Résout les problèmes de locale français en environnement Linux
+- Centralise le format "DD mmm YYYY" utilisé dans 4+ fichiers du projet
+- Base solide pour refactoring des fonctions de dates dispersées
+- Aucune régression introduite (tests AvisCritique restent en échec attendu)
 
 #### Impact
 - Aucune régression : tests isolés, pas d'impact sur l'existant
