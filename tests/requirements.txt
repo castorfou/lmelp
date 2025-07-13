@@ -1,0 +1,13 @@
+# Dépendances minimales pour les tests unitaires
+# Core testing
+pytest>=7.0
+pytest-mock>=3.10
+pytest-env>=0.8
+pytest-cov>=4.0
+
+# Test dependencies from nbs.config
+python-dotenv>=1.0.0
+PyYAML>=6.0
+
+# Pour les tests futures (léger)
+requests>=2.25.0

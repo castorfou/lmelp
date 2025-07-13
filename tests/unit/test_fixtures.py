@@ -10,6 +10,17 @@ from tests.fixtures import (
 )
 
 
+def get_project_root():
+    """Obtient le répertoire racine du projet de manière portable"""
+    current = Path(__file__).resolve()
+    # Remonte jusqu'à trouver le répertoire contenant pytest.ini
+    for parent in current.parents:
+        if (parent / "pytest.ini").exists():
+            return parent
+    # Fallback : assume qu'on est dans tests/unit/
+    return current.parent.parent
+
+
 class TestFixturesPackage:
     """Tests pour l'infrastructure des fixtures"""
 
@@ -70,9 +81,10 @@ class TestFixturesPackage:
         import os
         from pathlib import Path
 
-        # ARRANGE : Vérifier que le fichier .env.test existe
-        env_test_path = Path("/workspaces/lmelp/.env.test")
-        assert env_test_path.exists(), ".env.test file should exist"
+        # ARRANGE : Vérifier que le fichier .env.test existe (chemin relatif)
+        project_root = get_project_root()
+        env_test_path = project_root / ".env.test"
+        assert env_test_path.exists(), f".env.test file should exist at {env_test_path}"
 
         # ACT : Lire le contenu du fichier
         content = env_test_path.read_text()
@@ -92,7 +104,8 @@ class TestFixturesPackage:
         config_data = load_sample_json("sample_config.json")
         env_vars_from_json = config_data["environment_variables"]
 
-        env_test_path = Path("/workspaces/lmelp/.env.test")
+        project_root = get_project_root()
+        env_test_path = project_root / ".env.test"
         env_test_content = env_test_path.read_text()
 
         # ACT & ASSERT : Vérifier la cohérence des valeurs principales
@@ -204,13 +217,14 @@ class TestFixturesPackage:
         from pathlib import Path
         import yaml
 
-        # ARRANGE : Chemin vers le workflow
-        workflow_path = Path("/workspaces/lmelp/.github/workflows/tests.yml")
+        # ARRANGE : Chemin vers le workflow (chemin relatif)
+        project_root = get_project_root()
+        workflow_path = project_root / ".github" / "workflows" / "tests.yml"
 
         # ACT & ASSERT : Le fichier doit exister
         assert (
             workflow_path.exists()
-        ), "Le workflow GitHub Actions tests.yml doit exister (T007)"
+        ), f"Le workflow GitHub Actions tests.yml doit exister (T007) at {workflow_path}"
 
         # ACT : Lire et parser le YAML
         content = workflow_path.read_text()

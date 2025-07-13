@@ -31,11 +31,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r .devcontainer/requirements.txt
+        pip install -r tests/requirements.txt
         
     - name: Run tests avec coverage
       run: |
-        python -m pytest tests/ --cov=nbs --cov-report=term-missing --cov-report=xml --cov-fail-under=90
+        python -m pytest tests/ --cov=nbs.config --cov-report=term-missing --cov-report=xml --cov-fail-under=90
         
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
@@ -50,9 +50,9 @@ jobs:
       run: |
         # Tester depuis un autre répertoire pour valider robustesse CI/CD
         cd /tmp
-        python -m pytest /workspaces/lmelp/tests/unit/test_fixtures.py::TestFixturesPackage::test_load_env_test_robustness_for_cicd -v
+        python -m pytest $GITHUB_WORKSPACE/tests/unit/test_fixtures.py::TestFixturesPackage::test_load_env_test_robustness_for_cicd -v
       env:
-        PYTHONPATH: /workspaces/lmelp
+        PYTHONPATH: ${{ github.workspace }}
         
   lint:
     name: Linting (optionnel)
