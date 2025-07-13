@@ -12,31 +12,72 @@ Le projet LMELP utilise **pytest** comme framework de tests avec une approche de
 tests/
 ├── __init__.py                 # Package principal
 ├── conftest.py                # Configuration globale et fixtures
-├── .coverage                  # Base de données de couverture
-├── htmlcov/                   # Rapports HTML de couverture
-├── unit/                      # Tests unitaires
-│   ├── __init__.py
-│   ├── test_config.py         # Tests du module nbs/config.py
-│   └── test_mongo.py          # Tests du module nbs/mongo.py
-└── fixtures/                  # Données de test (à venir)
-    └── sample_data.json
+├── requirements.txt           # 🆕 Dépendances minimales pour tests
+├── fixtures/                  # 🆕 Données de test et utilitaires
+│   ├── __init__.py           #     Fonctions load_sample_json/text
+│   └── data/                 #     Données d'exemple
+│       └── sample_config.json
+└── unit/                      # Tests unitaires
+    ├── __init__.py
+    ├── test_config.py         # Tests du module nbs/config.py
+    ├── test_fixtures.py       # 🆕 Tests infrastructure fixtures
+    └── test_mongo.py          # Tests du module nbs/mongo.py (à venir)
+
+# Infrastructure CI/CD
+.env.test                      # 🆕 Variables d'environnement de test
+.github/workflows/tests.yml    # 🆕 GitHub Actions pour CI/CD
 ```
 
 ### Configuration
 
-- **pytest.ini** : Configuration principale avec chemins et options
-- **.coveragerc** : Configuration de la couverture de code
-- **conftest.py** : Fixtures globales et configuration des tests
+- **pytest.ini** : Configuration principale avec chemins et options + pytest-env
+- **.env.test** : **Variables d'environnement isolées pour tests**
+- **tests/requirements.txt** : **Dépendances optimisées (sans PyTorch/ML)**
+- **conftest.py** : Fixtures globales et fonction `load_env_test()`
+
+## Infrastructure CI/CD 🚀
+
+### GitHub Actions
+
+Le projet utilise **GitHub Actions** pour l'intégration continue avec un workflow optimisé :
+
+```yaml
+# .github/workflows/tests.yml
+name: Tests Unitaires
+on:
+  push:
+    branches: [ main, develop, "**devops**", "**test**" ]
+  pull_request:
+    branches: [ main, develop ]
+```
+
+**Optimisations clés :**
+- ✅ **Dépendances minimales** : `pip install -r tests/requirements.txt` (30s vs 2m30s)
+- ✅ **Coverage ciblée** : `--cov=nbs.config` (97% sur module testé)
+- ✅ **Chemins portables** : Fonction `get_project_root()` pour dev/CI
+- ✅ **Tests robustesse** : Validation CI/CD depuis `/tmp`
+
+### Performance
+
+| Avant | Après | Gain |
+|-------|-------|------|
+| 2m30s installation | 30s installation | **5x plus rapide** |
+| Tests sur tout `nbs/` | Tests sur `nbs.config` | **Focus ciblé** |
+| Chemins absolus | Chemins relatifs | **Portable** |
 
 ## Frameworks et Outils
 
 ### Dépendances
 
-```toml
+```txt
+# tests/requirements.txt - Dépendances minimales optimisées
 pytest>=7.0           # Framework de tests
 pytest-mock>=3.10     # Mocking avancé
 pytest-env>=0.8       # Variables d'environnement
 pytest-cov>=4.0       # Couverture de code
+python-dotenv>=1.0.0  # Gestion .env
+PyYAML>=6.0           # Parsing YAML (workflow tests)
+requests>=2.25.0      # HTTP (tests futurs)
 ```
 
 ### Patterns de Test

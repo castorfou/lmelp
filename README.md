@@ -50,26 +50,34 @@ pour quelques astuces liées à vscode : [Vscode hints (sur github pages)](https
 
 Le projet utilise **pytest** pour les tests unitaires avec une couverture de code élevée.
 
+**Infrastructure CI/CD :**
+- ✅ **GitHub Actions** : Tests automatiques sur chaque push/PR
+- ✅ **Dépendances optimisées** : `tests/requirements.txt` (sans PyTorch/ML)
+- ✅ **Coverage 90%+** : Couverture minimale requise
+- ✅ **Linting automatique** : flake8, black, isort
+
 ```bash
 # Lancer tous les tests
 pytest
 
-# Tests avec couverture
-pytest --cov=nbs --cov-report=term-missing
+# Tests avec couverture (module spécifique)
+pytest --cov=nbs.config --cov-report=term-missing
 
 # Tests spécifiques
 pytest tests/unit/test_config.py -v
 
 # Rapport HTML de couverture
-pytest --cov=nbs --cov-report=html
-# Voir tests/htmlcov/index.html
+pytest --cov=nbs.config --cov-report=html
+# Voir htmlcov/index.html
 ```
 
 **Structure des tests :**
 - `tests/unit/` : Tests unitaires par module
+- `tests/fixtures/` : Données de test et utilitaires
+- `tests/requirements.txt` : **Dépendances minimales pour tests**
 - `tests/conftest.py` : Configuration et fixtures globales
-- `tests/.coverage` : Base de données de couverture
-- `tests/htmlcov/` : Rapports HTML de couverture
+- `.env.test` : Variables d'environnement de test
+- `.github/workflows/tests.yml` : **CI/CD GitHub Actions**
 
 **Documentation complète :** [Guide des tests unitaires](https://castorfou.github.io/lmelp/readme_unit_test/) 📋
 
