@@ -325,3 +325,39 @@
 - **Impact** : Infrastructure complète RSS pour tests feedparser, extraction épisodes, filtrage
 - **Test** : `pytest tests/unit/test_fixtures.py -k rss -v`
 - **Rollback** : `rm tests/fixtures/data/sample_rss_feed.xml`
+
+### [T022] DONE - Package tests d'intégration créé
+- **Fichier créé** : `tests/integration/__init__.py` (12 lignes)
+- **Contenu descriptif** : Documentation complète des tests d'intégration
+  - Distinction claire tests unitaires vs intégration
+  - Workflows principaux identifiés : RSS → MongoDB → LLM analysis
+  - Configuration → Database → Processing pipelines
+  - End-to-end scenarios avec données réelles/semi-réelles
+- **Infrastructure** : Package Python pour tests inter-modules
+- **Résultat** : ✅ Import tests.integration fonctionnel
+- **Usage** : `import tests.integration` pour tests d'intégration
+- **Impact** : Infrastructure complète pour tests interaction modules
+- **Test** : `python -c "import tests.integration"`
+- **Rollback** : `rm -rf tests/integration/`
+
+### [T023] DONE - Tests d'intégration workflows complets
+- **Fichier créé** : `tests/integration/test_workflows.py` (379 lignes)
+- **Couverture** : 11 tests d'intégration dans 5 classes
+- **5 classes de tests** :
+  - TestRSSToMongoWorkflow : 2 tests workflow RSS → MongoDB (parsing complet, données réelles)
+  - TestConfigurationIntegration : 2 tests configuration inter-modules (URL RSS, isolation environnement)
+  - TestLLMIntegrationWorkflow : 2 tests LLM + données (transcription, multiple providers)
+  - TestMongoIntegrationWorkflow : 2 tests MongoDB + entités (workflow entités, logging)
+  - TestEndToEndWorkflows : 3 tests end-to-end (workflow complet RSS→MongoDB→LLM, cohérence config, flux données)
+- **Techniques avancées** :
+  - Mock sophistiqué sys.modules pour éviter imports réels lors des patches
+  - Tests workflows avec données fixtures réelles (RSS, épisodes, transcriptions)
+  - Tests cohérence configuration inter-modules
+  - Tests end-to-end simulant pipelines complets
+  - Integration avec vraies structures de données du projet
+- **Résultat** : ✅ 115/115 tests PASSED (104 unitaires + 11 intégration)
+- **Coverage** : Tests workflows principaux RSS parsing, MongoDB storage, LLM analysis
+- **Impact** : TESTS D'INTÉGRATION COMPLETS ! Validation interactions entre tous modules testés
+- **Qualité** : Patterns ARRANGE-ACT-ASSERT, mocking isolation externe, données réelles
+- **Test** : `pytest tests/integration/ -v`
+- **Rollback** : `rm tests/integration/test_workflows.py`
