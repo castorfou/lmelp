@@ -1,5 +1,5 @@
 ID,Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
-T001,TODO,CREATE,pytest.ini,New,BOUCLE1,Low,Inexistant,Configuration pytest avec paths et options,N/A,git rm pytest.ini
+T001,DONE,CREATE,pytest.ini,New,BOUCLE1,Low,Inexistant,Configuration pytest avec paths et options - Créé avec testpaths=tests et options verbose,N/A,git rm pytest.ini
 T002,TODO,CREATE,requirements-test.txt,New,BOUCLE1,Low,Inexistant,Dépendances de test (pytest pytest-mock etc),N/A,git rm requirements-test.txt
 T003,TODO,CREATE,tests/__init__.py,New,BOUCLE1,Low,Inexistant,Fichier vide pour package Python,N/A,Simple rm -rf tests/
 T004,TODO,CREATE,tests/conftest.py,New,BOUCLE1,Medium,Inexistant,Configuration pytest globale avec fixtures de base,N/A,Simple rm -rf tests/
