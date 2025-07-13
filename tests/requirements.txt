@@ -10,5 +10,8 @@ python-dotenv>=1.0.0
 PyYAML>=6.0
 GitPython>=3.1.0
 
+# Dependencies for mocking in conftest.py
+pymongo>=4.0.0
+
 # Pour les tests futures (léger)
 requests>=2.25.0
