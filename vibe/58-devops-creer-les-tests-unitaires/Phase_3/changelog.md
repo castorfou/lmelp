@@ -29,3 +29,11 @@
 - **Impact** : Aucun - configuration pytest uniquement
 - **Test** : Import conftest réussi, pytest collecte OK, pas de régression
 - **Rollback** : `rm tests/conftest.py`
+
+### [T005] DONE - Structure tests unitaires
+- **Fichier créé** : `tests/unit/__init__.py`
+- **Contenu** : Package pour tests de fonctions individuelles
+- **Structure** : Organisation claire tests unitaires vs intégration
+- **Impact** : Aucun - infrastructure de tests uniquement
+- **Test** : Import tests.unit réussi, structure tree propre
+- **Rollback** : `rm -rf tests/unit/`
