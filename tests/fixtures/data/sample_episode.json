@@ -1,0 +1,131 @@
+{
+  "episodes": [
+    {
+      "_id": "676cc8e0f3e1a74b8c123456",
+      "date": "2024-12-22T09:59:39",
+      "titre": "Episode du 22 décembre 2024",
+      "description": "Critiques littéraires de fin d'année avec les dernières parutions",
+      "url_telechargement": "https://media.radiofrance.fr/s3/cruiser-production/2024/12/example_episode.mp3",
+      "audio_rel_filename": "2024/episode_2024-12-22.mp3",
+      "transcription": "Bonjour et bienvenue dans le Masque et la Plume. Aujourd'hui nous discutons de trois ouvrages remarquables. D'abord, le nouveau roman de Marie Darrieussecq, \"Kakapo\", aux éditions Gallimard, qui nous emmène dans une réflexion profonde sur l'extinction. Ensuite, \"L'Art de perdre\" d'Alice Zeniter, un récit familial poignant. Enfin, \"Les Impatientes\" d'Aya Cissoko, un livre sur la migration et l'identité.",
+      "type": "émission",
+      "duree": 3600
+    },
+    {
+      "_id": "676cc8e0f3e1a74b8c789012",
+      "date": "2024-12-15T09:59:39",
+      "titre": "Episode du 15 décembre 2024",
+      "description": "Spécial rentrée littéraire d'hiver",
+      "url_telechargement": "https://media.radiofrance.fr/s3/cruiser-production/2024/12/episode_20241215.mp3",
+      "audio_rel_filename": "2024/episode_2024-12-15.mp3", 
+      "transcription": "Bienvenue dans cette nouvelle émission du Masque et la Plume. Nous recevons aujourd'hui trois auteurs pour parler de leurs dernières oeuvres. Christine Angot présente son dernier livre \"Le Voyage dans l'Est\" aux éditions Flammarion. Puis nous découvrons \"Réparer les vivants\" de Maylis de Kerangal chez Verticales. Enfin, Kamel Daoud nous parle de \"Zabor ou les Psaumes\" publié chez Actes Sud.",
+      "type": "émission",
+      "duree": 2850
+    },
+    {
+      "_id": "676cc8e0f3e1a74b8c345678",
+      "date": "2024-12-08T09:59:39",
+      "titre": "Episode du 08 décembre 2024",
+      "description": "Prix littéraires 2024 - bilan et perspectives",
+      "url_telechargement": "https://media.radiofrance.fr/s3/cruiser-production/2024/12/episode_20241208.mp3",
+      "audio_rel_filename": "2024/episode_2024-12-08.mp3",
+      "transcription": "Cette semaine, nous faisons le bilan des prix littéraires 2024. Le Prix Goncourt a été attribué à Kamel Daoud pour \"Houris\" aux éditions Gallimard. Le Prix Renaudot revient à Hélène Gaudy pour \"Mer agitée à peu agitée\" chez L'Olivier. Nous discutons également du Prix Femina remporté par Rebecca Lighieri pour \"Le Coeur synthétique\" publié chez P.O.L.",
+      "type": "émission", 
+      "duree": 3240
+    },
+    {
+      "_id": "676cc8e0f3e1a74b8c901234",
+      "date": "2024-11-30T09:59:39",
+      "titre": "Episode du 30 novembre 2024",
+      "description": "Littérature contemporaine et enjeux sociétaux",
+      "url_telechargement": null,
+      "audio_rel_filename": null,
+      "transcription": null,
+      "type": "émission",
+      "duree": -1
+    }
+  ],
+  "test_scenarios": {
+    "complete_episode": {
+      "description": "Episode complet avec toutes les données",
+      "episode_id": "676cc8e0f3e1a74b8c123456",
+      "expected_auteurs": ["Marie Darrieussecq", "Alice Zeniter", "Aya Cissoko"],
+      "expected_editeurs": ["Gallimard"],
+      "has_transcription": true,
+      "has_audio": true
+    },
+    "partial_episode": {
+      "description": "Episode avec données partielles",
+      "episode_id": "676cc8e0f3e1a74b8c901234", 
+      "expected_auteurs": [],
+      "expected_editeurs": [],
+      "has_transcription": false,
+      "has_audio": false
+    },
+    "multiple_authors": {
+      "description": "Episode avec plusieurs auteurs et éditeurs",
+      "episode_id": "676cc8e0f3e1a74b8c789012",
+      "expected_auteurs": ["Christine Angot", "Maylis de Kerangal", "Kamel Daoud"],
+      "expected_editeurs": ["Flammarion", "Verticales", "Actes Sud"],
+      "has_transcription": true,
+      "has_audio": true
+    }
+  },
+  "date_formats": {
+    "DATE_FORMAT": "%Y-%m-%dT%H:%M:%S",
+    "LOG_DATE_FORMAT": "%d %b %Y %H:%M",
+    "RSS_DATE_FORMAT": "%a, %d %b %Y %H:%M:%S %z",
+    "WEB_DATE_FORMAT": "%Y-%m-%d"
+  },
+  "validation_data": {
+    "valid_titles": [
+      "Episode du 22 décembre 2024",
+      "Episode du 15 décembre 2024",
+      "Episode du 08 décembre 2024"
+    ],
+    "valid_dates": [
+      "2024-12-22T09:59:39",
+      "2024-12-15T09:59:39", 
+      "2024-12-08T09:59:39"
+    ],
+    "valid_types": ["émission", "podcast", "rediffusion"],
+    "valid_durations": [3600, 2850, 3240],
+    "invalid_dates": [
+      "2024-13-32T25:99:99",
+      "not-a-date",
+      ""
+    ],
+    "sample_urls": [
+      "https://media.radiofrance.fr/s3/cruiser-production/2024/12/example_episode.mp3",
+      "https://media.radiofrance.fr/s3/cruiser-production/2024/11/episode_20241130.mp3"
+    ]
+  },
+  "mock_responses": {
+    "mongodb_find_one": {
+      "existing_episode": {
+        "_id": "676cc8e0f3e1a74b8c123456",
+        "date": "2024-12-22T09:59:39",
+        "titre": "Episode du 22 décembre 2024",
+        "description": "Critiques littéraires de fin d'année",
+        "url": "https://media.radiofrance.fr/s3/cruiser-production/2024/12/example_episode.mp3",
+        "audio_rel_filename": "2024/episode_2024-12-22.mp3",
+        "transcription": "Bonjour et bienvenue...",
+        "type": "émission",
+        "duree": 3600
+      },
+      "non_existing_episode": null
+    },
+    "mongodb_find": [
+      {
+        "_id": "676cc8e0f3e1a74b8c123456",
+        "date": "2024-12-22T09:59:39",
+        "titre": "Episode du 22 décembre 2024"
+      },
+      {
+        "_id": "676cc8e0f3e1a74b8c789012", 
+        "date": "2024-12-15T09:59:39",
+        "titre": "Episode du 15 décembre 2024"
+      }
+    ]
+  }
+}

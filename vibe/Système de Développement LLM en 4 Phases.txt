@@ -1,0 +1,121 @@
+/*******************************************************
+ *                                                     *
+ *      SYSTEME DE DEVELOPPEMENT LLM EN 4 PHASES       *
+ *                                                     *
+ *          Auteur : Korben                            *
+ *          Fait avec ❤️ pour les Patreons             *
+ *                                                     *
+ ******************************************************/
+
+
+Phase 1 : Spécification et Exploration
+
+Je veux développer [VOTRE IDÉE]. 
+
+Pose-moi une question à la fois pour développer une spécification complète et détaillée. Chaque question doit s'appuyer sur mes réponses précédentes. Explore :
+- Les fonctionnalités principales et secondaires
+- Les utilisateurs cibles et leurs besoins
+- Les contraintes techniques et de ressources
+- L'architecture générale souhaitée
+- Les défis potentiels et solutions
+- Les critères de succès
+
+Après avoir exploré tous les aspects, compile nos échanges en :
+1. Un fichier spec.md complet avec tous les requirements
+2. Une liste des décisions techniques clés
+3. Les risques identifiés et stratégies de mitigation
+
+==============================
+Phase 2 : Planification Technique et Architecture
+
+Prends cette spécification et crée un plan de développement détaillé :
+
+<SPEC>
+[Coller le spec.md]
+</SPEC>
+
+1. D'abord, crée une architecture technique complète
+2. Ensuite, décompose le projet en petites étapes itératives (assez petites pour être implémentées de manière sûre, assez grandes pour faire avancer le projet)
+3. Pour chaque étape, définis précisément les fichiers à créer avec leur structure
+
+Génère les documents suivants :
+
+## architecture.md
+- Structure des dossiers
+- Choix technologiques avec justifications
+- Patterns et conventions à suivre
+- Diagrammes de flux de données
+
+## implementation-plan.csv
+Status,File,Priority,Lines,Complexity,Depends On,What It Does,Key Functions,Imports,Exports,Tests Required
+TODO,[nom_fichier],CRITICAL/HIGH/MEDIUM,[estimation],[Low/Medium/High],[dépendances],[description],[fonctions principales],[imports nécessaires],[exports],[tests à écrire]
+
+## prompt-plan.md
+Pour chaque groupe de 3-5 fichiers liés, crée un prompt détaillé qui :
+- Référence les fichiers précédents nécessaires
+- Définit précisément ce qui doit être construit
+- Inclut les tests à écrire
+- Se termine par l'intégration avec le code existant
+
+## todo.md
+Une checklist complète avec :
+- [ ] Tâches de setup initial
+- [ ] Implémentation par modules
+- [ ] Tests et validation
+- [ ] Documentation
+- [ ] Déploiement
+
+==============================
+Phase 3 : Exécution avec Suivi Granulaire
+
+Je vais maintenant implémenter le projet. Pour chaque session de travail :
+
+1. Regarde le fichier implementation-plan.csv et identifie les 3 prochains fichiers TODO
+2. Utilise le prompt correspondant dans prompt-plan.md
+3. Pour chaque fichier :
+   - Génère le code complet avec commentaires
+   - Crée les tests associés
+   - Vérifie l'intégration avec les dépendances
+4. Mets à jour implementation-plan.csv :
+   - Change le Status de TODO à DONE
+   - Ajoute une Progress Note concise (max 10 mots)
+   - Note tout changement par rapport au plan initial
+
+Après chaque groupe de fichiers, génère un rapport :
+## Session Report
+- Fichiers complétés : [liste]
+- Tests passés : [statut]
+- Intégration vérifiée : [oui/non]
+- Problèmes rencontrés : [description]
+- Prochaines étapes : [recommandations]
+
+==============================
+Phase 4 : Documentation Continue et Maintenance
+
+Maintiens ces fichiers à jour tout au long du projet :
+
+## CLAUDE.md
+Instructions spécifiques pour ce projet :
+- Conventions de code à respecter
+- Patterns préférés
+- Erreurs communes à éviter
+- Contexte métier important
+
+## changelog.md
+[Date] - Session X
+- Ajouté : [fonctionnalités]
+- Modifié : [changements]
+- Corrigé : [bugs]
+- Note : [observations importantes]
+
+## work-journal.md
+Journal détaillé avec :
+- Décisions d'architecture et justifications
+- Solutions aux problèmes complexes
+- Patterns réutilisables découverts
+- Améliorations futures identifiées
+
+## lessons-learned.md
+- Ce qui a bien fonctionné
+- Ce qui pourrait être amélioré
+- Recommandations pour projets similaires

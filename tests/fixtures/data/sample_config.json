@@ -1,0 +1,77 @@
+{
+  "_description": "Configuration d'exemple pour les tests unitaires",
+  "_usage": "Utilisé par tests/fixtures/__init__.py avec load_sample_json('sample_config.json')",
+  "_note": "Toutes les valeurs sont fictives et sûres pour les tests",
+  
+  "environment_variables": {
+    "RSS_LMELP_URL": "https://example.com/test-rss-feed.xml",
+    
+    "AZURE_API_KEY": "test-azure-api-key-12345",
+    "AZURE_ENDPOINT": "https://test-azure-openai.openai.azure.com",
+    "AZURE_API_VERSION": "2023-12-01-preview",
+    
+    "GEMINI_API_KEY": "test-gemini-api-key-67890",
+    
+    "OPENAI_API_KEY": "test-openai-api-key-abcdef",
+    
+    "GOOGLE_PROJECT_ID": "test-project-id-123",
+    "GOOGLE_AUTH_FILE": "/tmp/test-google-auth.json",
+    
+    "LMELP_AUDIO_PATH": "/tmp/test-audio-path",
+    "LMELP_WEB_FILENAME": "test-web-output.html",
+    
+    "DB_HOST": "localhost",
+    "DB_PORT": "27017",
+    "DB_NAME": "test_lmelp_db",
+    "DB_USER": "test_user",
+    "DB_PWD": "test_password"
+  },
+  
+  "default_values": {
+    "rss_url": "https://radiofrance-podcast.net/podcast09/rss_14007.xml",
+    "audio_path": "/tmp/lmelp_audios",
+    "web_filename": "lmelp.html"
+  },
+  
+  "test_scenarios": {
+    "minimal_config": {
+      "RSS_LMELP_URL": "https://minimal.example.com/rss.xml"
+    },
+    
+    "full_azure_config": {
+      "AZURE_API_KEY": "full-test-key",
+      "AZURE_ENDPOINT": "https://full-test.openai.azure.com",
+      "AZURE_API_VERSION": "2024-02-01"
+    },
+    
+    "missing_optional_vars": {
+      "RSS_LMELP_URL": "https://partial.example.com/rss.xml"
+    }
+  },
+  
+  "validation_data": {
+    "valid_urls": [
+      "https://example.com/valid-rss.xml",
+      "https://radiofrance-podcast.net/podcast09/rss_14007.xml",
+      "https://test-site.com/feeds/episodes.xml"
+    ],
+    
+    "invalid_urls": [
+      "",
+      "not-a-url",
+      "ftp://wrong-protocol.com/feed.xml"
+    ],
+    
+    "valid_api_keys": [
+      "sk-test-key-1234567890",
+      "test-azure-key-abcdef",
+      "gemini-test-key-xyz789"
+    ],
+    
+    "invalid_api_keys": [
+      "",
+      null,
+      "too-short"
+    ]
+  }
+}

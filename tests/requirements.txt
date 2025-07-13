@@ -1,0 +1,25 @@
+# Dépendances minimales pour les tests unitaires
+# Core testing
+pytest>=7.0
+pytest-mock>=3.10
+pytest-env>=0.8
+pytest-cov>=4.0
+
+# Test dependencies from nbs.config
+python-dotenv>=1.0.0
+PyYAML>=6.0
+GitPython>=3.1.0
+
+# Dependencies for mocking in conftest.py
+pymongo>=4.0.0
+
+# Dependencies for RSS tests
+feedparser>=6.0.0
+pytz>=2021.1
+
+# Pour les tests futures (léger)
+requests>=2.25.0
+
+# Dependencies mockées mais parfois référencées
+# Note: Ces modules sont mockés dans les tests, pas vraiment installés
+beautifulsoup4>=4.0.0

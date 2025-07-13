@@ -2,6 +2,7 @@
   - [environnements de dev python 🐍](#environnements-de-dev-python-)
   - [pre-commit ⏱️](#pre-commit-️)
   - [config vscode 🖥️](#config-vscode-️)
+  - [tests unitaires 🧪](#tests-unitaires-)
 - [😀 à propos de la doc](#-à-propos-de-la-doc)
 - [pour utiliser 🚀](#pour-utiliser-)
   - [💾 base de données mongodb](#-base-de-données-mongodb)
@@ -44,6 +45,38 @@ cat /proc/sys/fs/inotify/max_user_watches # to control it is applied
 or add `files.watcherExclude` directive in `.vscode/settings.json` 📁
 
 pour quelques astuces liées à vscode : [Vscode hints (sur github pages)](https://castorfou.github.io/lmelp/readme_vscode_hints/)
+
+## tests unitaires 🧪
+
+Le projet utilise **pytest** pour les tests unitaires avec une couverture de code élevée.
+
+**Infrastructure CI/CD :**
+- ✅ **GitHub Actions** : Tests automatiques sur chaque push/PR
+- ✅ **Dépendances optimisées** : `tests/requirements.txt` (sans PyTorch/ML)
+- ✅ **Mocking avancé** : torch, transformers, dbus mockés pour CI/CD
+- ✅ **Coverage 72%+** : Couverture actuelle avec 214 tests
+- ✅ **Linting automatique** : flake8, black, isort
+
+```bash
+# Lancer tous les tests
+pytest
+
+# Tests avec couverture 
+pytest --cov=nbs --cov-report=term-missing
+
+# Tests spécifiques
+pytest tests/unit/test_config.py -v
+```
+
+**Structure des tests :**
+- `tests/unit/` : Tests unitaires par module
+- `tests/fixtures/` : Données de test et utilitaires
+- `tests/requirements.txt` : **Dépendances minimales pour tests**
+- `tests/conftest.py` : Configuration et fixtures globales
+- `.env.test` : Variables d'environnement de test
+- `.github/workflows/tests.yml` : **CI/CD GitHub Actions**
+
+**Documentation complète :** [Guide des tests unitaires](https://castorfou.github.io/lmelp/readme_unit_test/) 📋
 
 # 😀 à propos de la doc
 

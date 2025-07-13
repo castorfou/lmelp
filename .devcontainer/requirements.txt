@@ -28,6 +28,12 @@ llama-index-llms-azure-openai
 llama-index-embeddings-azure-openai
 llama-index-llms-huggingface-api
 # llama-index-llms-gemini 
+
+# Test dependencies
+pytest>=7.0
+pytest-mock>=3.10
+pytest-env>=0.8
+pytest-cov>=4.0
 llama-index-llms-vertex
 google-search-results
 smolagents[litellm]
