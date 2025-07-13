@@ -1,0 +1,27 @@
+ID,Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
+T001,TODO,CREATE,pytest.ini,New,BOUCLE1,Low,Inexistant,Configuration pytest avec paths et options,N/A,git rm pytest.ini
+T002,TODO,CREATE,requirements-test.txt,New,BOUCLE1,Low,Inexistant,Dépendances de test (pytest pytest-mock etc),N/A,git rm requirements-test.txt
+T003,TODO,CREATE,tests/__init__.py,New,BOUCLE1,Low,Inexistant,Fichier vide pour package Python,N/A,Simple rm -rf tests/
+T004,TODO,CREATE,tests/conftest.py,New,BOUCLE1,Medium,Inexistant,Configuration pytest globale avec fixtures de base,N/A,Simple rm -rf tests/
+T005,TODO,CREATE,tests/unit/__init__.py,New,BOUCLE1,Low,Inexistant,Package pour tests unitaires,N/A,Simple rm -rf tests/
+T006,TODO,CREATE,tests/unit/test_simple.py,New,BOUCLE1,Low,Inexistant,Test ultra-simple pour valider la boucle (import config),N/A,Simple rm -rf tests/
+T007,TODO,CREATE,.github/workflows/tests.yml,New,BOUCLE1,Medium,Inexistant,Workflow GitHub Actions pour tests automatiques,N/A,git rm .github/workflows/tests.yml
+T008,TODO,MODIFY,.gitignore,Update,BOUCLE1,Low,Présent sans exclusions tests,Ajout exclusions .pytest_cache/ .coverage etc,T006,git checkout .gitignore
+T009,TODO,MODIFY,README.md,Update,BOUCLE1,Low,Section développeur existante,Ajout section Tests sous Pour développer,T006,git checkout README.md
+T010,TODO,CREATE,docs/readme_unit_test.md,New,BOUCLE1,Medium,Inexistant,Guide complet des tests unitaires,N/A,git rm docs/readme_unit_test.md
+T011,TODO,MODIFY,mkdocs.yml,Update,BOUCLE1,Low,Configuration actuelle,Ajout entrée readme_unit_test.md,T006,git checkout mkdocs.yml
+T012,TODO,CREATE,tests/unit/test_config.py,New,BOUCLE2,Medium,Inexistant,Tests du module nbs/config.py,T006,Simple rm -rf tests/
+T013,TODO,CREATE,tests/fixtures/__init__.py,New,BOUCLE2,Low,Inexistant,Package pour données de test,T012,Simple rm -rf tests/
+T014,TODO,CREATE,tests/fixtures/sample_config.json,New,BOUCLE2,Low,Inexistant,Configuration exemple pour tests,T012,Simple rm -rf tests/
+T015,TODO,CREATE,.env.test,New,BOUCLE2,Low,Inexistant,Variables d'environnement pour tests,T012,git rm .env.test
+T016,TODO,CREATE,tests/unit/test_mongo.py,New,BOUCLE3,High,Inexistant,Tests du module nbs/mongo.py avec mocking MongoDB,T012,Simple rm -rf tests/
+T017,TODO,CREATE,tests/fixtures/sample_episode.json,New,BOUCLE3,Low,Inexistant,Données d'épisode exemple pour tests,T016,Simple rm -rf tests/
+T018,TODO,CREATE,tests/unit/test_llm.py,New,BOUCLE4,High,Inexistant,Tests du module nbs/llm.py avec mocking APIs,T016,Simple rm -rf tests/
+T019,TODO,CREATE,tests/fixtures/sample_transcription.txt,New,BOUCLE4,Low,Inexistant,Transcription exemple pour tests,T018,Simple rm -rf tests/
+T020,TODO,CREATE,tests/unit/test_rss.py,New,BOUCLE5,Medium,Inexistant,Tests du module nbs/rss.py avec mocking HTTP,T018,Simple rm -rf tests/
+T021,TODO,CREATE,tests/fixtures/sample_rss_feed.xml,New,BOUCLE5,Low,Inexistant,Flux RSS exemple pour tests,T020,Simple rm -rf tests/
+T022,TODO,CREATE,tests/integration/__init__.py,New,BOUCLE6,Low,Inexistant,Package pour tests d'intégration,T020,Simple rm -rf tests/
+T023,TODO,CREATE,tests/integration/test_workflows.py,New,BOUCLE6,High,Inexistant,Tests d'intégration des workflows principaux,T020,Simple rm -rf tests/
+T024,TODO,CREATE,tests/ui/__init__.py,New,BOUCLE7,Low,Inexistant,Package pour tests UI,T023,Simple rm -rf tests/
+T025,TODO,CREATE,tests/ui/test_streamlit.py,New,BOUCLE7,Medium,Inexistant,Tests basiques interface Streamlit,T023,Simple rm -rf tests/
+T026,TODO,MODIFY,docs/readme_github.md,Update,BOUCLE7,Low,Documentation CI/CD actuelle,Ajout section tests automatiques,T025,git checkout docs/readme_github.md

@@ -94,11 +94,15 @@ Crée un plan qui :
 Génère dans vibe/[BRANCH-NAME]/Phase_2:
 
 ### modification-plan.csv
-Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
-TODO,CREATE/MODIFY/REFACTOR,[fichier],[New/Update/Refactor],HIGH,[Low/Medium/High],[état actuel],[état cible],[tests à modifier],[stratégie rollback]
+ID,Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
+T001,TODO,CREATE/MODIFY/REFACTOR,[fichier],[New/Update/Refactor],BOUCLE1,[Low/Medium/High],[état actuel],[état cible],[tests à modifier],[stratégie rollback]
+
+Chaque tâche a un identifiant unique (T001, T002, etc.) pour faciliter le référencement.
+Les priorités sont organisées par BOUCLE1, BOUCLE2, etc. pour une approche itérative rapide.
 
 ### incremental-prompts.md
 Des prompts pour chaque modification qui :
+- Référencent les tâches par leur ID (ex: "Implémenter T001-T006")
 - Incluent le contexte nécessaire du code existant
 - Définissent précisément les changements
 - Préservent la compatibilité
@@ -106,8 +110,10 @@ Des prompts pour chaque modification qui :
 
 ### migration-checklist.md
 - [ ] Backup du code actuel
+- [ ] BOUCLE1 : Boucle complète avec test simple (T001-T011)
+- [ ] BOUCLE2 : Tests config.py (T012-T015)
+- [ ] BOUCLE3+ : Tests modules critiques par boucle
 - [ ] Tests de régression passent
-- [ ] Nouvelles fonctionnalités implémentées
 - [ ] Documentation mise à jour
 - [ ] Code review effectuée
 
