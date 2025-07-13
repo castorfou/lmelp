@@ -146,6 +146,70 @@ def test_save_entity(mock_get_collection):
     mock_collection.insert_one.assert_called_once()
 ```
 
+### 1.1. Mocking des Dépendances Lourdes (ML/IA) 🤖
+
+**Problème** : Les dépendances ML comme PyTorch, transformers, llama_index sont lourdes et causent des échecs en CI/CD.
+
+**Solution** : Mock précoce au niveau `sys.modules` avant tout import.
+
+```python
+import sys
+from unittest.mock import Mock
+
+# 🔥 CRITIQUE : Mocking AVANT les imports
+# Mock des modules ML lourds
+sys.modules['torch'] = Mock()
+sys.modules['transformers'] = Mock()
+sys.modules['datasets'] = Mock()
+
+# Mock des modules système problématiques
+sys.modules['dbus'] = Mock()
+sys.modules['dbus.mainloop'] = Mock()
+sys.modules['dbus.mainloop.glib'] = Mock()
+
+# Mock des modules LlamaIndex et sous-modules
+sys.modules['llama_index'] = Mock()
+sys.modules['llama_index.core'] = Mock()
+sys.modules['llama_index.core.base'] = Mock()
+sys.modules['llama_index.core.base.embeddings'] = Mock()
+sys.modules['llama_index.embeddings'] = Mock()
+sys.modules['llama_index.embeddings.azure_openai'] = Mock()
+
+# Mock des modules Google AI
+sys.modules['google'] = Mock()
+sys.modules['google.generativeai'] = Mock()
+sys.modules['google.oauth2'] = Mock()
+sys.modules['google.oauth2.service_account'] = Mock()
+
+# PUIS seulement après, importer le module à tester
+from nbs.mongo_episode import MongoEpisode
+```
+
+**Cas d'Usage Typiques :**
+
+```python
+class TestMongoEpisodeWithML:
+    """Tests nécessitant du mocking ML complet"""
+    
+    def setup_method(self):
+        """Mocking précoce pour chaque test"""
+        # Déjà fait au niveau module, mais on peut renforcer
+        pass
+    
+    def test_transcription_without_torch(self):
+        """Test de transcription sans installer PyTorch"""
+        # Le module est déjà mocké, on peut tester la logique
+        episode = MongoEpisode()
+        # Test de la logique métier sans dépendances ML
+        assert episode.collection_name == "episodes"
+```
+
+**⚠️ Points Critiques :**
+- Le mocking doit être fait **AVANT** tout import du module testé
+- Utiliser `sys.modules` plutôt que `@patch` pour les dépendances transversales
+- Mocker les **sous-modules** également (ex: `llama_index.core.base`)
+- Tester en environnement **propre** (ex: nouveau terminal) pour valider
+
 ### 2. Variables d'Environnement
 
 ```python
@@ -314,6 +378,38 @@ def test_function_behavior(self, monkeypatch):
 - **Un test = Un comportement**
 - **Arrange-Act-Assert** clairement séparés
 - **Noms explicites** pour les variables de test
+
+### 5. Mocking des Dépendances Lourdes (Leçons GitHub Actions) 🚀
+
+**Problème Résolu** : Import failures en CI/CD avec dépendances ML/IA
+
+**Stratégie Gagnante** :
+1. **Mock précoce** : `sys.modules` avant imports
+2. **Mock exhaustif** : Inclure tous les sous-modules
+3. **Test isolated** : Valider en environnement propre
+4. **Requirements split** : `tests/requirements.txt` minimal
+
+```python
+# Pattern éprouvé pour nouveaux tests ML
+import sys
+from unittest.mock import Mock
+
+# Mock AVANT imports (dans l'ordre de découverte des erreurs)
+sys.modules['torch'] = Mock()
+sys.modules['transformers'] = Mock() 
+sys.modules['dbus'] = Mock()
+sys.modules['llama_index'] = Mock()
+sys.modules['google.generativeai'] = Mock()
+
+# Puis import du module
+from nbs.module_with_ml import ModuleToTest
+```
+
+**Métriques de Succès** :
+- ✅ 214 tests passent en GitHub Actions
+- ✅ Installation CI : 30s (vs 2m30s avant)
+- ✅ Couverture maintenue : 72.72%
+- ✅ Zéro dépendance ML en tests
 
 ## Patterns Avancés
 
