@@ -236,3 +236,48 @@
 - **Usage** : `load_sample_json("sample_episode.json")` maintenant disponible
 - **Test** : `pytest tests/unit/test_fixtures.py -k episode -v`
 - **Rollback** : `rm tests/fixtures/data/sample_episode.json`
+
+### [T018] DONE - Tests complets pour module LLM avec mocking avancé !
+- **Fichier créé** : `tests/unit/test_llm.py` (310 lignes, 17 tests)
+- **Challenge résolu** : Import complex dependencies (google.generativeai, llama_index, vertexai)
+- **Solution mocking** : 
+  - Fixture autouse `mock_external_imports()` avec patch.dict sys.modules
+  - Mock complet : google, google.generativeai, llama_index.*, vertexai
+  - Import après mocking pour éviter ImportError "No module named 'google'"
+- **5 classes de tests** :
+  - TestAzureLLM : 4 tests get_azure_llm() (default/custom engine, erreurs, Settings global)
+  - TestGeminiLLM : 4 tests get_gemini_llm() (default/custom model, erreurs, ordre appels)
+  - TestVertexLLM : 4 tests get_vertex_llm() (default/custom model, erreurs, credentials)
+  - TestLLMIntegration : 2 tests intégration (appels multiples, configuration Settings)
+  - TestLLMErrorHandling : 3 tests gestion erreurs (config manquante, API key invalid, project missing)
+- **Techniques avancées** :
+  - Mock llama_index AzureOpenAI, Vertex, genai.GenerativeModel
+  - Mock fonctions config get_azure_openai_keys, get_gemini_api_key, get_google_projectID
+  - Mock Settings global pour LlamaIndex
+  - Tests ordre d'appels avec side_effect et tracking
+  - Tests structure credentials dictionary
+- **Résultat** : ✅ 81/81 tests PASSED (64 précédents + 17 LLM)
+- **Coverage parfaite** : nbs/llm.py 100% (23/23 statements) 
+- **Impact** : MODULE LLM ENTIÈREMENT TESTÉ ! Toutes les 3 fonctions (Azure, Gemini, Vertex) avec gestion erreurs
+- **Qualité** : Patterns ARRANGE-ACT-ASSERT, mocking isolation complète, zero calls réels API
+- **Test** : `pytest tests/unit/test_llm.py --cov=llm --cov-report=term-missing`
+- **Rollback** : `rm tests/unit/test_llm.py`
+
+### [T019] DONE - Transcription exemple pour tests LLM
+- **Fichier créé** : `tests/fixtures/data/sample_transcription.txt` (91 lignes)
+- **Contenu réaliste** : Émission "Le Masque et la Plume" authentique
+  - Introduction avec présentateurs (3 lignes)
+  - 3 critiques de livres détaillées (sections distinctes)
+  - Dialogue naturel avec interruptions et exclamations
+  - Détails éditeurs, prix, pages
+  - Ton critique authentique du Masque et la Plume
+- **Tests ajoutés** : 3 nouveaux tests dans test_fixtures.py
+  - test_load_sample_transcription_txt : Chargement et validation structure de base
+  - test_sample_transcription_structure : Validation sections (introduction, critiques, intervenants)
+  - test_sample_transcription_content_quality : Validation qualité contenu (longueur, mots clés, patterns)
+- **Patterns détectés** : "critique", "livre", "auteur", "éditeur", "pages", dialogues naturels
+- **Résultat** : ✅ 86/86 tests PASSED (83 précédents + 3 transcription)
+- **Usage** : `load_sample_text("sample_transcription.txt")` pour tests LLM analysis
+- **Impact** : Infrastructure complète transcription pour tests LLM analysis, synthèses, extraction entités
+- **Test** : `pytest tests/unit/test_fixtures.py -k transcription -v`
+- **Rollback** : `rm tests/fixtures/data/sample_transcription.txt`

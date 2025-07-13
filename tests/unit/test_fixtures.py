@@ -353,3 +353,68 @@ class TestFixturesPackage:
                 assert (
                     episode["audio_rel_filename"] is not None
                 ), f"Le scénario '{scenario_name}' dit qu'il y a un audio mais le filename est null"
+
+    def test_load_sample_transcription_txt(self):
+        """Test que le fichier sample_transcription.txt peut être chargé"""
+        transcription = load_sample_text("sample_transcription.txt")
+
+        # Vérifier que c'est bien du texte
+        assert isinstance(transcription, str)
+        assert len(transcription) > 0
+
+        # Vérifier le format d'une émission "Le Masque et la Plume"
+        assert "Masque et la Plume" in transcription
+        assert "Bonjour et bienvenue" in transcription
+
+        # Vérifier la structure typique d'une émission
+        assert "Marie-Claire" in transcription  # Nom d'intervenant
+        assert "éditions" in transcription  # Mention d'éditeur
+        assert "[Générique" in transcription  # Indications techniques
+
+    def test_sample_transcription_structure(self):
+        """Test que la transcription exemple a la structure attendue"""
+        transcription = load_sample_text("sample_transcription.txt")
+
+        # Vérifier les éléments structurels
+        lines = transcription.split("\n")
+        assert len(lines) > 50  # Assez long pour être réaliste
+
+        # Vérifier qu'il y a des noms d'intervenants
+        intervenant_pattern = r"^[A-Za-z-]+\s[A-Za-z-]+\s:"
+        import re
+
+        intervenant_lines = [
+            line for line in lines if re.match(intervenant_pattern, line)
+        ]
+        assert len(intervenant_lines) > 3  # Au moins quelques intervenants
+
+        # Vérifier qu'il y a des mentions d'ouvrages (entre guillemets)
+        livre_mentions = [line for line in lines if '"' in line and '"' in line]
+        assert len(livre_mentions) > 0  # Au moins une mention d'ouvrage
+
+    def test_sample_transcription_content_quality(self):
+        """Test que la transcription exemple contient du contenu de qualité pour les tests LLM"""
+        transcription = load_sample_text("sample_transcription.txt")
+
+        # Vérifier qu'il y a des éléments typiques d'une critique littéraire
+        required_elements = [
+            "roman",
+            "auteur",
+            "livre",
+            "critique",
+            "écriture",
+            "prose",
+        ]
+
+        transcription_lower = transcription.lower()
+        for element in required_elements:
+            assert (
+                element in transcription_lower
+            ), f"L'élément '{element}' devrait être présent dans la transcription"
+
+        # Vérifier qu'il y a des noms d'éditeurs
+        editeurs = ["Gallimard", "Minuit", "Lattès"]
+        found_editeurs = [editeur for editeur in editeurs if editeur in transcription]
+        assert (
+            len(found_editeurs) > 0
+        ), "Au moins un éditeur connu devrait être mentionné"
