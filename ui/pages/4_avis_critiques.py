@@ -17,7 +17,7 @@ st.set_page_config(
 from mongo_episode import Episodes, Episode
 from llm import get_azure_llm
 from mongo import get_collection
-from nbs.date_utils import DATE_FORMAT, format_date
+from date_utils import DATE_FORMAT, format_date
 import pandas as pd
 import locale
 import re
