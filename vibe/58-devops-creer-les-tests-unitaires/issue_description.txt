@@ -1,0 +1,23 @@
+creer les tests unitaires
+
+afin de faire des modifications plus sereines sur le code
+
+il y a plusieurs composants différents dans mon code. En particulier
+- du code python "back-office" nbs/*.py créé à partir des notebooks correspondants
+- des scripts sous scripts/*.py qui permettent de lancer des traitements one-shot (de migration de données par exemple)
+- des pages streamlit
+- et une base de données MongoDB
+
+il faudra bien clarifier pour tous ces composants ce que sera la strategie
+Et comment tester l'integration
+
+il y a aussi du code que je ne veux pas tester parce qu'il s'agit d'experimentations pour tatonner/tester (REPL developpement) notamment tous les notebooks qui commencent par des chiffres sous nbs (par exemple nbs/38 page livres.ipynb)
+
+il faudra modifier la CI/CD pour que les tests unitaires se declenchent à chaque push (y compris dans les branches pas que sur le main)
+
+il faudra modifier la documentation à plusieurs endroits. Dans :
+
+- README.md - pour ajouter une section sous Pour developper expliquant brievement la logique de tests unitaires utilisée dans ce projet
+- sous docs/readme_unit_test.md - la on detaille plus, en particulier comment on lance les tests (et donc ajouter une entree dans mkdocs.yml) - le mode d'emploi est expliqué dans docs/readme_doc.md
+- sous docs/readme_github.md - expliquer le changement de CI/CD
+
