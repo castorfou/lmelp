@@ -1,5 +1,5 @@
 ID,Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
-T001,TODO,CREATE,tests/fixtures/data/avis_critique_data.json,New,BOUCLE1,Low,N/A,Fixtures pour tests AvisCritique,N/A,Suppression simple
+T001,DONE,CREATE,tests/fixtures/data/avis_critique_data.json,New,BOUCLE1,Low,N/A,Fixtures pour tests AvisCritique - 3 valides 7 tronqués 1 edge case,N/A,Suppression simple
 T002,TODO,CREATE,tests/unit/test_mongo_avis_critique.py,New,BOUCLE1,Medium,N/A,Tests unitaires complets classe AvisCritique,N/A,Suppression simple
 T003,TODO,CREATE,tests/unit/test_date_utils.py,New,BOUCLE1,Low,N/A,Tests unitaires pour utilitaires dates,N/A,Suppression simple
 T004,TODO,CREATE,nbs/date_utils.py,New,BOUCLE1,Low,N/A,Utilitaire centralisation dates,tests/unit/test_date_utils.py,Suppression simple
