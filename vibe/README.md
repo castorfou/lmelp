@@ -100,26 +100,33 @@ Des prompts pour chaque modification qui :
 
 ## Phase 3 - Exécution avec Préservation (Adaptée)
 
+Je veux commencer le développement de cette nouvelle feature
 
-Je vais modifier le projet existant. Pour chaque session :
+`vibe/[BRANCH-NAME]/issue_description.txt`
 
-CONTEXTE ACTUEL :
-[Coller les fichiers pertinents actuels ou utiliser repomix]
+Voici le contexte du projet
 
-MODIFICATION À FAIRE :
-[Référencer la ligne du modification-plan.csv]
+`vibe/[BRANCH-NAME]/Phase_0/project-summary.md`
 
-Pour chaque modification :
-1. Montre d'abord les changements exacts (diff style)
-2. Explique pourquoi ces changements sont nécessaires
-3. Génère le code modifié complet
-4. Adapte/crée les tests
-5. Vérifie qu'aucune régression n'est introduite
+et son état actuel
 
-Après chaque modification, mets à jour :
-- modification-plan.csv : Status → DONE, ajoute Result Notes
-- Crée un git-friendly changelog entry
-- Note tout effet de bord découvert
+`vibe/[BRANCH-NAME]/Phase_0/current-state.md`
+
+Nous entrons dans la phase 1 du projet, à cette étape il n'y a aucun developpement, modifications de fichiers techniques.
+
+Pose-moi des questions pour comprendre :
+- Comment cette modification s'intègre dans l'existant
+- Quels fichiers seront impactés
+- Les contraintes de rétrocompatibilité
+- Les risques de régression
+- La stratégie de migration si nécessaire
+
+Compile ensuite dans le repertoire `vibe/[BRANCH-NAME]/Phase_1`:
+1. `modification-spec.md` : Spécification des changements
+2. `impact-analysis.md` : Analyse d'impact sur le code existant
+3. `integration-strategy.md` : Stratégie d'intégration
+
+
 
 ### Phase 4 : Documentation et Analyse Post-Modification
 
