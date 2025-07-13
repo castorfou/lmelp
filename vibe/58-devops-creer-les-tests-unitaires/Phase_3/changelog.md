@@ -20,3 +20,12 @@
 - **Impact** : Aucun - infrastructure de tests uniquement
 - **Test** : Import du package tests réussi
 - **Rollback** : `rm -rf tests/`
+
+### [T004] DONE - Configuration pytest globale
+- **Fichier créé** : `tests/conftest.py`
+- **Contenu** : Fixtures globales (test_environment, mock_mongodb, test_config)
+- **Correction** : Mock MongoDB complet (pas de connexion réseau), Azure OpenAI uniquement
+- **Sécurité** : Isolation complète, aucun appel API/DB réel
+- **Impact** : Aucun - configuration pytest uniquement
+- **Test** : Import conftest réussi, pytest collecte OK, pas de régression
+- **Rollback** : `rm tests/conftest.py`
