@@ -13,5 +13,9 @@ GitPython>=3.1.0
 # Dependencies for mocking in conftest.py
 pymongo>=4.0.0
 
+# Dependencies for RSS tests
+feedparser>=6.0.0
+pytz>=2021.1
+
 # Pour les tests futures (léger)
 requests>=2.25.0
