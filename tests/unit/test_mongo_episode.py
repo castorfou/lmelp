@@ -22,6 +22,20 @@ import os
 
 os.environ.setdefault("AUDIO_PATH", "/tmp/test_audio")
 
+# Configuration du path pour les imports relatifs (compatible GitHub Actions)
+import sys
+from pathlib import Path
+
+nbs_path = Path(__file__).parent.parent.parent / "nbs"
+if str(nbs_path) not in sys.path:
+    sys.path.insert(0, str(nbs_path))
+
+# Import du module mongo_episode pour le rendre disponible globalement
+try:
+    import nbs.mongo_episode as mongo_episode_module
+except ImportError:
+    import mongo_episode as mongo_episode_module
+
 
 @pytest.fixture(autouse=True)
 def mock_mongo_episode_dependencies():
@@ -31,6 +45,10 @@ def mock_mongo_episode_dependencies():
     mock_config.get_DB_VARS.return_value = ("localhost", "test_db", "true")
     mock_config.get_audio_path.return_value = "/tmp/test_audio"
     mock_config.AUDIO_PATH = "/tmp/test_audio"
+
+    # Assurer que nbs.mongo_episode est disponible pour tous les imports
+    if "nbs.mongo_episode" not in sys.modules:
+        sys.modules["nbs.mongo_episode"] = mongo_episode_module
 
     # Mock pour whisper et ML
     mock_torch = MagicMock()
