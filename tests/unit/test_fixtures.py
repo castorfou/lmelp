@@ -262,3 +262,94 @@ class TestFixturesPackage:
         assert any(
             "pytest" in cmd for cmd in run_commands
         ), "Doit lancer pytest dans une étape run"
+
+    def test_load_sample_episode_json(self):
+        """Test le chargement du fichier sample_episode.json"""
+        # ARRANGE & ACT
+        data = load_sample_json("sample_episode.json")
+
+        # ASSERT
+        assert isinstance(data, dict), "Le fichier doit contenir un dictionnaire"
+        assert "episodes" in data, "Le fichier doit avoir une section 'episodes'"
+        assert (
+            "test_scenarios" in data
+        ), "Le fichier doit avoir une section 'test_scenarios'"
+        assert (
+            "date_formats" in data
+        ), "Le fichier doit avoir une section 'date_formats'"
+        assert (
+            "validation_data" in data
+        ), "Le fichier doit avoir une section 'validation_data'"
+
+        # Vérifier la structure des épisodes
+        episodes = data["episodes"]
+        assert len(episodes) >= 1, "Il doit y avoir au moins un épisode d'exemple"
+
+        first_episode = episodes[0]
+        required_fields = [
+            "_id",
+            "date",
+            "titre",
+            "description",
+            "url_telechargement",
+            "audio_rel_filename",
+            "transcription",
+            "type",
+            "duree",
+        ]
+        for field in required_fields:
+            assert field in first_episode, f"L'épisode doit avoir le champ '{field}'"
+
+    def test_sample_episode_date_formats(self):
+        """Test que les formats de date dans sample_episode.json sont corrects"""
+        # ARRANGE & ACT
+        data = load_sample_json("sample_episode.json")
+
+        # ASSERT
+        date_formats = data["date_formats"]
+        assert date_formats["DATE_FORMAT"] == "%Y-%m-%dT%H:%M:%S"
+        assert date_formats["LOG_DATE_FORMAT"] == "%d %b %Y %H:%M"
+
+        # Test qu'on peut parser les dates d'exemple avec le bon format
+        from datetime import datetime
+
+        valid_dates = data["validation_data"]["valid_dates"]
+        for date_str in valid_dates:
+            try:
+                parsed_date = datetime.strptime(date_str, date_formats["DATE_FORMAT"])
+                assert isinstance(parsed_date, datetime)
+            except ValueError:
+                pytest.fail(
+                    f"Impossible de parser la date '{date_str}' avec le format '{date_formats['DATE_FORMAT']}'"
+                )
+
+    def test_sample_episode_test_scenarios(self):
+        """Test que les scénarios de test dans sample_episode.json sont cohérents"""
+        # ARRANGE & ACT
+        data = load_sample_json("sample_episode.json")
+
+        # ASSERT
+        scenarios = data["test_scenarios"]
+        episodes = data["episodes"]
+
+        # Vérifier que les IDs des scénarios correspondent à des épisodes existants
+        episode_ids = {ep["_id"] for ep in episodes}
+
+        for scenario_name, scenario in scenarios.items():
+            episode_id = scenario["episode_id"]
+            assert (
+                episode_id in episode_ids
+            ), f"Le scénario '{scenario_name}' référence un épisode inexistant: {episode_id}"
+
+            # Vérifier la cohérence des flags avec les données réelles
+            episode = next(ep for ep in episodes if ep["_id"] == episode_id)
+
+            if scenario["has_transcription"]:
+                assert (
+                    episode["transcription"] is not None
+                ), f"Le scénario '{scenario_name}' dit qu'il y a une transcription mais elle est null"
+
+            if scenario["has_audio"]:
+                assert (
+                    episode["audio_rel_filename"] is not None
+                ), f"Le scénario '{scenario_name}' dit qu'il y a un audio mais le filename est null"

@@ -192,3 +192,47 @@
 - **Bénéfice** : Isolation complète environnement tests + source centralisée variables
 - **Test** : `pytest tests/unit/test_config.py tests/unit/test_fixtures.py -v`
 - **Rollback** : `git rm .env.test && git checkout pytest.ini`
+
+### [T016] DONE - Tests complets du module MongoDB
+- **Fichier créé** : `tests/unit/test_mongo.py` (26 tests, 464 lignes)
+- **Coverage MongoDB** : 98% sur nbs/mongo.py (83 lines, seulement 2 manquées)
+- **Classes de tests créées** :
+  - TestMongoConnection : Tests get_collection() avec paramètres par défaut/custom
+  - TestMongoLogging : Tests mongolog() et print_logs() avec mocking datetime
+  - TestBaseEntity : Tests complets CRUD init/exists/to_dict/keep/remove/get_oid
+  - TestEditeur : Tests initialisation et héritage BaseEntity
+  - TestCritique : Tests initialisation et héritage BaseEntity  
+  - TestClassMethods : Tests from_oid() et get_entries() avec mocking ObjectId
+  - TestStringRepresentations : Tests __repr__ et __str__
+- **Techniques de mocking** :
+  - Mock module config.get_DB_VARS() pour éviter dépendances
+  - Mock pymongo.MongoClient pour isolation MongoDB
+  - Mock datetime.now() pour logs déterministes
+  - Mock ObjectId pour tests reproductibles
+- **Patterns ARRANGE-ACT-ASSERT** : Tous les tests suivent le pattern organisé
+- **Résultat** : ✅ 58/58 tests PASSED (32 config+fixtures + 26 mongo)
+- **Coverage totale** : 17% (seulement config.py 97% + mongo.py 98% testés)
+- **Impact** : MONGO MODULE FULLY TESTED! Infrastructure mocking avancée opérationnelle
+- **Difficulté résolue** : Mocking complex de modules avec dépendances circulaires
+- **Test** : `pytest tests/unit/test_mongo.py -v`
+- **Rollback** : `rm tests/unit/test_mongo.py`
+
+### [T017] DONE - Données d'épisode exemple pour tests MongoDB
+- **Fichier créé** : `tests/fixtures/data/sample_episode.json` (138 lignes, 4864 bytes)
+- **Structure JSON complète** :
+  - episodes : 4 exemples couvrant tous les cas (complet, partiel, multiples auteurs, données manquantes)
+  - test_scenarios : 3 scénarios de test avec flags has_transcription/has_audio
+  - date_formats : Tous les formats du module Episode (DATE_FORMAT, LOG_DATE_FORMAT, RSS_DATE_FORMAT, WEB_DATE_FORMAT)  
+  - validation_data : Données valides/invalides pour tests robustes
+  - mock_responses : Réponses MongoDB simulées pour mocking
+- **Champs Episode couverts** : _id, date, titre, description, url_telechargement, audio_rel_filename, transcription, type, duree
+- **Tests ajoutés** : 3 nouveaux tests dans test_fixtures.py
+  - test_load_sample_episode_json : Validation structure et champs requis
+  - test_sample_episode_date_formats : Validation parsing dates avec formats corrects
+  - test_sample_episode_test_scenarios : Cohérence scenarios/données réelles
+- **Résultat** : ✅ 61/61 tests PASSED (32 config+fixtures + 26 mongo + 3 épisodes)
+- **Coverage maintenue** : config.py 97% + mongo.py 98% (aucune régression)
+- **Impact** : Infrastructure fixtures épisodes complètement opérationnelle pour T018+ et tests Episode futurs
+- **Usage** : `load_sample_json("sample_episode.json")` maintenant disponible
+- **Test** : `pytest tests/unit/test_fixtures.py -k episode -v`
+- **Rollback** : `rm tests/fixtures/data/sample_episode.json`
