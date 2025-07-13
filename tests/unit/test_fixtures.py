@@ -198,3 +198,53 @@ class TestFixturesPackage:
                 os.environ.pop("TEST_VALIDATION_KEY", None)
             else:
                 os.environ["TEST_VALIDATION_KEY"] = original_value
+
+    def test_github_actions_workflow_exists(self):
+        """Test que le workflow GitHub Actions pour T007 existe et est valide"""
+        from pathlib import Path
+        import yaml
+
+        # ARRANGE : Chemin vers le workflow
+        workflow_path = Path("/workspaces/lmelp/.github/workflows/tests.yml")
+
+        # ACT & ASSERT : Le fichier doit exister
+        assert (
+            workflow_path.exists()
+        ), "Le workflow GitHub Actions tests.yml doit exister (T007)"
+
+        # ACT : Lire et parser le YAML
+        content = workflow_path.read_text()
+        workflow_config = yaml.safe_load(content)
+
+        # ASSERT : Vérifier la structure du workflow
+        assert "name" in workflow_config, "Le workflow doit avoir un nom"
+        # Note: 'on' devient True en YAML, donc on teste les deux cas
+        assert (
+            "on" in workflow_config or True in workflow_config
+        ), "Le workflow doit avoir des triggers"
+        assert "jobs" in workflow_config, "Le workflow doit avoir des jobs"
+
+        # Vérifier les jobs principaux
+        jobs = workflow_config["jobs"]
+        assert "test" in jobs, "Le job 'test' doit exister"
+
+        # Vérifier que le job test utilise Ubuntu
+        test_job = jobs["test"]
+        assert test_job["runs-on"] == "ubuntu-latest", "Doit utiliser ubuntu-latest"
+
+        # Vérifier les étapes critiques
+        steps = test_job["steps"]
+        step_names = [step.get("name", step.get("uses", "")) for step in steps]
+
+        assert any(
+            "checkout" in name.lower() for name in step_names
+        ), "Doit avoir checkout"
+        assert any(
+            "python" in name.lower() for name in step_names
+        ), "Doit configurer Python"
+
+        # Vérifier qu'il y a une étape qui lance pytest
+        run_commands = [step.get("run", "") for step in steps if "run" in step]
+        assert any(
+            "pytest" in cmd for cmd in run_commands
+        ), "Doit lancer pytest dans une étape run"

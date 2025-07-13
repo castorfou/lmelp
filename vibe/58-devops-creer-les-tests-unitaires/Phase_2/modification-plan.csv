@@ -5,7 +5,7 @@ T003,DONE,CREATE,tests/__init__.py,New,BOUCLE1,Low,Créé avec commentaire descr
 T004,DONE,CREATE,tests/conftest.py,New,BOUCLE1,Medium,Créé avec fixtures avancées (test_environment mock_mongodb test_config),Configuration pytest globale avec fixtures de base,N/A,Simple rm -rf tests/
 T005,DONE,CREATE,tests/unit/__init__.py,New,BOUCLE1,Low,Créé avec commentaire descriptif,Package pour tests unitaires,N/A,Simple rm -rf tests/
 T006,DONE,CREATE,tests/unit/test_simple.py,New,BOUCLE1,Low,Renommé en test_config.py avec 18 tests complets,Test ultra-simple pour valider la boucle (import config),N/A,Simple rm -rf tests/
-T007,DONE,CREATE,.github/workflows/tests.yml,New,BOUCLE1,Medium,Non créé - optionnel pour l'instant,Workflow GitHub Actions pour tests automatiques,N/A,git rm .github/workflows/tests.yml
+T007,DONE,CREATE,.github/workflows/tests.yml,New,BOUCLE1,Medium,Workflow GitHub Actions créé : 77 lignes avec 2 jobs (test+lint) - Python 3.12 Ubuntu - pytest avec coverage 90% minimum - Codecov integration - Test validation du workflow ajouté dans test_fixtures.py - Coexiste avec ci.yml (documentation) - 32/32 tests passent,Workflow GitHub Actions pour tests automatiques,N/A,git rm -rf .github/
 T008,DONE,MODIFY,.gitignore,Update,BOUCLE1,Low,Ajouté .coverage .coverage.* htmlcov/ .pytest_cache/,Ajout exclusions .pytest_cache/ .coverage etc,T006,git checkout .gitignore
 T009,DONE,MODIFY,README.md,Update,BOUCLE1,Low,Section Tests ajoutée avec commandes et liens,Ajout section Tests sous Pour développer,T006,git checkout README.md
 T010,DONE,CREATE,docs/readme_unit_test.md,New,BOUCLE1,Medium,Guide complet créé avec patterns mocking fixtures commandes,Guide complet des tests unitaires,N/A,git rm docs/readme_unit_test.md

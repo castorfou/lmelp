@@ -61,6 +61,30 @@
 - **Test** : `pytest tests/unit/test_config.py -v`
 - **Rollback** : `git checkout tests/unit/test_config.py docs/import-strategy.md`
 
+### [T007] DONE - Workflow GitHub Actions pour CI/CD
+- **Répertoires créés** : `.github/`, `.github/workflows/`
+- **Fichier créé** : `.github/workflows/tests.yml` (77 lignes)
+- **Structure workflow** :
+  - Job 'test' : Python 3.12, Ubuntu, pytest avec coverage 90% minimum
+  - Job 'lint' : flake8, black, isort (continue-on-error)
+  - Triggers : push/PR sur main, develop, branches devops/test
+  - Coverage upload vers Codecov
+  - Test spécifique robustesse CI/CD (.env.test depuis /tmp)
+- **Configuration avancée** :
+  - Matrix strategy pour Python versions
+  - YAML syntax "on" correctement géré
+  - PYTHONPATH configuré pour tests CI/CD
+  - Dependencies via .devcontainer/requirements.txt
+- **Test ajouté** : `test_github_actions_workflow_exists` dans test_fixtures.py
+  - Validation existence workflow
+  - Parsing YAML et structure
+  - Vérification jobs et étapes critiques
+- **Résultat** : ✅ 32/32 tests PASSED (31 existants + 1 nouveau)
+- **Impact** : BOUCLE1 RÉELLEMENT COMPLÉTÉE ! Infrastructure CI/CD opérationnelle
+- **Bénéfice** : Tests automatiques sur chaque commit, qualité continue, déploiement prêt
+- **Test** : `pytest tests/unit/test_fixtures.py::TestFixturesPackage::test_github_actions_workflow_exists -v`
+- **Rollback** : `git rm -rf .github/`
+
 ### [T008] DONE - .gitignore pour tests
 - **Fichier modifié** : `.gitignore`
 - **Ajouté** : `.pytest_cache/`, `.coverage`, `.coverage.*`, `htmlcov/`
