@@ -60,8 +60,8 @@ Le projet utilise **pytest** pour les tests unitaires avec une couverture de cod
 # Lancer tous les tests
 pytest
 
-# Tests avec couverture (module spécifique)
-pytest --cov=nbs.config --cov-report=term-missing
+# Tests avec couverture 
+pytest --cov=nbs --cov-report=term-missing
 
 # Tests spécifiques
 pytest tests/unit/test_config.py -v
