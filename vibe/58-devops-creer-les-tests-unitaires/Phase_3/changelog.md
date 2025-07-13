@@ -128,3 +128,22 @@
 - **Usage** : `load_sample_json("sample_config.json")` maintenant fonctionnel
 - **Test** : `pytest tests/ -v`
 - **Rollback** : `rm -rf tests/fixtures/data/`
+
+### [T015] DONE - Variables d'environnement pour tests
+- **Fichier créé** : `.env.test` (32 variables d'environnement, 1215 bytes)
+- **Fichier modifié** : `pytest.ini` (ajout configuration pytest-env)
+- **Structure .env.test** :
+  - Configuration générale : TEST_MODE, RSS_LMELP_URL
+  - APIs : AZURE_*, GEMINI_*, OPENAI_*, GOOGLE_*
+  - Database : DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PWD  
+  - Chemins : LMELP_AUDIO_PATH, TEST_DATA_DIR, TEST_AUDIO_DIR, TEST_OUTPUT_DIR
+- **Configuration pytest.ini** : env_files=.env.test + env_override_existing_values=1
+- **Tests ajoutés** : 2 nouveaux tests dans test_fixtures.py
+  - test_env_test_file_exists_and_valid : Validation existence et contenu .env.test
+  - test_env_test_variables_consistency_with_sample_config : Cohérence avec sample_config.json
+- **Résultat** : ✅ 28/28 tests PASSED (18 config + 10 fixtures)
+- **Coverage maintenue** : 97% sur nbs/config.py (aucune régression)  
+- **Impact** : BOUCLE2 COMPLÉTÉE ! Infrastructure configuration tests finalisée
+- **Bénéfice** : Isolation complète environnement tests + source centralisée variables
+- **Test** : `pytest tests/unit/test_config.py tests/unit/test_fixtures.py -v`
+- **Rollback** : `git rm .env.test && git checkout pytest.ini`

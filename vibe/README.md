@@ -146,8 +146,8 @@ Pour chaque modification :
 
 Après chaque modification, mets à jour :
 
-    modification-plan.csv : Status → DONE, ajoute Result Notes
-    Crée un git-friendly changelog entry
+    Phase_2/modification-plan.csv : Status → DONE, ajoute Result Notes
+    Phase_3/changelog.md : Ajoute un git-friendly changelog entry
     Note tout effet de bord découvert
 ```
 
