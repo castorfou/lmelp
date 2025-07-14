@@ -182,4 +182,29 @@ grep -r "DATE_FORMAT|%d %b %Y|%d %B %Y|strftime" --include="*.py"
 **Status :** ✅ **TERMINÉ**  
 **Next :** T007 - Migration des patterns identifiés vers date_utils
 
+## [T007] - 2025-07-14 - Migration des patterns de dates vers date_utils
+
+### 🔄 Migration complète du formatage de dates
+
+**Fichiers modifiés :**
+- ui/lmelp.py
+- ui/pages/1_episodes.py
+- scripts/store_all_auteurs_from_episode.py
+- scripts/store_all_auteurs_from_all_episodes.py
+- nbs/py mongo helper auteurs.ipynb
+
+**Changements principaux :**
+- Suppression des constantes locales DATE_FORMAT
+- Import du module centralisé date_utils
+- Remplacement de tous les .strftime(...) par format_date(...)
+- Harmonisation du formatage dans l'UI et les scripts
+- Migration notebook pour génération mongo_auteur.py
+
+**Tests :**
+- tests/unit/test_date_utils.py : 31/31 PASS
+- Aucune régression détectée
+
+**Effets de bord :**
+- Aucun
+
 ---

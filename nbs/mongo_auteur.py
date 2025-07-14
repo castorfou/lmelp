@@ -13,6 +13,7 @@ __all__ = [
 
 # %% py mongo helper auteurs.ipynb 2
 from mongo import BaseEntity
+from date_utils import format_date
 
 
 class Auteur(BaseEntity):
@@ -25,6 +26,9 @@ class Auteur(BaseEntity):
             nom (str): Le nom de l'auteur.
         """
         super().__init__(nom, self.collection)
+
+    def some_method(self):
+        fmt_date = format_date(self.episode.date, "%Y/%m/%d")
 
 
 # %% py mongo helper auteurs.ipynb 7
