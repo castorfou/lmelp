@@ -139,4 +139,47 @@
 - Base solide pour centralisation des fonctions de dates dispersées
 - Définition claire du comportement attendu pour les utilitaires de dates
 
+## [T006] - 2025-07-14 - Inventaire patterns dates (SEARCH)
+
+### 🔍 Recherche exhaustive des patterns de formatage de dates
+
+**Objectif :** Identifier tous les usages de DATE_FORMAT et strftime() dans le codebase pour planifier T007
+
+**Commande exécutée :**
+```bash
+grep -r "DATE_FORMAT|%d %b %Y|%d %B %Y|strftime" --include="*.py"
+```
+
+### 📊 Résultats inventaire
+
+#### ✅ **Déjà migré (T005)**
+- `ui/pages/4_avis_critiques.py` : Utilise `date_utils` ✅
+
+#### 🎯 **Candidats T007** (4 fichiers, ~12 occurrences)
+1. **`ui/lmelp.py`** : 2 patterns (DATE_FORMAT + strftime)
+2. **`ui/pages/1_episodes.py`** : 6 patterns (DATE_FORMAT + 5× strftime)  
+3. **Scripts auteurs** : 6 patterns (formats divers)
+4. **`nbs/mongo_auteur.py`** : 1 pattern
+
+#### ⚠️ **Formats spécialisés préservés** (4 modules)
+- `nbs/mongo_episode.py` : 4 formats (DATE_FORMAT, LOG_DATE_FORMAT, RSS_DATE_FORMAT, WEB_DATE_FORMAT)
+- `nbs/rss.py` : RSS_DATE_FORMAT
+
+### 📋 Documentation produite
+- **`T006_inventaire_dates.md`** : Rapport détaillé avec tableau des patterns
+- Classification par priorité (UI → Scripts → Backend)
+- Identification formats spécialisés à préserver
+
+### ✅ Validation
+- **Tests date_utils** : 31/31 PASS ✅
+- **Aucune régression** : Recherche uniquement, pas de modification code
+
+### 🚀 Impact T007
+- **Scope défini** : 4 fichiers principaux ciblés  
+- **Complexité estimée** : Medium (patterns UI + scripts)
+- **Stratégie** : Migration par phases (UI puis scripts)
+
+**Status :** ✅ **TERMINÉ**  
+**Next :** T007 - Migration des patterns identifiés vers date_utils
+
 ---
