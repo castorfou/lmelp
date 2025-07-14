@@ -207,4 +207,15 @@ grep -r "DATE_FORMAT|%d %b %Y|%d %B %Y|strftime" --include="*.py"
 **Effets de bord :**
 - Aucun
 
+## [T008] - 2025-07-14 - Validation tests date_utils
+
+### ✅ Tous les tests unitaires passent
+
+**Commande exécutée :**
+- pytest tests/unit/test_date_utils.py -v
+
+**Résultat :**
+- 31/31 tests PASS
+- Aucune régression détectée
+
 ---

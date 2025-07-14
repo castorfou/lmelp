@@ -6,7 +6,7 @@ T004,DONE,CREATE,nbs/date_utils.py,New,BOUCLE1,Low,N/A,Utilitaire centralisation
 T005,DONE,REFACTOR,ui/pages/4_avis_critiques.py,Refactor,BOUCLE1,Medium,DATE_FORMAT hardcodé,Migration vers date_utils,tests/unit/test_date_utils.py,Restoration backup
 T006,DONE,SEARCH,grep -r "DATE_FORMAT\|%d %b %Y",Search,BOUCLE1,Low,Fonctions dates dispersées,Inventaire complet fonctions dates,N/A,N/A
 T007,DONE,REFACTOR,Multiple files,Refactor,BOUCLE1,Medium,Fonctions dates dispersées,Utilisation date_utils centralisé,tests/unit/test_date_utils.py,Restoration backup
-T008,TODO,TEST,pytest tests/unit/test_date_utils.py,Test,BOUCLE1,Medium,N/A,Tous tests date_utils passent,N/A,N/A
+T008,DONE,TEST,pytest tests/unit/test_date_utils.py,Test,BOUCLE1,Medium,N/A,Tous tests date_utils passent,31/31 PASS, N/A
 T009,TODO,CREATE,nbs/py mongo helper avis_critiques.ipynb,New,BOUCLE1,Medium,N/A,Notebook principal classe AvisCritique,N/A,Suppression simple
 T010,TODO,GENERATE,nbs/mongo_avis_critique.py,New,BOUCLE1,Low,N/A,Module auto-généré par nbdev,N/A,Suppression simple
 T011,TODO,TEST,pytest tests/unit/test_mongo_avis_critique.py,Test,BOUCLE1,Medium,N/A,Tous tests passent,N/A,N/A
