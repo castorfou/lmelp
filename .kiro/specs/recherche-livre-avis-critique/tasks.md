@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Créer le parser d'avis critiques
+- [-] 1. Créer le parser d'avis critiques
   - Implémenter la classe `AvisCritiquesParser` pour extraire les livres des résumés markdown
   - Créer les méthodes de parsing des tableaux avec gestion des notes colorées
   - Ajouter la validation et la gestion d'erreurs pour les formats inattendus
