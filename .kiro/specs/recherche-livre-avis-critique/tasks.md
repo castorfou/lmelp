@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [-] 1. Créer le parser d'avis critiques
+- [x] 1. Créer le parser d'avis critiques
   - Implémenter la classe `AvisCritiquesParser` pour extraire les livres des résumés markdown
   - Créer les méthodes de parsing des tableaux avec gestion des notes colorées
   - Ajouter la validation et la gestion d'erreurs pour les formats inattendus
@@ -12,7 +12,7 @@
   - Valider la robustesse du parsing des notes et commentaires
   - _Requirements: 4.4_
 
-- [ ] 3. Créer la classe EpisodeLivre pour la gestion des relations
+- [x] 3. Créer la classe EpisodeLivre pour la gestion des relations
   - Implémenter `EpisodeLivre` héritant de `BaseEntity`
   - Ajouter les méthodes de recherche par livre et par auteur
   - Créer les méthodes d'agrégation pour récupérer tous les livres uniques

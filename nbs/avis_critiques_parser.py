@@ -81,27 +81,38 @@ class AvisCritiquesParser:
     
     def _extract_programme_books(self, text: str) -> List[BookMention]:
         """Extrait les livres de la section 'LIVRES DISCUTÉS AU PROGRAMME'."""
-        section_pattern = r"## 1\. LIVRES DISCUTÉS AU PROGRAMME.*?\n(.*?)(?=## 2\.|$)"
-        match = re.search(section_pattern, text, re.DOTALL | re.IGNORECASE)
+        # Pattern plus simple et robuste
+        pattern = r"##\s*1\.\s*LIVRES DISCUTÉS AU PROGRAMME.*?\n(.*?)(?=##\s*2\.|$)"
+        match = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
         
-        if not match:
-            self.logger.warning("Section 'LIVRES DISCUTÉS AU PROGRAMME' non trouvée")
-            return []
+        if match:
+            table_content = match.group(1)
+            self.logger.info("Section 'LIVRES DISCUTÉS AU PROGRAMME' trouvée")
+            return self._parse_programme_table(table_content)
         
-        table_content = match.group(1)
-        return self._parse_programme_table(table_content)
+        self.logger.warning("Section 'LIVRES DISCUTÉS AU PROGRAMME' non trouvée")
+        return []
     
     def _extract_coups_de_coeur_books(self, text: str) -> List[BookMention]:
         """Extrait les livres de la section 'COUPS DE CŒUR DES CRITIQUES'."""
-        section_pattern = r"## 2\. COUPS DE CŒUR DES CRITIQUES.*?\n(.*?)$"
-        match = re.search(section_pattern, text, re.DOTALL | re.IGNORECASE)
+        # Essayer plusieurs patterns pour plus de robustesse
+        patterns = [
+            r"##\s*2\.\s*COUPS DE C[ŒO]EUR DES CRITIQUES.*?\n(.*?)$",
+            r"##\s*2\.\s*COUPS DE COEUR DES CRITIQUES.*?\n(.*?)$",
+            r"##\s*2\.\s*COUPS DE C.*?EUR DES CRITIQUES.*?\n(.*?)$",
+            r"2\.\s*COUPS DE C[ŒO]EUR DES CRITIQUES.*?\n(.*?)$",
+            r"COUPS DE C[ŒO]EUR.*?\n(.*?)$",
+        ]
         
-        if not match:
-            self.logger.warning("Section 'COUPS DE CŒUR DES CRITIQUES' non trouvée")
-            return []
+        for pattern in patterns:
+            match = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
+            if match:
+                table_content = match.group(1)
+                self.logger.info(f"Section coups de cœur trouvée avec pattern: {pattern}")
+                return self._parse_coups_de_coeur_table(table_content)
         
-        table_content = match.group(1)
-        return self._parse_coups_de_coeur_table(table_content)
+        self.logger.warning("Section 'COUPS DE CŒUR DES CRITIQUES' non trouvée")
+        return []
     
     def _parse_programme_table(self, table_content: str) -> List[BookMention]:
         """Parse le tableau de la section programme principal."""
@@ -279,19 +290,33 @@ class AvisCritiquesParser:
             return None
         
         try:
-            # Essayer d'extraire directement un nombre
-            number_match = re.search(r'(\d+\.?\d*)', rating_html)
+            # Essayer d'extraire directement un nombre (priorité aux nombres décimaux)
+            number_match = re.search(r'(\d+\.\d+)', rating_html)
+            if number_match:
+                return float(number_match.group(1))
+            
+            # Si pas de décimal, chercher un nombre entier
+            number_match = re.search(r'(\d+)', rating_html)
             if number_match:
                 return float(number_match.group(1))
             
             # Essayer d'extraire depuis du HTML avec BeautifulSoup
-            soup = BeautifulSoup(rating_html, 'html.parser')
-            text = soup.get_text().strip()
-            
-            # Chercher un nombre dans le texte extrait
-            number_match = re.search(r'(\d+\.?\d*)', text)
-            if number_match:
-                return float(number_match.group(1))
+            try:
+                soup = BeautifulSoup(rating_html, 'html.parser')
+                text = soup.get_text().strip()
+                
+                # Chercher un nombre décimal dans le texte extrait
+                number_match = re.search(r'(\d+\.\d+)', text)
+                if number_match:
+                    return float(number_match.group(1))
+                
+                # Chercher un nombre entier dans le texte extrait
+                number_match = re.search(r'(\d+)', text)
+                if number_match:
+                    return float(number_match.group(1))
+            except:
+                # Si BeautifulSoup échoue, continuer avec regex simple
+                pass
             
             return None
             
