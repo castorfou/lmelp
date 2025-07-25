@@ -6,7 +6,7 @@
   - Ajouter la validation et la gestion d'erreurs pour les formats inattendus
   - _Requirements: 4.1, 4.2, 4.3_
 
-- [ ] 2. Implémenter les tests unitaires du parser
+- [x] 2. Implémenter les tests unitaires du parser
   - Créer `tests/test_avis_critiques_parser.py` avec cas de test complets
   - Tester l'extraction avec des résumés valides et malformés
   - Valider la robustesse du parsing des notes et commentaires
