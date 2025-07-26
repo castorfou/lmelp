@@ -217,6 +217,33 @@ class EpisodeLivre(BaseEntity):
         return results
 
     @classmethod
+    def find_by_episode(cls: Type[T], episode_oid: ObjectId) -> List[T]:
+        """
+        Trouve tous les livres mentionnés dans un épisode donné.
+        
+        Args:
+            episode_oid (ObjectId): ObjectId de l'épisode
+            
+        Returns:
+            List[T]: Liste des instances EpisodeLivre
+        """
+        DB_HOST, DB_NAME, _ = get_DB_VARS()
+        collection = get_collection(
+            target_db=DB_HOST, client_name=DB_NAME, collection_name=cls.collection
+        )
+        
+        # Rechercher par episode_oid et trier par note décroissante
+        cursor = collection.find({"episode_oid": episode_oid}).sort("note_moyenne", -1)
+        
+        results = []
+        for doc in cursor:
+            instance = cls._from_document(doc)
+            if instance:
+                results.append(instance)
+        
+        return results
+
+    @classmethod
     def get_all_livres_uniques(cls) -> List[Dict[str, Any]]:
         """
         Récupère tous les livres uniques mentionnés dans les avis critiques.

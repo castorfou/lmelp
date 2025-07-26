@@ -18,7 +18,7 @@
   - Créer les méthodes d'agrégation pour récupérer tous les livres uniques
   - _Requirements: 5.1, 5.2_
 
-- [ ] 4. Implémenter les tests unitaires d'EpisodeLivre
+- [x] 4. Implémenter les tests unitaires d'EpisodeLivre
   - Créer `tests/test_episode_livre.py` avec tests CRUD complets
   - Tester les méthodes de recherche et d'agrégation
   - Valider l'intégration avec MongoDB et les relations ObjectId
