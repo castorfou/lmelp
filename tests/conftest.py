@@ -1,3 +1,12 @@
+# Ajout automatique du dossier nbs/ au PYTHONPATH pour permettre les imports des modules générés par nbdev
+import sys
+import os
+
+nbs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "nbs"))
+if nbs_path not in sys.path:
+    sys.path.insert(0, nbs_path)
+
+
 """Configuration globale pytest pour le projet LMELP"""
 
 import os

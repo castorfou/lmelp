@@ -89,6 +89,32 @@ add_to_sys_path()
 from mongo_episode import Episodes  # ✅ Après add_to_sys_path()
 ```
 
+---
+
+## Modules nbdev et tests
+
+Les modules générés par nbdev (dans le dossier `nbs/`) utilisent des imports non relatifs (ex : `from mongo import BaseEntity`). Pour garantir leur fonctionnement dans les tests et scripts, il faut que le dossier `nbs/` soit inclus dans le PYTHONPATH.
+
+### Configuration automatique pour les tests
+Le fichier `tests/conftest.py` ajoute automatiquement le dossier `nbs/` au PYTHONPATH pour tous les tests :
+
+```python
+import sys
+import os
+nbs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'nbs'))
+if nbs_path not in sys.path:
+    sys.path.insert(0, nbs_path)
+```
+
+### Bonnes pratiques
+- Ne pas modifier les imports dans les fichiers générés par nbdev.
+- Centraliser la gestion du PYTHONPATH dans la config de test (conftest.py).
+- Pour exécuter les tests manuellement : `PYTHONPATH=nbs pytest ...`
+
+### Références
+- [nbdev documentation](https://nbdev.fast.ai/)
+- [pytest conftest.py](https://docs.pytest.org/en/stable/writing_plugins.html)
+
 ## Évolutions futures
 
 Si le projet grandit, considérer :

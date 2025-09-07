@@ -218,4 +218,16 @@ grep -r "DATE_FORMAT|%d %b %Y|%d %B %Y|strftime" --include="*.py"
 - 31/31 tests PASS
 - Aucune régression détectée
 
+## [T009] - 2025-07-14 - Création notebook principal AvisCritique
+
+### 📓 Notebook de développement et export
+
+**Fichier créé :**
+- nbs/py mongo helper avis_critiques.ipynb
+
+**Contenu :**
+- Structure pour la classe AvisCritique
+- Cellules de développement, tests unitaires et export nbdev
+- Prêt pour l'implémentation et la génération du module
+
 ---

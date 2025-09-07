@@ -111,9 +111,7 @@ class TestModuleConstants:
         assert T.__bound__ is not None
 
 
-@patch(
-    "nbs.mongo_avis_critique.get_DB_VARS", return_value=("localhost", "test_db", "logs")
-)
+@patch("config.get_DB_VARS", return_value=("localhost", "test_db", "logs"))
 class TestAvisCritiqueClass:
     """Tests pour la classe AvisCritique"""
 
@@ -185,7 +183,7 @@ class TestAvisCritiqueValidation:
     """Tests pour les méthodes de validation d'AvisCritique"""
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_is_summary_truncated_valid(self, mock_get_db_vars, sample_avis_data):
@@ -208,7 +206,7 @@ class TestAvisCritiqueValidation:
             assert not avis.is_summary_truncated()
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_is_summary_truncated_truncated(
@@ -233,7 +231,7 @@ class TestAvisCritiqueValidation:
             assert avis.is_summary_truncated()
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_is_summary_truncated_no_summary(self, mock_get_db_vars, sample_avis_data):
@@ -255,7 +253,7 @@ class TestAvisCritiqueValidation:
             assert not avis.is_summary_truncated()
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_debug_truncation_detection(self, mock_get_db_vars, truncated_avis_data):
@@ -288,7 +286,7 @@ class TestAvisCritiqueClassMethods:
     """Tests pour les méthodes de classe d'AvisCritique"""
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_from_oid_success(self, mock_get_db_vars, sample_avis_data):
@@ -322,7 +320,7 @@ class TestAvisCritiqueClassMethods:
             mock_collection.find_one.assert_called_once_with({"_id": test_oid})
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_from_oid_not_found(self, mock_get_db_vars):
@@ -351,7 +349,7 @@ class TestAvisCritiqueClassMethods:
         assert result is None
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_find_by_episode_and_entity(self, mock_get_db_vars, sample_avis_data):
@@ -387,7 +385,7 @@ class TestAvisCritiqueClassMethods:
             assert results[0].entity_name == sample_avis_data["entity_name"]
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_find_by_episode_id(self, mock_get_db_vars, sample_avis_data):
@@ -424,7 +422,7 @@ class TestAvisCritiqueStringRepresentation:
     """Tests pour la représentation string d'AvisCritique"""
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_str_representation_with_summary(self, mock_get_db_vars, sample_avis_data):
@@ -454,7 +452,7 @@ class TestAvisCritiqueStringRepresentation:
             assert "Summary:" in result
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_str_representation_without_summary(
@@ -487,7 +485,7 @@ class TestAvisCritiqueInheritedMethods:
     """Tests pour les méthodes héritées de BaseEntity"""
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_avis_critique_inherits_base_methods(
@@ -524,7 +522,7 @@ class TestAvisCritiqueEdgeCases:
     """Tests pour les cas limites d'AvisCritique"""
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_edge_case_empty_strings(self, mock_get_db_vars):
@@ -545,7 +543,7 @@ class TestAvisCritiqueEdgeCases:
             assert avis.nom == "__"
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_edge_case_special_characters(self, mock_get_db_vars, edge_case_avis_data):
@@ -571,7 +569,7 @@ class TestAvisCritiqueEdgeCases:
             assert avis.summary_text == edge_case_avis_data["summary_text"]
 
     @patch(
-        "nbs.mongo_avis_critique.get_DB_VARS",
+        "config.get_DB_VARS",
         return_value=("localhost", "test_db", "logs"),
     )
     def test_update_summary_text(self, mock_get_db_vars, sample_avis_data):
