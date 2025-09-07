@@ -10,6 +10,15 @@
 		"--env", "CONTAINER_NAME=vscode-dev-container_lmelp"
 	],
 	"shutdownAction": "none",
+    // Variables d'environnement
+    "containerEnv": {
+        "PROJECT_NAME": "lmelp",
+        "PROJECT_SLUG": "lmelp",
+        "PYTHON_VERSION": "3.11",
+        "PYTHONPATH": "/workspaces/lmelp/src",
+        "UV_VENV_CLEAR": "1",
+        "TZ": "${localEnv:TZ}"
+    },	
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -32,11 +41,46 @@
 				"GitHub.copilot",
 				"dbaeumer.vscode-eslint",
 				"ms-python.autopep8"
-			]
+			],
+            "settings": {
+                // Configuration Python
+                "python.defaultInterpreterPath": "./.venv/bin/python",
+                "python.terminal.activateEnvironment": true,
+				"python.terminal.activateEnvInCurrentTerminal": true,
+                "python.analysis.autoImportCompletions": true,
+                "python.analysis.typeCheckingMode": "basic",
+				"terminal.integrated.env.linux": {
+					"VIRTUAL_ENV": "/workspaces/lmelp/.venv",
+					"PATH": "/workspaces/lmelp/.venv/bin:${env:PATH}"
+				},
+
+                // Configuration générale
+                "editor.minimap.enabled": true,
+                "editor.rulers": [100],
+
+                // Exclusions pour améliorer les performances
+                "files.exclude": {
+                    "**/__pycache__": true,
+                    "**/.pytest_cache": true,
+                    "**/node_modules": true,
+                    "**/.git": true,
+                    "**/.venv": true
+                },
+
+                "search.exclude": {
+                    "**/__pycache__": true,
+                    "**/.venv": true,
+                    "**/node_modules": true
+                },
+                // Désactive l'auto-forward automatique (empêche VS Code de créer des listeners qui peuvent bloquer des ports)
+                "remote.autoForwardPorts": false
+            }
 		}
 	},
 	"mounts": [
-		"type=bind,source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly"
+		"type=bind,source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly",
+        "source=/etc/timezone,target=/etc/timezone,type=bind,consistency=cached,readonly",
+        "source=/etc/localtime,target=/etc/localtime,type=bind,consistency=cached,readonly"
 	],
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
