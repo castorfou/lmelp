@@ -1,6 +1,7 @@
-import streamlit as st
 import sys
 from pathlib import Path
+
+import streamlit as st
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from ui_tools import add_to_sys_path
@@ -14,15 +15,16 @@ st.set_page_config(
     initial_sidebar_state="auto",
 )
 
-from mongo_episode import Episodes, Episode
-from llm import get_azure_llm
-from mongo import get_collection
-from date_utils import DATE_FORMAT, format_date
-import pandas as pd
 import locale
 import re
 from datetime import datetime
+
+import pandas as pd
 from bson import ObjectId
+from date_utils import DATE_FORMAT, format_date
+from llm import get_azure_llm
+from mongo import get_collection
+from mongo_episode import Episode, Episodes
 
 # Définir la locale en français
 locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
@@ -765,7 +767,6 @@ def post_process_and_sort_summary(summary_text, episode_date=None):
 def sort_table_by_rating(table_lines, header_line, separator_line):
     """Trie les lignes d'un tableau par note décroissante"""
     import re
-    import re
 
     # Séparer les lignes avec notes de celles sans notes
     lines_with_ratings = []
@@ -959,10 +960,17 @@ Sois EXHAUSTIF et PRÉCIS. Capture TOUS les livres, TOUS les critiques, et TOUS 
         # - Pour vérifier si la réponse est tronquée
         # - Pour analyser les problèmes de formatage ou de contenu
 
-        # response_text = response.text.strip()
-        # st.write("🔍 **DEBUG - Réponse brute de l'IA:**")
-        # st.code(response_text[:1000] + "..." if len(response_text) > 1000 else response_text, language="markdown")
-        # st.write(f"📊 **Longueur de la réponse:** {len(response_text)} caractères")
+        response_text = response.text.strip()
+        st.write("🔍 **DEBUG - Réponse brute de l'IA:**")
+        st.code(
+            (
+                response_text[:1000] + "..."
+                if len(response_text) > 1000
+                else response_text
+            ),
+            language="markdown",
+        )
+        st.write(f"📊 **Longueur de la réponse:** {len(response_text)} caractères")
 
         response_text = response.text.strip()
 
