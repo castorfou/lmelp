@@ -1,0 +1,107 @@
+{
+  "valid_avis": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "episode_id": "676cc8e0f3e1a74b8c123456", 
+      "entity_type": "livre",
+      "entity_name": "Les Misérables",
+      "summary_text": "Excellent roman qui traverse les siècles avec une pertinence remarquable. L'analyse sociale de Hugo reste d'une actualité saisissante. Les personnages de Jean Valjean et Javert incarnent parfaitement la dialectique entre justice et rédemption.",
+      "created_at": "2023-01-15T20:00:00Z",
+      "updated_at": "2023-01-15T20:00:00Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439012",
+      "episode_id": "676cc8e0f3e1a74b8c789012",
+      "entity_type": "livre", 
+      "entity_name": "Les Années",
+      "summary_text": "Une œuvre magistrale qui capture l'évolution de la société française sur plusieurs décennies. Ernaux réinvente l'autobiographie en mêlant histoire personnelle et collective. Son style épuré sert parfaitement son propos sociologique.",
+      "created_at": "2023-03-08T20:00:00Z",
+      "updated_at": "2023-03-08T20:00:00Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439013",
+      "episode_id": "676cc8e0f3e1a74b8c345678",
+      "entity_type": "auteur",
+      "entity_name": "Albert Camus",
+      "summary_text": "Chef-d'œuvre de la littérature française du XXe siècle. Camus développe avec brio la philosophie de l'absurde à travers le personnage de Meursault. Un livre essentiel qui questionne nos certitudes morales.",
+      "created_at": "2023-04-12T20:00:00Z",
+      "updated_at": "2023-04-12T20:00:00Z"
+    }
+  ],
+  "truncated_avis": [
+    {
+      "_id": "507f1f77bcf86cd799439021",
+      "episode_id": "676cc8e0f3e1a74b8c111111",
+      "entity_type": "livre",
+      "entity_name": "Roman Tronqué",
+      "summary_text": "**Erreur: La synthèse a été tronquée en raison de la limite de longueur. Veuillez relancer la génération pour obtenir une analyse complète.**",
+      "created_at": "2023-05-01T20:00:00Z",
+      "updated_at": "2023-05-01T20:00:00Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439022",
+      "episode_id": "676cc8e0f3e1a74b8c222222",
+      "entity_type": "livre",
+      "entity_name": "Analyse Incomplète",
+      "summary_text": "Ce livre présente des aspects intéressants mais l'analyse s'arrête brutalement en **",
+      "created_at": "2023-05-02T20:00:00Z",
+      "updated_at": "2023-05-02T20:00:00Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439023",
+      "episode_id": "676cc8e0f3e1a74b8c333333",
+      "entity_type": "livre",
+      "entity_name": "Résumé Court",
+      "summary_text": "Trop court",
+      "created_at": "2023-05-03T20:00:00Z",
+      "updated_at": "2023-05-03T20:00:00Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439024",
+      "episode_id": "676cc8e0f3e1a74b8c444444",
+      "entity_type": "livre",
+      "entity_name": "Continuation",
+      "summary_text": "Cette analyse continue mais s'arrête soudainement avec une flèche de continuation →",
+      "created_at": "2023-05-04T20:00:00Z",
+      "updated_at": "2023-05-04T20:00:00Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439025",
+      "episode_id": "676cc8e0f3e1a74b8c555555",
+      "entity_type": "livre",
+      "entity_name": "Tableau Incomplet",
+      "summary_text": "| Auteur | Titre | Note |\n|--------|-------|------|\n| Victor Hugo | Les Misérables |  |\n| Annie Ernaux |  |  |",
+      "created_at": "2023-05-05T20:00:00Z",
+      "updated_at": "2023-05-05T20:00:00Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439026",
+      "episode_id": "676cc8e0f3e1a74b8c666666",
+      "entity_type": "livre",
+      "entity_name": "Résumé Vide",
+      "summary_text": "",
+      "created_at": "2023-05-06T20:00:00Z",
+      "updated_at": "2023-05-06T20:00:00Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439027",
+      "episode_id": "676cc8e0f3e1a74b8c777777",
+      "entity_type": "livre",
+      "entity_name": "Tableau Malformé",
+      "summary_text": "| Auteur | Titre\n|--------|\n Victor Hugo | Les Misérables\n| Annie Ernaux",
+      "created_at": "2023-05-07T20:00:00Z",
+      "updated_at": "2023-05-07T20:00:00Z"
+    }
+  ],
+  "edge_cases": [
+    {
+      "_id": "507f1f77bcf86cd799439031",
+      "episode_id": "676cc8e0f3e1a74b8c999999",
+      "entity_type": "émission",
+      "entity_name": "Émission spéc!@le Ñoël & été",
+      "summary_text": "Émission spéc!@le de Ñoël & été avec caractères spéciaux, accents et symboles divers: €£¥ 测试",
+      "created_at": "2023-01-01T20:00:00Z",
+      "updated_at": "2023-01-01T20:00:00Z"
+    }
+  ]
+}

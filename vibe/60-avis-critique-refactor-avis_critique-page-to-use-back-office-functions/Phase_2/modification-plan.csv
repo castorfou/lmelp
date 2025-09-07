@@ -1,0 +1,27 @@
+ID,Status,Action,File,Type,Priority,Complexity,Current State,Target State,Tests to Update,Rollback Strategy
+T001,DONE,CREATE,tests/fixtures/data/avis_critique_data.json,New,BOUCLE1,Low,N/A,Fixtures pour tests AvisCritique - 3 valides 7 tronqués 1 edge case,N/A,Suppression simple
+T002,DONE,CREATE,tests/unit/test_mongo_avis_critique.py,New,BOUCLE1,Medium,N/A,Tests unitaires complets classe AvisCritique,N/A,Suppression simple
+T003,DONE,CREATE,tests/unit/test_date_utils.py,New,BOUCLE1,Low,N/A,Tests unitaires pour utilitaires dates,N/A,Suppression simple
+T004,DONE,CREATE,nbs/date_utils.py,New,BOUCLE1,Low,N/A,Utilitaire centralisation dates,tests/unit/test_date_utils.py,Suppression simple
+T005,DONE,REFACTOR,ui/pages/4_avis_critiques.py,Refactor,BOUCLE1,Medium,DATE_FORMAT hardcodé,Migration vers date_utils,tests/unit/test_date_utils.py,Restoration backup
+T006,DONE,SEARCH,grep -r "DATE_FORMAT\|%d %b %Y",Search,BOUCLE1,Low,Fonctions dates dispersées,Inventaire complet fonctions dates,N/A,N/A
+T007,DONE,REFACTOR,Multiple files,Refactor,BOUCLE1,Medium,Fonctions dates dispersées,Utilisation date_utils centralisé,tests/unit/test_date_utils.py,Restoration backup
+T008,DONE,TEST,pytest tests/unit/test_date_utils.py,Test,BOUCLE1,Medium,N/A,Tous tests date_utils passent,31/31 PASS, N/A
+T009,DONE,CREATE,nbs/py mongo helper avis_critiques.ipynb,New,BOUCLE1,Medium,N/A,Notebook principal classe AvisCritique créé,Cellules pour développement, tests et export nbdev,Suppression simple
+T010,TODO,GENERATE,nbs/mongo_avis_critique.py,New,BOUCLE1,Low,N/A,Module auto-généré par nbdev,N/A,Suppression simple
+T011,TODO,TEST,pytest tests/unit/test_mongo_avis_critique.py,Test,BOUCLE1,Medium,N/A,Tous tests passent,N/A,N/A
+T012,TODO,BACKUP,ui/pages/4_avis_critiques.py,Backup,BOUCLE1,Low,Fonctions directes MongoDB,Backup sécurisé,N/A,Restoration backup
+T013,TODO,REFACTOR,ui/pages/4_avis_critiques.py,Refactor,BOUCLE2,High,Fonctions get_summary_from_cache(),Utilise AvisCritique.from_episode_oid(),tests/ui/test_4_avis_critiques.py,Restoration backup
+T014,TODO,REFACTOR,ui/pages/4_avis_critiques.py,Refactor,BOUCLE2,High,Fonctions save_summary_to_cache(),Utilise AvisCritique.save_if_valid(),tests/ui/test_4_avis_critiques.py,Restoration backup
+T015,TODO,REFACTOR,ui/pages/4_avis_critiques.py,Refactor,BOUCLE2,High,Fonctions check_existing_summaries(),Utilise méthodes classe AvisCritique,tests/ui/test_4_avis_critiques.py,Restoration backup
+T016,TODO,REFACTOR,ui/pages/4_avis_critiques.py,Refactor,BOUCLE2,Medium,Suppression is_summary_truncated(),Logic déplacée dans classe,tests/ui/test_4_avis_critiques.py,Restoration backup
+T017,TODO,REFACTOR,ui/pages/4_avis_critiques.py,Refactor,BOUCLE2,Medium,Suppression debug_truncation_detection(),Logic déplacée dans classe,tests/ui/test_4_avis_critiques.py,Restoration backup
+T018,TODO,UPDATE,ui/pages/4_avis_critiques.py,Update,BOUCLE2,Low,Imports actuels,Ajout imports AvisCritique + date_utils,tests/ui/test_4_avis_critiques.py,Restoration backup
+T019,TODO,UPDATE,ui/pages/4_avis_critiques.py,Update,BOUCLE2,Low,DATE_FORMAT hardcodé,Utilise date_utils.DATE_FORMAT,tests/ui/test_4_avis_critiques.py,Restoration backup
+T020,TODO,TEST,pytest tests/ui/test_4_avis_critiques.py,Test,BOUCLE2,High,N/A,Tests régression UI passent,N/A,N/A
+T021,TODO,CREATE,tests/integration/test_avis_critique_integration.py,New,BOUCLE3,Medium,N/A,Tests intégration MongoDB,N/A,Suppression simple
+T022,TODO,TEST,pytest tests/integration/,Test,BOUCLE3,Medium,N/A,Tests intégration passent,N/A,N/A
+T023,TODO,UPDATE,nbs/__init__.py,Update,BOUCLE3,Low,Imports actuels,Ajout import mongo_avis_critique,N/A,Suppression ligne
+T024,TODO,VALIDATE,streamlit run ui/lmelp.py,Manual,BOUCLE3,High,Interface actuelle,Interface identique fonctionnelle,N/A,N/A
+T025,TODO,DOCUMENT,docs/mongo_avis_critique.md,New,BOUCLE4,Low,N/A,Documentation utilisation module,N/A,Suppression simple
+T026,TODO,CLEAN,nbs/py mongo helper avis_critiques.ipynb,Update,BOUCLE4,Low,Notebook dev,Notebook finalisé et documenté,N/A,Version git antérieure

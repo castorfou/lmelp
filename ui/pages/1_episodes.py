@@ -22,8 +22,7 @@ import plotly.express as px
 
 # Définir la locale en français
 locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
-
-DATE_FORMAT = "%d %b %Y"
+from date_utils import DATE_FORMAT, format_date
 
 
 @st.cache_data  # 👈 Add the caching decorator
@@ -46,7 +45,7 @@ def print_episodes_info(episodes_df):
     st.write("### Informations sur les épisodes")
     st.write(f"{episodes_df.shape[0]} épisodes")
     st.write(
-        f"{episodes_df['date'].min().strftime(DATE_FORMAT)} - {episodes_df['date'].max().strftime(DATE_FORMAT)}"
+        f"{format_date(episodes_df['date'].min())} - {format_date(episodes_df['date'].max())}"
     )
     # Compter les transcriptions disponibles et manquantes
     transcriptions_ok = episodes_df["transcription"].notna().sum()
@@ -62,14 +61,14 @@ def afficher_episodes(episodes_df):
     print_episodes_info(episodes_df)
     # Ajoutez ici le code pour afficher les épisodes
     episodes_df = episodes_df.copy()
-    episodes_df["date"] = episodes_df["date"].apply(lambda x: x.strftime(DATE_FORMAT))
+    episodes_df["date"] = episodes_df["date"].apply(lambda x: format_date(x))
     st.dataframe(episodes_df, use_container_width=True)
 
 
 def afficher_un_episode(episodes_df):
     # Widget de sélection de date
     episodes_df = episodes_df.copy()
-    episodes_df["date"] = episodes_df["date"].apply(lambda x: x.strftime(DATE_FORMAT))
+    episodes_df["date"] = episodes_df["date"].apply(lambda x: format_date(x))
     episodes_df["selecteur"] = (
         episodes_df["date"] + " - " + episodes_df["titre"].str[:100]
     )
@@ -95,7 +94,7 @@ def nb_mots_transcription(episodes_df):
     # Compter le nombre de mots dans chaque transcription
 
     episodes_df = episodes_df.copy()
-    episodes_df["date"] = episodes_df["date"].apply(lambda x: x.strftime(DATE_FORMAT))
+    episodes_df["date"] = episodes_df["date"].apply(lambda x: format_date(x))
 
     # Calculer le nombre de mots par minute
     episodes_df["mots_par_minute"] = (

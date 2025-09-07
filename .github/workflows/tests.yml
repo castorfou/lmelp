@@ -3,7 +3,6 @@ name: Tests Unitaires
 # Déclencher sur push et pull request vers main et branches de développement
 "on":
   push:
-    branches: [ main, develop, "**devops**", "**test**" ]
   pull_request:
     branches: [ main, develop ]
 

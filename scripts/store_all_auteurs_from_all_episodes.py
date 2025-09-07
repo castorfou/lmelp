@@ -5,7 +5,9 @@ import datetime
 import pandas as pd
 
 # Ajouter le chemin du répertoire 'nbs' à sys.path
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../nbs")))
+from date_utils import format_date
 
 from mongo_episode import Episode, Episodes
 from mongo_auteur import Auteur, AuthorChecker
@@ -21,9 +23,7 @@ cache_filename = "store_all_auteurs_from_all_episodes.txt"
 def prettyprint(auteur_traitement_df, date: datetime.datetime = None):
     table = Table(
         title=(
-            f"Table des auteurs {date.strftime('%d %b %Y')}"
-            if date
-            else "Table des auteurs"
+            f"Table des auteurs {format_date(date)}" if date else "Table des auteurs"
         )
     )
     # Ajout d'une colonne pour l'index (par exemple "Auteur" si l'index correspond au nom)
@@ -39,7 +39,7 @@ def prettyprint(auteur_traitement_df, date: datetime.datetime = None):
 
 def ajoute_auteurs(episode: Episode, verbose=False):
     affiche_episode = f"""
-    Date: {episode.date.strftime("%d %b %Y")}
+    Date: {format_date(episode.date)}
     Titre: {episode.titre}
     Description: {episode.description}
 
@@ -153,5 +153,5 @@ if __name__ == "__main__":
             # le cache ne contient que cette date, rien d'autre
             with open(cache_filename, "w") as f:
                 new_date = episode.date + datetime.timedelta(days=1)
-                f.write(new_date.strftime("%d/%m/%Y"))
+                f.write(format_date(new_date, "%d/%m/%Y"))
     print("Fin du traitement")

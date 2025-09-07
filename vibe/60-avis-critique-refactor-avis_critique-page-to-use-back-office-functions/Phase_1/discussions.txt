@@ -1,0 +1,66 @@
+Questions pour comprendre la refactorisation
+1. Intégration dans l'existant
+Structure actuelle : Je vois que la page 4_avis_critiques.py contient actuellement des fonctions directes d'accès à MongoDB (get_collection(collection_name="avis_critiques")). Confirmez-vous que l'objectif est de créer un module mongo_avis_critique.py suivant le même pattern que mongo_livre.py, mongo_auteur.py, etc. ?
+
+> exactement. tu noteras que les fichiers nbs/mongo*.py sont en fait genere par nbdev, ils sont issues de notebooks Jupyter. Il faut donc que le nouveau module mongo_avis_critique.py soit compatible avec cette approche, et donc il s'agit de creer le notebook nbs/py mongo helper avis_critiques.ipynb.
+
+Collection MongoDB : La collection avis_critiques existe déjà et contient des documents avec les champs episode_oid, episode_title, episode_date, summary, created_at, updated_at. Cette structure doit-elle être maintenue ou souhaitez-vous la faire évoluer ?
+
+> on la maintient, mais on peut ajouter des champs si besoin. Il faut juste que le module mongo_avis_critiques.py puisse gérer ces champs.
+
+2. Fichiers impactés et scope
+Fichiers principaux :
+
+4_avis_critiques.py (refactorisation)
+nbs/mongo_avis_critique.py (nouveau module à créer)
+Tests unitaires associés
+Confirmez-vous cette liste ?
+
+> oui et il faut aussi que le module mongo_avis_critiques.py soit compatible avec les notebooks Jupyter, donc il faut que les fonctions soient documentées et testées dans le notebook nbs/py mongo helper avis_critiques.ipynb.
+
+Notebook de référence : Vous mentionnez nbs/py mongo helper livres.ipynb comme référence. Souhaitez-vous également créer un notebook nbs/py mongo helper avis_critiques.ipynb pour la documentation et les tests ?
+
+> oui, exactement. Il faut que ce notebook soit similaire à nbs/py mongo helper livres.ipynb. mais pas besoin de faire des tests unitaires dans ce notebook, on en fera sur les fonctions du module mongo_avis_critiques.py.
+
+3. Contraintes de rétrocompatibilité
+Interface utilisateur : L'interface actuelle de la page avis critiques doit-elle rester identique du point de vue utilisateur ?
+
+> 100% identique. L'objectif est de refactoriser le code sans changer l'interface utilisateur.
+
+
+API des fonctions : Les fonctions existantes comme get_summary_from_cache(), save_summary_to_cache(), etc. doivent-elles garder la même signature ou peut-on les adapter ?
+
+> on peut les adapter si necessaire
+
+4. Risques de régression
+Gestion des erreurs : La page actuelle a une logique complexe de détection de résumés tronqués. Cette logique doit-elle être déplacée dans le module MongoDB ou rester dans l'UI ?
+
+> dans le module mongodb 
+
+Cache et performance : La fonction get_episodes_with_transcriptions() est cachée avec @st.cache_data. Cette optimisation doit-elle être préservée ?
+
+> oui, il faut la conserver.
+
+5. Stratégie de migration
+Classe AvisCritique : Souhaitez-vous créer une classe AvisCritique héritant de BaseEntity comme Livre et Auteur ?
+
+> oui, c'est une bonne idée. La classe AvisCritique doit hériter de BaseEntity pour bénéficier des fonctionnalités communes.
+
+Relations : Les avis critiques sont actuellement liés aux épisodes par episode_oid. Cette relation doit-elle être formalisée avec des méthodes comme add_episode() ?
+
+> peut-etre dans le constructeur
+
+Tests : Souhaitez-vous que je crée d'abord les tests (TDD) ou d'abord l'implémentation ?
+
+> on peut essayer par les tests ca serait drole
+
+6. Questions spécifiques
+Fonctions de validation : Les fonctions is_summary_truncated() et debug_truncation_detection() sont spécifiques à la logique métier des avis critiques. Doivent-elles être intégrées dans la classe AvisCritique ou rester dans une couche service séparée ?
+
+> que conseilles-tu ? 
+
+Gestion des dates : La logique de formatage des dates (DATE_FORMAT = "%d %b %Y") doit-elle être centralisée ?
+
+> oui, il serait préférable de la centraliser dans un module utilitaire.
+
+Ces clarifications m'aideront à créer des spécifications précises et une stratégie d'intégration adaptée à vos besoins.

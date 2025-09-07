@@ -10,7 +10,7 @@ pip install --upgrade pip
 # pip install -r .devcontainer/requirements.txt
 cd /workspaces/lmelp
 pip install uv
-uv venv
+uv venv .venv --python 3.11
 source .venv/bin/activate
 export UV_LINK_MODE=copy
 uv pip install -r .devcontainer/requirements.txt

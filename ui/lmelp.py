@@ -105,16 +105,16 @@ def affiche_episodes(episodes=episodes):
 
 
 # Définir la locale en français
-locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
 
-DATE_FORMAT = "%d %b %Y"
+locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+from date_utils import DATE_FORMAT, format_date
 
 
 def affiche_last_date(episodes=episodes):
     episodes.get_entries(limit=1)
     card(
         title="last episode",
-        text=f"{episodes[0].to_dict().get('date').strftime(DATE_FORMAT)}",
+        text=f"{format_date(episodes[0].to_dict().get('date'))}",
         image="http://placekitten.com/300/250",
         url="/episodes",
     )

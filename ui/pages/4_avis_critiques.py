@@ -1,6 +1,7 @@
-import streamlit as st
 import sys
 from pathlib import Path
+
+import streamlit as st
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from ui_tools import add_to_sys_path
@@ -14,14 +15,16 @@ st.set_page_config(
     initial_sidebar_state="auto",
 )
 
-from mongo_episode import Episodes, Episode
-from llm import get_azure_llm
-from mongo import get_collection
-import pandas as pd
 import locale
 import re
 from datetime import datetime
+
+import pandas as pd
 from bson import ObjectId
+from date_utils import DATE_FORMAT, format_date
+from llm import get_azure_llm
+from mongo import get_collection
+from mongo_episode import Episode, Episodes
 
 # Définir la locale en français
 locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
@@ -32,11 +35,8 @@ st.write("Générez des résumés d'avis critiques à partir des transcriptions 
 # Afficher la date actuelle pour les captures d'écran
 from datetime import datetime
 
-current_date = datetime.now().strftime("%d %B %Y")
+current_date = format_date(datetime.now(), "%d %B %Y")
 st.caption(f"📅 {current_date}")
-
-
-DATE_FORMAT = "%d %b %Y"
 
 
 def get_summary_from_cache(episode_oid):
@@ -278,7 +278,7 @@ def afficher_selection_episode():
     # Trier par date décroissante AVANT de convertir en string
     episodes_df = episodes_df.sort_values("date", ascending=False)
 
-    episodes_df["date"] = episodes_df["date"].apply(lambda x: x.strftime(DATE_FORMAT))
+    episodes_df["date"] = episodes_df["date"].apply(lambda x: format_date(x))
 
     # Ajouter des indicateurs visuels dans le sélecteur
     def format_episode_selector(row):
@@ -612,7 +612,7 @@ def afficher_selection_episode():
         # Afficher le résumé en cache uniquement si aucun bouton n'a été cliqué
         elif cached_summary:
             st.info(
-                f"📄 Résumé existant (généré le {cached_summary['created_at'].strftime('%d %B %Y à %H:%M')})"
+                f"📄 Résumé existant (généré le {format_date(cached_summary['created_at'], '%d %B %Y à %H:%M')})"
             )
             st.subheader("📊 Résumé des avis critiques")
             st.markdown(cached_summary["summary"], unsafe_allow_html=True)
@@ -632,7 +632,7 @@ def post_process_and_sort_summary(summary_text, episode_date=None):
         if isinstance(episode_date, str):
             date_str = f" du {episode_date}"
         else:
-            date_str = f" du {episode_date.strftime('%d %B %Y')}"
+            date_str = f" du {format_date(episode_date, '%d %B %Y')}"
 
     # Supprimer diverses phrases explicatives que l'IA pourrait générer
     phrases_to_remove = [
@@ -767,7 +767,6 @@ def post_process_and_sort_summary(summary_text, episode_date=None):
 def sort_table_by_rating(table_lines, header_line, separator_line):
     """Trie les lignes d'un tableau par note décroissante"""
     import re
-    import re
 
     # Séparer les lignes avec notes de celles sans notes
     lines_with_ratings = []
@@ -848,7 +847,7 @@ def generate_critique_summary(transcription, episode_date=None):
         if isinstance(episode_date, str):
             date_str = f" du {episode_date}"
         else:
-            date_str = f" du {episode_date.strftime('%d %B %Y')}"
+            date_str = f" du {format_date(episode_date, '%d %B %Y')}"
 
     prompt = f"""
 Tu es un expert en critique littéraire qui analyse la transcription de l'émission "Le Masque et la Plume" sur France Inter.
@@ -961,10 +960,17 @@ Sois EXHAUSTIF et PRÉCIS. Capture TOUS les livres, TOUS les critiques, et TOUS 
         # - Pour vérifier si la réponse est tronquée
         # - Pour analyser les problèmes de formatage ou de contenu
 
-        # response_text = response.text.strip()
-        # st.write("🔍 **DEBUG - Réponse brute de l'IA:**")
-        # st.code(response_text[:1000] + "..." if len(response_text) > 1000 else response_text, language="markdown")
-        # st.write(f"📊 **Longueur de la réponse:** {len(response_text)} caractères")
+        response_text = response.text.strip()
+        st.write("🔍 **DEBUG - Réponse brute de l'IA:**")
+        st.code(
+            (
+                response_text[:1000] + "..."
+                if len(response_text) > 1000
+                else response_text
+            ),
+            language="markdown",
+        )
+        st.write(f"📊 **Longueur de la réponse:** {len(response_text)} caractères")
 
         response_text = response.text.strip()
 
