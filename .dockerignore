@@ -1,0 +1,95 @@
+# Git
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.virtualenv/
+
+# Tests
+tests/
+htmlcov/
+.coverage
+.pytest_cache/
+.tox/
+
+# Documentation
+docs/
+site/
+*.md
+!CLAUDE.md
+!README.md
+
+# Development
+.devcontainer/
+.vscode/
+.idea/
+*.ipynb_checkpoints/
+
+# Data (ne pas inclure dans l'image)
+audios/
+db/
+*.db
+*.sqlite
+*.dump
+
+# Notebooks (déjà convertis en .py)
+nbs/*.ipynb
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+wheels/
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.*
+!.env.template
+.env.test
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.swp
+*.swo
+*~
+.tmp/
+tmp/
+
+# IDE
+*.sublime-*
+.project
+.pydevproject
+
+# CI/CD outputs
+.github/workflows/
+
+# Docker itself
+docker/
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Misc
+vibe/
+scripts/from_host/
+*.bak

@@ -1,0 +1,84 @@
+version: '3.8'
+
+# Docker Compose configuration for lmelp - PC Local deployment
+# This includes a MongoDB container for standalone deployment
+
+services:
+  # MongoDB database
+  mongodb:
+    image: mongo:7
+    container_name: lmelp-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - lmelp-mongodb-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=masque_et_la_plume
+    networks:
+      - lmelp-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # lmelp application (Streamlit)
+  app:
+    image: ghcr.io/castorfou/lmelp:latest
+    container_name: lmelp-app
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    ports:
+      - "8501:8501"
+    volumes:
+      - lmelp-audios:/app/audios
+      - lmelp-db-backup:/app/db
+      - lmelp-logs:/app/logs
+    env_file:
+      - .env
+    environment:
+      # Override DB_HOST to use the mongodb service
+      - DB_HOST=mongodb
+      - DB_NAME=masque_et_la_plume
+      - DB_LOGS=true
+      # RSS Feed
+      - RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml
+      # Paths
+      - AUDIO_BASE_PATH=/app/audios
+      # Mode (web by default)
+      - LMELP_MODE=web
+    networks:
+      - lmelp-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  lmelp-mongodb-data:
+    name: lmelp-mongodb-data
+  lmelp-audios:
+    name: lmelp-audios
+  lmelp-db-backup:
+    name: lmelp-db-backup
+  lmelp-logs:
+    name: lmelp-logs
+
+networks:
+  lmelp-network:
+    driver: bridge
+    name: lmelp-network
