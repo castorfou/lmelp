@@ -21,6 +21,7 @@ from datetime import datetime
 
 import pandas as pd
 from bson import ObjectId
+from config import get_DB_VARS
 from date_utils import DATE_FORMAT, format_date
 from llm import get_azure_llm
 from mongo import get_collection
@@ -42,11 +43,12 @@ st.caption(f"📅 {current_date}")
 def get_summary_from_cache(episode_oid):
     """Récupère un résumé existant depuis MongoDB"""
     try:
-        collection = get_collection(collection_name="avis_critiques")
+        DB_HOST, DB_NAME, _ = get_DB_VARS()
+        collection = get_collection(target_db=DB_HOST, client_name=DB_NAME, collection_name="avis_critiques")
         cached_summary = collection.find_one({"episode_oid": episode_oid})
         return cached_summary
     except Exception as e:
-        st.error(f"Erreur lors de la récupération du cache: {str(e)}")
+        st.error(f"Impossible de vérifier les résumés existants: {str(e)}")
         return None
 
 
@@ -189,7 +191,8 @@ def save_summary_to_cache(episode_oid, episode_title, episode_date, summary):
             )
             return False
 
-        collection = get_collection(collection_name="avis_critiques")
+        DB_HOST, DB_NAME, _ = get_DB_VARS()
+        collection = get_collection(target_db=DB_HOST, client_name=DB_NAME, collection_name="avis_critiques")
 
         # Supprimer l'ancien résumé s'il existe
         collection.delete_one({"episode_oid": episode_oid})
@@ -236,7 +239,8 @@ def get_episodes_with_transcriptions():
 def check_existing_summaries(episodes_df):
     """Vérifie quels épisodes ont déjà des résumés d'avis critiques"""
     try:
-        collection = get_collection(collection_name="avis_critiques")
+        DB_HOST, DB_NAME, _ = get_DB_VARS()
+        collection = get_collection(target_db=DB_HOST, client_name=DB_NAME, collection_name="avis_critiques")
 
         # Récupérer tous les OIDs d'épisodes qui ont des résumés
         existing_summaries = collection.find({}, {"episode_oid": 1})
