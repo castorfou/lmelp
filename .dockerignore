@@ -32,8 +32,9 @@ site/
 !CLAUDE.md
 !README.md
 
-# Development
-.devcontainer/
+# Development (exclude most but keep requirements.txt)
+.devcontainer/linux/
+.devcontainer/postCommand.sh
 .vscode/
 .idea/
 *.ipynb_checkpoints/
@@ -83,11 +84,12 @@ tmp/
 # CI/CD outputs
 .github/workflows/
 
-# Docker itself
-docker/
-Dockerfile
+# Docker itself (exclude most but keep entrypoint.sh and Dockerfile)
+docker/scripts/
+docker/.env*
+docker/docker-compose*.yml
+docker/README.md
 .dockerignore
-docker-compose*.yml
 
 # Misc
 vibe/
