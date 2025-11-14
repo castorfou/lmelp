@@ -2,7 +2,7 @@
 # Optimized for size and performance with ML models (Whisper, Transformers)
 
 # Stage 1: Base image with system dependencies
-FROM python:3.11-slim as base
+FROM python:3.11-slim AS base
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Stage 2: Builder - Install Python dependencies
-FROM base as builder
+FROM base AS builder
 
 WORKDIR /build
 
@@ -28,7 +28,7 @@ RUN uv pip install --system -r requirements.txt || \
      uv pip install --system -r requirements-docker.txt)
 
 # Stage 3: Runtime image
-FROM base as runtime
+FROM base AS runtime
 
 WORKDIR /app
 
