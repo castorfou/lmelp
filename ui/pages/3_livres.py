@@ -8,9 +8,9 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from ui_tools import add_to_sys_path
 
-from mongo_livre import Livre
-
 add_to_sys_path()
+
+from mongo_livre import Livre
 
 
 def afficher_livres():
