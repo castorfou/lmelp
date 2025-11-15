@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - claude/review-code-01JpacPfALVvwqPorZfNeX6c  # Test branch for Docker builds
     tags:
       - 'v*.*.*'
   workflow_dispatch:
