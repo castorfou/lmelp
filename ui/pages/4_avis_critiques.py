@@ -323,9 +323,6 @@ def afficher_selection_episode():
     if "selected_episode_index" not in st.session_state:
         st.session_state.selected_episode_index = 0
 
-    # DEBUG: Afficher l'état actuel
-    st.info(f"🔍 DEBUG - Index dans session_state: {st.session_state.selected_episode_index} / Total épisodes: {len(episodes_df)}")
-
     # Sélecteur d'épisode (colonne centrale)
     with col_nav2:
         # S'assurer que l'index est dans les limites
@@ -340,16 +337,12 @@ def afficher_selection_episode():
             index=st.session_state.selected_episode_index,
         )
 
-        # DEBUG: Afficher la sélection
-        st.write(f"📝 Sélection retournée: {selected_value[:50]}...")
-
         # Détecter si l'utilisateur a changé manuellement le selectbox
         # En comparant avec l'élément attendu à l'index actuel
         expected_value = episodes_df.iloc[st.session_state.selected_episode_index]["selecteur"]
         if selected_value != expected_value:
             # L'utilisateur a changé manuellement - trouver le nouvel index
             new_index = episodes_df[episodes_df["selecteur"] == selected_value].index[0]
-            st.warning(f"⚠️ Changement manuel: index {st.session_state.selected_episode_index} → {new_index}")
             st.session_state.selected_episode_index = new_index
 
     # Boutons de navigation alignés verticalement avec la selectbox
@@ -362,12 +355,9 @@ def afficher_selection_episode():
             use_container_width=True,
             key="prev_btn",
         ):
-            old_index = st.session_state.selected_episode_index
-            new_index = int(min(
+            st.session_state.selected_episode_index = int(min(
                 len(episodes_df) - 1, st.session_state.selected_episode_index + 1
             ))
-            st.session_state.selected_episode_index = new_index
-            st.toast(f"⬅️ Précédent cliqué: {old_index} → {new_index}")
             st.rerun()
 
     with col_nav3:
@@ -379,12 +369,9 @@ def afficher_selection_episode():
             use_container_width=True,
             key="next_btn",
         ):
-            old_index = st.session_state.selected_episode_index
-            new_index = int(max(
+            st.session_state.selected_episode_index = int(max(
                 0, st.session_state.selected_episode_index - 1
             ))
-            st.session_state.selected_episode_index = new_index
-            st.toast(f"➡️ Suivant cliqué: {old_index} → {new_index}")
             st.rerun()
 
     # Ajouter la navigation clavier après que les boutons soient créés
@@ -488,9 +475,6 @@ def afficher_selection_episode():
     )
 
     # Récupérer l'épisode via l'index sélectionné
-    # DEBUG: Afficher l'index utilisé
-    st.write(f"🎬 Récupération épisode à l'index: {st.session_state.selected_episode_index}")
-
     # Utiliser iloc avec double brackets pour obtenir un DataFrame (pas une Series)
     episode = episodes_df.iloc[[st.session_state.selected_episode_index]]
 
