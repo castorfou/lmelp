@@ -486,8 +486,12 @@ def afficher_selection_episode():
         height=0,
     )
 
-    # Filtrer le DataFrame pour trouver la ligne correspondant à la sélection
-    episode = episodes_df[episodes_df["selecteur"] == st.session_state.episode_selector]
+    # Récupérer l'épisode via l'index sélectionné
+    # DEBUG: Afficher l'index utilisé
+    st.write(f"🎬 Récupération épisode à l'index: {st.session_state.selected_episode_index}")
+
+    # Utiliser iloc avec double brackets pour obtenir un DataFrame (pas une Series)
+    episode = episodes_df.iloc[[st.session_state.selected_episode_index]]
 
     if not episode.empty:
         episode = episode.iloc[0]
