@@ -50,6 +50,7 @@ Use `docker-compose.nas.yml` with Portainer - see [DEPLOYMENT.md](DEPLOYMENT.md)
 | `entrypoint.sh` | Container entrypoint supporting multiple modes |
 | `test-local.sh` | Test with local MongoDB (development) |
 | **[DEPLOYMENT.md](DEPLOYMENT.md)** | **Complete deployment guide with auto-updates** |
+| **[IMAGES.md](IMAGES.md)** | **Docker images: registry, tags, and pull instructions** |
 | | |
 | `scripts/start.sh` | Start containers |
 | `scripts/stop.sh` | Stop containers |
