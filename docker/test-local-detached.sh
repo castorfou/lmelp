@@ -33,12 +33,12 @@ echo -e "${GREEN}[3/3]${NC} Lancement du conteneur en arrière-plan..."
 echo -e "${YELLOW}Configuration:${NC}"
 echo -e "  - DB_HOST: 172.17.0.1"
 echo -e "  - DB_NAME: masque_et_la_plume"
-echo -e "  - Port: 8502 → 8501"
+echo -e "  - Port: 8501 → 8501"
 echo ""
 
 docker run -d \
   --name lmelp-local \
-  -p 8502:8501 \
+  -p 8501:8501 \
   -e DB_HOST=172.17.0.1 \
   -e DB_NAME=masque_et_la_plume \
   -e DB_LOGS=true \
@@ -51,5 +51,5 @@ echo -e "${YELLOW}Commandes utiles:${NC}"
 echo -e "  - Voir les logs:    ${BLUE}docker logs -f lmelp-local${NC}"
 echo -e "  - Arrêter:          ${BLUE}docker stop lmelp-local${NC}"
 echo -e "  - Supprimer:        ${BLUE}docker rm lmelp-local${NC}"
-echo -e "  - Interface web:    ${BLUE}http://localhost:8502${NC}"
+echo -e "  - Interface web:    ${BLUE}http://localhost:8501${NC}"
 echo ""
