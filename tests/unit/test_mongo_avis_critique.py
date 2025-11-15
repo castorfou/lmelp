@@ -5,19 +5,20 @@ Ce module contient tous les tests pour la classe AvisCritique et ses méthodes.
 Suit les patterns de test établis dans le projet.
 """
 
-import pytest
-from unittest.mock import MagicMock, patch
-from typing import TypeVar
-from bson import ObjectId
 import json
 import os
+from typing import TypeVar
+from unittest.mock import MagicMock, patch
+
+import pytest
+from bson import ObjectId
 
 
 # Import des fixtures de données
 @pytest.fixture
 def avis_critique_fixture_data():
     """Fixture pour charger les données de test des avis critiques"""
-    fixture_path = "/workspaces/lmelp/tests/fixtures/data/avis_critique_data.json"
+    fixture_path = "tests/fixtures/data/avis_critique_data.json"
     with open(fixture_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data
