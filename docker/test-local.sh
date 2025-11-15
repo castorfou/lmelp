@@ -30,23 +30,35 @@ echo ""
 
 # 4. Lancement du nouveau conteneur
 echo -e "${GREEN}[3/3]${NC} Lancement du conteneur..."
-echo -e "${YELLOW}Configuration:${NC}"
-echo -e "  - DB_HOST: 172.17.0.1"
-echo -e "  - DB_NAME: masque_et_la_plume"
-echo -e "  - Port: 8501"
+echo ""
+echo -e "${YELLOW}╔══════════════════════════════════════════════════╗${NC}"
+echo -e "${YELLOW}║ Configuration Docker                            ║${NC}"
+echo -e "${YELLOW}╚══════════════════════════════════════════════════╝${NC}"
+echo -e "  ${BLUE}Base de données:${NC}"
+echo -e "    • Host: 172.17.0.1"
+echo -e "    • Database: masque_et_la_plume"
+echo -e "    • Port: 8501"
+echo ""
 
 # Détecter si un fichier .env existe pour les clés API
 ENV_FILE=""
 if [ -f ".env" ]; then
     ENV_FILE=".env"
-    echo -e "  - Variables: ${GREEN}chargées depuis .env${NC}"
+    ENV_FILE_FULL=$(realpath .env)
+    echo -e "  ${BLUE}Variables d'environnement:${NC}"
+    echo -e "    ${GREEN}✓ Fichier chargé: .env${NC}"
+    echo -e "    ${GREEN}  Chemin: ${ENV_FILE_FULL}${NC}"
 elif [ -f ".env.docker" ]; then
     ENV_FILE=".env.docker"
-    echo -e "  - Variables: ${GREEN}chargées depuis .env.docker${NC}"
+    ENV_FILE_FULL=$(realpath .env.docker)
+    echo -e "  ${BLUE}Variables d'environnement:${NC}"
+    echo -e "    ${GREEN}✓ Fichier chargé: .env.docker${NC}"
+    echo -e "    ${GREEN}  Chemin: ${ENV_FILE_FULL}${NC}"
 else
-    echo -e "  - Variables: ${YELLOW}aucun fichier .env trouvé${NC}"
-    echo -e "    ${YELLOW}→${NC} Créez .env ou .env.docker depuis .env.example"
-    echo -e "    ${YELLOW}→${NC} Certaines fonctionnalités (résumés IA) ne seront pas disponibles"
+    echo -e "  ${BLUE}Variables d'environnement:${NC}"
+    echo -e "    ${YELLOW}⚠ Aucun fichier .env trouvé${NC}"
+    echo -e "    ${YELLOW}→ Créez .env ou .env.docker depuis .env.example${NC}"
+    echo -e "    ${YELLOW}→ Fonctionnalités limitées (pas de résumés IA)${NC}"
 fi
 echo ""
 
