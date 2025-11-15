@@ -47,7 +47,15 @@ import subprocess
 # Bouton de rafraîchissement des épisodes avec affichage avancé de l'output
 if st.button("🔄 Rafraîchir Episodes"):
     nb_episodes = episodes.len_total_entries()
-    locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
+    # Essayer de définir la locale, avec fallback si non disponible
+    try:
+        locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
+    except locale.Error:
+        try:
+            locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+        except locale.Error:
+            # Si aucune locale ne fonctionne, continuer sans changer la locale
+            pass
     with st.spinner("Mise à jour des épisodes en cours..."):
         podcast = Podcast()
         # Capturer la sortie de la fonction

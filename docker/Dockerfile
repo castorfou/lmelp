@@ -4,13 +4,14 @@
 # Stage 1: Base image with system dependencies
 FROM python:3.11-slim AS base
 
-# Install system dependencies and French locale
+# Install system dependencies and locales (French and English)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     git \
     locales \
     && sed -i '/fr_FR.UTF-8/s/^# //g' /etc/locale.gen \
-    && locale-gen fr_FR.UTF-8 \
+    && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
+    && locale-gen fr_FR.UTF-8 en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
 
 # Set locale environment variables
