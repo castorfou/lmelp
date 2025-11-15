@@ -323,26 +323,24 @@ def afficher_selection_episode():
     if "selected_episode_index" not in st.session_state:
         st.session_state.selected_episode_index = 0
 
-    # Callback pour quand l'utilisateur change le selectbox manuellement
-    def on_selectbox_change():
-        # Trouver la position du nouvel élément sélectionné
-        selected_value = st.session_state.episode_selector_widget
-        selected_position = int(episodes_df[episodes_df["selecteur"] == selected_value].index[0])
-        st.session_state.selected_episode_index = selected_position
-
     # Sélecteur d'épisode (colonne centrale)
     with col_nav2:
         # S'assurer que l'index est dans les limites
         if st.session_state.selected_episode_index >= len(episodes_df):
             st.session_state.selected_episode_index = 0
 
-        st.selectbox(
+        selected = st.selectbox(
             "Sélectionnez un épisode",
             episodes_df["selecteur"],
             index=st.session_state.selected_episode_index,
-            key="episode_selector_widget",
-            on_change=on_selectbox_change,
+            key="episode_selector",
         )
+
+        # Mettre à jour l'index si l'utilisateur change la sélection
+        current_index = episodes_df[episodes_df["selecteur"] == selected].index[0]
+        actual_index = episodes_df.index.get_loc(current_index)
+        if actual_index != st.session_state.selected_episode_index:
+            st.session_state.selected_episode_index = actual_index
 
     # Boutons de navigation alignés verticalement avec la selectbox
     with col_nav1:
@@ -474,9 +472,7 @@ def afficher_selection_episode():
     )
 
     # Filtrer le DataFrame pour trouver la ligne correspondant à la sélection
-    # Utiliser la valeur du widget selectbox
-    selected_value = st.session_state.episode_selector_widget
-    episode = episodes_df[episodes_df["selecteur"] == selected_value]
+    episode = episodes_df[episodes_df["selecteur"] == selected]
 
     if not episode.empty:
         episode = episode.iloc[0]
