@@ -52,11 +52,9 @@ sudo netstat -tulpn | grep 27017
 # Devrait montrer : 0.0.0.0:27017 ou 172.17.0.1:27017
 ```
 
-## 🚀 Utilisation des scripts de test
+## 🚀 Utilisation du script de test
 
-Deux scripts sont fournis pour faciliter le test local :
-
-### Script 1 : Mode interactif
+Un script est fourni pour faciliter le test local en mode interactif :
 
 **Utilisation :**
 ```bash
@@ -66,35 +64,15 @@ Deux scripts sont fournis pour faciliter le test local :
 **Caractéristiques :**
 - ✅ Pull automatique des derniers changements
 - ✅ Build de l'image Docker
-- ✅ Nettoyage des anciens conteneurs
+- ✅ Nettoyage des anciens conteneurs (sauf devcontainer)
 - ✅ Lancement en mode interactif
 - ✅ Logs affichés en direct dans le terminal
 - ⚠️ Terminal bloqué (utiliser Ctrl+C pour arrêter)
 
-**Quand l'utiliser :**
+**Utilisation recommandée :**
 - Pour déboguer et voir les logs en temps réel
 - Pour des tests rapides
 - Pour développement actif
-
-### Script 2 : Mode détaché (arrière-plan)
-
-**Utilisation :**
-```bash
-./docker/test-local-detached.sh
-```
-
-**Caractéristiques :**
-- ✅ Pull automatique des derniers changements
-- ✅ Build de l'image Docker
-- ✅ Nettoyage des anciens conteneurs
-- ✅ Lancement en arrière-plan
-- ✅ Terminal libre pour d'autres commandes
-- ✅ Affiche les commandes utiles après le lancement
-
-**Quand l'utiliser :**
-- Pour laisser l'application tourner pendant que vous travaillez
-- Pour des tests de longue durée
-- Pour simuler un environnement de production
 
 ## 📊 Gestion du conteneur
 
@@ -255,25 +233,10 @@ Ce problème est déjà corrigé dans le Dockerfile. Si vous le rencontrez :
 
 ## 🔄 Workflow de développement
 
-### 1. Développement avec rebuild automatique
+### Tests rapides avec rebuild
 
 ```bash
-# Terminal 1 : Lancer en mode détaché
-./docker/test-local-detached.sh
-
-# Terminal 2 : Voir les logs
-docker logs -f lmelp-local
-
-# Après modifications du code :
-# Stopper, rebuild et relancer
-docker stop lmelp-local
-./docker/test-local-detached.sh
-```
-
-### 2. Tests rapides
-
-```bash
-# Mode interactif pour voir les erreurs directement
+# Lancer le script de test (mode interactif)
 ./docker/test-local.sh
 
 # Ctrl+C pour arrêter

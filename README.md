@@ -112,11 +112,7 @@ Accéder à l'application : **http://localhost:8501** 🌐
 Pour tester rapidement avec votre MongoDB local sans docker-compose :
 
 ```bash
-# Mode interactif (voir les logs en direct)
 ./docker/test-local.sh
-
-# Mode détaché (arrière-plan)
-./docker/test-local-detached.sh
 ```
 
 **Prérequis :** MongoDB doit accepter les connexions depuis Docker (voir [Guide d'utilisation Docker local](docs/deployment/docker-local-usage.md))
