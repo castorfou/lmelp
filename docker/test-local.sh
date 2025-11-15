@@ -34,15 +34,39 @@ echo -e "${YELLOW}Configuration:${NC}"
 echo -e "  - DB_HOST: 172.17.0.1"
 echo -e "  - DB_NAME: masque_et_la_plume"
 echo -e "  - Port: 8501"
+
+# Détecter si un fichier .env existe pour les clés API
+ENV_FILE=""
+if [ -f ".env" ]; then
+    ENV_FILE=".env"
+    echo -e "  - Variables: ${GREEN}chargées depuis .env${NC}"
+elif [ -f ".env.docker" ]; then
+    ENV_FILE=".env.docker"
+    echo -e "  - Variables: ${GREEN}chargées depuis .env.docker${NC}"
+else
+    echo -e "  - Variables: ${YELLOW}aucun fichier .env trouvé${NC}"
+    echo -e "    ${YELLOW}→${NC} Créez .env ou .env.docker depuis .env.example"
+    echo -e "    ${YELLOW}→${NC} Certaines fonctionnalités (résumés IA) ne seront pas disponibles"
+fi
 echo ""
 
-docker run --rm -it \
+# Construire la commande docker run
+DOCKER_CMD="docker run --rm -it \
   --name lmelp-local \
   -p 8501:8501 \
   -e DB_HOST=172.17.0.1 \
   -e DB_NAME=masque_et_la_plume \
-  -e DB_LOGS=true \
-  lmelp:local
+  -e DB_LOGS=true"
+
+# Ajouter --env-file si un fichier .env existe
+if [ -n "$ENV_FILE" ]; then
+    DOCKER_CMD="$DOCKER_CMD --env-file $ENV_FILE"
+fi
+
+DOCKER_CMD="$DOCKER_CMD lmelp:local"
+
+# Exécuter
+eval $DOCKER_CMD
 
 echo ""
 echo -e "${GREEN}✓${NC} Conteneur arrêté"

@@ -112,13 +112,23 @@ Accéder à l'application : **http://localhost:8501** 🌐
 Pour tester rapidement avec votre MongoDB local sans docker-compose :
 
 ```bash
+# 1. Configurer les clés API (optionnel mais recommandé)
+cp .env.example .env
+# Éditer .env avec vos clés Azure OpenAI, Google Search, etc.
+
+# 2. Lancer le conteneur
 ./docker/test-local.sh
 # Interface accessible sur http://localhost:8501
 ```
 
-**Note :** Le script utilise le port 8501. Assurez-vous que le devcontainer n'est pas en cours d'exécution.
+**Configuration des clés API :**
+- Le script détecte automatiquement `.env` ou `.env.docker` à la racine
+- Sans ces clés, certaines fonctionnalités (résumés IA) ne seront pas disponibles
+- Voir `.env.example` pour la liste complète des variables
 
-**Prérequis :** MongoDB doit accepter les connexions depuis Docker (voir [Guide d'utilisation Docker local](docs/deployment/docker-local-usage.md))
+**Prérequis :**
+- MongoDB doit accepter les connexions depuis Docker (voir [Guide d'utilisation Docker local](docs/deployment/docker-local-usage.md))
+- Le port 8501 doit être libre (arrêtez le devcontainer si nécessaire)
 
 ### Images Docker
 
