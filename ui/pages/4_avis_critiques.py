@@ -323,14 +323,6 @@ def afficher_selection_episode():
     if "selected_episode_index" not in st.session_state:
         st.session_state.selected_episode_index = 0
 
-    # Callback pour quand l'utilisateur change manuellement le selectbox
-    def on_episode_change():
-        # Trouver la position de l'épisode sélectionné
-        selected_value = st.session_state.episode_selector
-        selected_position = episodes_df[episodes_df["selecteur"] == selected_value].index[0]
-        # Mettre à jour l'index pour que l'épisode affiché corresponde
-        st.session_state.selected_episode_index = selected_position
-
     # DEBUG: Afficher l'état actuel
     st.info(f"🔍 DEBUG - Index dans session_state: {st.session_state.selected_episode_index} / Total épisodes: {len(episodes_df)}")
 
@@ -341,17 +333,24 @@ def afficher_selection_episode():
             st.session_state.selected_episode_index = 0
 
         # Le selectbox affiche l'élément à la position selected_episode_index
-        # Quand l'utilisateur le change, le callback on_episode_change met à jour l'index
-        st.selectbox(
+        # Pas de key ni de callback - on détecte les changements manuels en comparant la valeur retournée
+        selected_value = st.selectbox(
             "Sélectionnez un épisode",
             episodes_df["selecteur"],
             index=st.session_state.selected_episode_index,
-            key="episode_selector",
-            on_change=on_episode_change,
         )
 
         # DEBUG: Afficher la sélection
-        st.write(f"📝 Sélection du widget: {st.session_state.get('episode_selector', 'N/A')}")
+        st.write(f"📝 Sélection retournée: {selected_value[:50]}...")
+
+        # Détecter si l'utilisateur a changé manuellement le selectbox
+        # En comparant avec l'élément attendu à l'index actuel
+        expected_value = episodes_df.iloc[st.session_state.selected_episode_index]["selecteur"]
+        if selected_value != expected_value:
+            # L'utilisateur a changé manuellement - trouver le nouvel index
+            new_index = episodes_df[episodes_df["selecteur"] == selected_value].index[0]
+            st.warning(f"⚠️ Changement manuel: index {st.session_state.selected_episode_index} → {new_index}")
+            st.session_state.selected_episode_index = new_index
 
     # Boutons de navigation alignés verticalement avec la selectbox
     with col_nav1:
@@ -368,8 +367,6 @@ def afficher_selection_episode():
                 len(episodes_df) - 1, st.session_state.selected_episode_index + 1
             ))
             st.session_state.selected_episode_index = new_index
-            # Mettre à jour aussi la valeur du widget selectbox pour forcer la mise à jour visuelle
-            st.session_state.episode_selector = episodes_df.iloc[new_index]["selecteur"]
             st.toast(f"⬅️ Précédent cliqué: {old_index} → {new_index}")
             st.rerun()
 
@@ -387,8 +384,6 @@ def afficher_selection_episode():
                 0, st.session_state.selected_episode_index - 1
             ))
             st.session_state.selected_episode_index = new_index
-            # Mettre à jour aussi la valeur du widget selectbox pour forcer la mise à jour visuelle
-            st.session_state.episode_selector = episodes_df.iloc[new_index]["selecteur"]
             st.toast(f"➡️ Suivant cliqué: {old_index} → {new_index}")
             st.rerun()
 
