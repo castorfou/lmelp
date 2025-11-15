@@ -24,8 +24,8 @@ echo ""
 
 # 3. Arrêt des conteneurs existants (si présents, sauf devcontainer)
 echo -e "${YELLOW}[*]${NC} Arrêt des conteneurs lmelp existants..."
-docker ps -a | grep lmelp | grep -v vscode-dev-container | awk '{print $1}' | xargs -r docker stop 2>/dev/null || true
-docker ps -a | grep lmelp | grep -v vscode-dev-container | awk '{print $1}' | xargs -r docker rm 2>/dev/null || true
+docker ps -a | grep lmelp | grep -v vsc-lmelp | awk '{print $1}' | xargs -r docker stop 2>/dev/null || true
+docker ps -a | grep lmelp | grep -v vsc-lmelp | awk '{print $1}' | xargs -r docker rm 2>/dev/null || true
 echo ""
 
 # 4. Lancement du nouveau conteneur en arrière-plan
