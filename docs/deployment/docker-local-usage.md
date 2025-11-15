@@ -129,6 +129,8 @@ Une fois le conteneur lancé :
 
 L'application Streamlit est accessible sur le port 8501 de votre machine hôte.
 
+**Note :** Le devcontainer utilise aussi le port 8501 (avec `network=host`). Assurez-vous qu'une seule instance tourne à la fois.
+
 ## ⚙️ Configuration
 
 Les scripts configurent automatiquement :
@@ -179,24 +181,22 @@ ServerSelectionTimeoutError: 172.17.0.1:27017: [Errno 111] Connection refused
 Error: Bind for 0.0.0.0:8501 failed: port is already allocated
 ```
 
+**Cause :** Le devcontainer ou une autre instance Streamlit utilise déjà le port 8501.
+
 **Solutions :**
 
-1. **Vérifier si un conteneur utilise déjà le port :**
+1. **Arrêter le devcontainer si il tourne :**
+   - Dans VS Code: Fermer la fenêtre devcontainer
+   - Ou arrêter le conteneur: `docker stop vsc-lmelp-...`
+
+2. **Vérifier les processus utilisant le port :**
    ```bash
-   docker ps | grep 8501
+   sudo lsof -i :8501
    ```
 
-2. **Arrêter l'ancien conteneur :**
+3. **Arrêter l'ancien conteneur de test si présent :**
    ```bash
    docker stop lmelp-local
-   ```
-
-3. **Ou utiliser un port différent :**
-   ```bash
-   docker run -d --name lmelp-local -p 8502:8501 \
-     -e DB_HOST=172.17.0.1 -e DB_NAME=masque_et_la_plume \
-     lmelp:local
-   # Accès sur http://localhost:8502
    ```
 
 ### Erreur : "locale.Error: unsupported locale setting"

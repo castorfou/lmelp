@@ -88,8 +88,7 @@
 	"features": {
 		"ghcr.io/nils-geistmann/devcontainers-features/zsh:0": {}
 	},
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-    "forwardPorts": [8501],
+	// Note: forwardPorts not needed with network=host - container uses host network directly
 
 	// Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": 

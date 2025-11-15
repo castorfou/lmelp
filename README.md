@@ -113,7 +113,10 @@ Pour tester rapidement avec votre MongoDB local sans docker-compose :
 
 ```bash
 ./docker/test-local.sh
+# Interface accessible sur http://localhost:8501
 ```
+
+**Note :** Le script utilise le port 8501. Assurez-vous que le devcontainer n'est pas en cours d'exécution.
 
 **Prérequis :** MongoDB doit accepter les connexions depuis Docker (voir [Guide d'utilisation Docker local](docs/deployment/docker-local-usage.md))
 
