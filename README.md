@@ -107,6 +107,20 @@ cp .env.template .env
 
 Accéder à l'application : **http://localhost:8501** 🌐
 
+### Quick Start - Tests Locaux (connexion à MongoDB existant)
+
+Pour tester rapidement avec votre MongoDB local sans docker-compose :
+
+```bash
+# Mode interactif (voir les logs en direct)
+./docker/test-local.sh
+
+# Mode détaché (arrière-plan)
+./docker/test-local-detached.sh
+```
+
+**Prérequis :** MongoDB doit accepter les connexions depuis Docker (voir [Guide d'utilisation Docker local](docs/deployment/docker-local-usage.md))
+
 ### Images Docker
 
 Images publiées automatiquement sur GitHub Container Registry :
@@ -148,6 +162,7 @@ docker run --rm --network lmelp-network \
 ### Documentation Complète
 
 - 📖 [Guide de déploiement Docker](docker/README.md) - Quick start, configuration, usage
+- 🧪 [Guide d'utilisation Docker local](docs/deployment/docker-local-usage.md) - Tests locaux avec MongoDB existant
 - 🔧 [Configuration GitHub Actions](docs/deployment/github-actions-setup.md) - CI/CD automatique
 - 📝 [Issue #64 - Plan complet](docs/deployment/issue-dockerisation.md) - Spécifications détaillées
 
