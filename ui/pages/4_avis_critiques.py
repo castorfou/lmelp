@@ -323,15 +323,6 @@ def afficher_selection_episode():
     if "selected_episode_index" not in st.session_state:
         st.session_state.selected_episode_index = 0
 
-    # Callback pour détecter le changement manuel du selectbox
-    def on_episode_select():
-        # Trouver la position de l'épisode sélectionné
-        selected_value = st.session_state.episode_selector
-        position = episodes_df[episodes_df["selecteur"] == selected_value].index[0]
-        # Mettre à jour uniquement si différent (changement manuel)
-        if position != st.session_state.selected_episode_index:
-            st.session_state.selected_episode_index = position
-
     # DEBUG: Afficher l'état actuel
     st.info(f"🔍 DEBUG - Index dans session_state: {st.session_state.selected_episode_index} / Total épisodes: {len(episodes_df)}")
 
@@ -341,17 +332,29 @@ def afficher_selection_episode():
         if st.session_state.selected_episode_index >= len(episodes_df):
             st.session_state.selected_episode_index = 0
 
-        st.selectbox(
+        # Le selectbox affiche l'élément à la position selected_episode_index
+        # Si l'utilisateur change manuellement, on synchronisera après
+        selected = st.selectbox(
             "Sélectionnez un épisode",
             episodes_df["selecteur"],
             index=st.session_state.selected_episode_index,
             key="episode_selector",
-            on_change=on_episode_select,
         )
 
         # DEBUG: Afficher la sélection
-        selected = st.session_state.episode_selector
         st.write(f"📝 Sélection actuelle: {selected}")
+
+        # Synchroniser l'index uniquement si l'utilisateur a changé manuellement le selectbox
+        # (après reset_index, l'index DataFrame = position)
+        selected_position = episodes_df[episodes_df["selecteur"] == selected].index[0]
+        st.write(f"🔢 Position de la sélection: {selected_position}")
+
+        # Si la position trouvée est différente de l'index actuel, c'est que l'utilisateur
+        # a changé manuellement le selectbox (pas via les boutons)
+        if selected_position != st.session_state.selected_episode_index:
+            st.warning(f"⚠️ Changement manuel détecté: {st.session_state.selected_episode_index} → {selected_position}")
+            st.session_state.selected_episode_index = selected_position
+            # Pas de rerun ici, Streamlit gère automatiquement
 
     # Boutons de navigation alignés verticalement avec la selectbox
     with col_nav1:
