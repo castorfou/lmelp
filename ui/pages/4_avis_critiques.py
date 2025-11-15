@@ -323,6 +323,15 @@ def afficher_selection_episode():
     if "selected_episode_index" not in st.session_state:
         st.session_state.selected_episode_index = 0
 
+    # Callback pour détecter le changement manuel du selectbox
+    def on_episode_select():
+        # Trouver la position de l'épisode sélectionné
+        selected_value = st.session_state.episode_selector
+        position = episodes_df[episodes_df["selecteur"] == selected_value].index[0]
+        # Mettre à jour uniquement si différent (changement manuel)
+        if position != st.session_state.selected_episode_index:
+            st.session_state.selected_episode_index = position
+
     # DEBUG: Afficher l'état actuel
     st.info(f"🔍 DEBUG - Index dans session_state: {st.session_state.selected_episode_index} / Total épisodes: {len(episodes_df)}")
 
@@ -332,23 +341,17 @@ def afficher_selection_episode():
         if st.session_state.selected_episode_index >= len(episodes_df):
             st.session_state.selected_episode_index = 0
 
-        selected = st.selectbox(
+        st.selectbox(
             "Sélectionnez un épisode",
             episodes_df["selecteur"],
             index=st.session_state.selected_episode_index,
             key="episode_selector",
+            on_change=on_episode_select,
         )
 
         # DEBUG: Afficher la sélection
+        selected = st.session_state.episode_selector
         st.write(f"📝 Sélection actuelle: {selected}")
-
-        # Mettre à jour l'index si l'utilisateur change la sélection
-        current_index = episodes_df[episodes_df["selecteur"] == selected].index[0]
-        actual_index = episodes_df.index.get_loc(current_index)
-        st.write(f"🔢 current_index: {current_index}, actual_index: {actual_index}")
-        if actual_index != st.session_state.selected_episode_index:
-            st.warning(f"⚠️ Mise à jour index: {st.session_state.selected_episode_index} → {actual_index}")
-            st.session_state.selected_episode_index = actual_index
 
     # Boutons de navigation alignés verticalement avec la selectbox
     with col_nav1:
@@ -484,7 +487,7 @@ def afficher_selection_episode():
     )
 
     # Filtrer le DataFrame pour trouver la ligne correspondant à la sélection
-    episode = episodes_df[episodes_df["selecteur"] == selected]
+    episode = episodes_df[episodes_df["selecteur"] == st.session_state.episode_selector]
 
     if not episode.empty:
         episode = episode.iloc[0]
