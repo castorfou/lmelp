@@ -33,12 +33,12 @@ echo -e "${GREEN}[3/3]${NC} Lancement du conteneur..."
 echo -e "${YELLOW}Configuration:${NC}"
 echo -e "  - DB_HOST: 172.17.0.1"
 echo -e "  - DB_NAME: masque_et_la_plume"
-echo -e "  - Port: 8502 → 8501 (pour éviter conflit avec devcontainer)"
+echo -e "  - Port: 8501"
 echo ""
 
 docker run --rm -it \
   --name lmelp-local \
-  -p 8502:8501 \
+  -p 8501:8501 \
   -e DB_HOST=172.17.0.1 \
   -e DB_NAME=masque_et_la_plume \
   -e DB_LOGS=true \
@@ -46,7 +46,7 @@ docker run --rm -it \
 
 echo ""
 echo -e "${GREEN}✓${NC} Conteneur arrêté"
-echo -e "${YELLOW}Info:${NC} L'interface était accessible sur ${BLUE}http://localhost:8502${NC}"
+echo -e "${YELLOW}Info:${NC} L'interface était accessible sur ${BLUE}http://localhost:8501${NC}"
 
 # Note: Le script s'arrête ici car docker run est en mode interactif
 # Pour arrêter: Ctrl+C

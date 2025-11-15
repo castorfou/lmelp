@@ -125,9 +125,11 @@ docker exec -it lmelp-local bash
 
 Une fois le conteneur lancé :
 
-**URL :** http://localhost:8502
+**URL :** http://localhost:8501
 
-L'application Streamlit est accessible sur le port 8502 de votre machine hôte (le port 8501 étant généralement utilisé par le devcontainer).
+L'application Streamlit est accessible sur le port 8501 de votre machine hôte.
+
+**Note :** Le devcontainer utilise aussi le port 8501 (avec `network=host`). Assurez-vous qu'une seule instance tourne à la fois.
 
 ## ⚙️ Configuration
 
@@ -138,7 +140,7 @@ Les scripts configurent automatiquement :
 | `DB_HOST` | `172.17.0.1` | Adresse du bridge Docker pour accéder au MongoDB du hôte |
 | `DB_NAME` | `masque_et_la_plume` | Nom de la base de données |
 | `DB_LOGS` | `true` | Active les logs MongoDB |
-| Port | `8502:8501` | Port de l'interface web (8502 sur host → 8501 dans conteneur) |
+| Port | `8501:8501` | Port de l'interface web |
 
 ## 🐛 Dépannage
 
@@ -176,29 +178,25 @@ ServerSelectionTimeoutError: 172.17.0.1:27017: [Errno 111] Connection refused
 
 **Symptôme :**
 ```
-Error: Bind for 0.0.0.0:8502 failed: port is already allocated
+Error: Bind for 0.0.0.0:8501 failed: port is already allocated
 ```
 
-**Note :** Le script test-local.sh utilise le port 8502 pour éviter les conflits avec le devcontainer (qui utilise 8501).
+**Cause :** Le devcontainer ou une autre instance Streamlit utilise déjà le port 8501.
 
 **Solutions :**
 
-1. **Vérifier si un conteneur utilise déjà le port :**
+1. **Arrêter le devcontainer si il tourne :**
+   - Dans VS Code: Fermer la fenêtre devcontainer
+   - Ou arrêter le conteneur: `docker stop vsc-lmelp-...`
+
+2. **Vérifier les processus utilisant le port :**
    ```bash
-   docker ps | grep 8502
+   sudo lsof -i :8501
    ```
 
-2. **Arrêter l'ancien conteneur :**
+3. **Arrêter l'ancien conteneur de test si présent :**
    ```bash
    docker stop lmelp-local
-   ```
-
-3. **Si le port 8502 est aussi occupé, utiliser un autre port :**
-   ```bash
-   docker run --rm -it --name lmelp-local -p 8503:8501 \
-     -e DB_HOST=172.17.0.1 -e DB_NAME=masque_et_la_plume \
-     lmelp:local
-   # Accès sur http://localhost:8503
    ```
 
 ### Erreur : "locale.Error: unsupported locale setting"
@@ -230,7 +228,7 @@ Ce problème est déjà corrigé dans le Dockerfile. Si vous le rencontrez :
 3. **Vérifier le port mapping :**
    ```bash
    docker port lmelp-local
-   # Devrait montrer : 8501/tcp -> 0.0.0.0:8502
+   # Devrait montrer : 8501/tcp -> 0.0.0.0:8501
    ```
 
 ## 🔄 Workflow de développement
