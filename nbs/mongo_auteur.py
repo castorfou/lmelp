@@ -88,11 +88,6 @@ load_env()
 api_key: Optional[str] = os.getenv("GOOGLE_CUSTOM_SEARCH_API_KEY")
 cse_id: Optional[str] = os.getenv("SEARCH_ENGINE_ID")
 
-if not api_key or not cse_id:
-    raise ValueError(
-        "Les variables d'environnement GOOGLE_SEARCH_API_KEY et GOOGLE_CSE_ID doivent être définies."
-    )
-
 
 def google_search(query: str) -> Optional[List[Dict[str, Optional[str]]]]:
     """Effectue une recherche Google en utilisant l'API Custom Search et retourne les résultats.
@@ -104,7 +99,16 @@ def google_search(query: str) -> Optional[List[Dict[str, Optional[str]]]]:
         Optional[List[Dict[str, Optional[str]]]]:
             Une liste de dictionnaires représentant les résultats de la recherche, chaque dictionnaire contenant
             les clés 'title', 'snippet' et 'link'. Retourne None en cas d'erreur.
+
+    Raises:
+        ValueError: Si les variables d'environnement GOOGLE_CUSTOM_SEARCH_API_KEY ou SEARCH_ENGINE_ID
+                    ne sont pas définies.
     """
+    if not api_key or not cse_id:
+        raise ValueError(
+            "Les variables d'environnement GOOGLE_CUSTOM_SEARCH_API_KEY et SEARCH_ENGINE_ID doivent être définies pour utiliser la recherche Google."
+        )
+
     try:
         service = build("customsearch", "v1", developerKey=api_key)
         res = service.cse().list(q=query, cx=cse_id).execute()
