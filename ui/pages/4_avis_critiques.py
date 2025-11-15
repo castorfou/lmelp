@@ -323,6 +323,14 @@ def afficher_selection_episode():
     if "selected_episode_index" not in st.session_state:
         st.session_state.selected_episode_index = 0
 
+    # Callback pour quand l'utilisateur change manuellement le selectbox
+    def on_episode_change():
+        # Trouver la position de l'épisode sélectionné
+        selected_value = st.session_state.episode_selector
+        selected_position = episodes_df[episodes_df["selecteur"] == selected_value].index[0]
+        # Mettre à jour l'index pour que l'épisode affiché corresponde
+        st.session_state.selected_episode_index = selected_position
+
     # DEBUG: Afficher l'état actuel
     st.info(f"🔍 DEBUG - Index dans session_state: {st.session_state.selected_episode_index} / Total épisodes: {len(episodes_df)}")
 
@@ -333,28 +341,17 @@ def afficher_selection_episode():
             st.session_state.selected_episode_index = 0
 
         # Le selectbox affiche l'élément à la position selected_episode_index
-        # Si l'utilisateur change manuellement, on synchronisera après
-        selected = st.selectbox(
+        # Quand l'utilisateur le change, le callback on_episode_change met à jour l'index
+        st.selectbox(
             "Sélectionnez un épisode",
             episodes_df["selecteur"],
             index=st.session_state.selected_episode_index,
             key="episode_selector",
+            on_change=on_episode_change,
         )
 
         # DEBUG: Afficher la sélection
-        st.write(f"📝 Sélection actuelle: {selected}")
-
-        # Synchroniser l'index uniquement si l'utilisateur a changé manuellement le selectbox
-        # (après reset_index, l'index DataFrame = position)
-        selected_position = episodes_df[episodes_df["selecteur"] == selected].index[0]
-        st.write(f"🔢 Position de la sélection: {selected_position}")
-
-        # Si la position trouvée est différente de l'index actuel, c'est que l'utilisateur
-        # a changé manuellement le selectbox (pas via les boutons)
-        if selected_position != st.session_state.selected_episode_index:
-            st.warning(f"⚠️ Changement manuel détecté: {st.session_state.selected_episode_index} → {selected_position}")
-            st.session_state.selected_episode_index = selected_position
-            # Pas de rerun ici, Streamlit gère automatiquement
+        st.write(f"📝 Sélection du widget: {st.session_state.get('episode_selector', 'N/A')}")
 
     # Boutons de navigation alignés verticalement avec la selectbox
     with col_nav1:
@@ -367,10 +364,13 @@ def afficher_selection_episode():
             key="prev_btn",
         ):
             old_index = st.session_state.selected_episode_index
-            st.session_state.selected_episode_index = int(min(
+            new_index = int(min(
                 len(episodes_df) - 1, st.session_state.selected_episode_index + 1
             ))
-            st.toast(f"⬅️ Précédent cliqué: {old_index} → {st.session_state.selected_episode_index}")
+            st.session_state.selected_episode_index = new_index
+            # Mettre à jour aussi la valeur du widget selectbox pour forcer la mise à jour visuelle
+            st.session_state.episode_selector = episodes_df.iloc[new_index]["selecteur"]
+            st.toast(f"⬅️ Précédent cliqué: {old_index} → {new_index}")
             st.rerun()
 
     with col_nav3:
@@ -383,10 +383,13 @@ def afficher_selection_episode():
             key="next_btn",
         ):
             old_index = st.session_state.selected_episode_index
-            st.session_state.selected_episode_index = int(max(
+            new_index = int(max(
                 0, st.session_state.selected_episode_index - 1
             ))
-            st.toast(f"➡️ Suivant cliqué: {old_index} → {st.session_state.selected_episode_index}")
+            st.session_state.selected_episode_index = new_index
+            # Mettre à jour aussi la valeur du widget selectbox pour forcer la mise à jour visuelle
+            st.session_state.episode_selector = episodes_df.iloc[new_index]["selecteur"]
+            st.toast(f"➡️ Suivant cliqué: {old_index} → {new_index}")
             st.rerun()
 
     # Ajouter la navigation clavier après que les boutons soient créés
