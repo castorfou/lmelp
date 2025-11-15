@@ -280,7 +280,8 @@ def afficher_selection_episode():
     episodes_df = episodes_df.copy()
 
     # Trier par date décroissante AVANT de convertir en string
-    episodes_df = episodes_df.sort_values("date", ascending=False)
+    # Reset index pour que l'index corresponde aux positions (0, 1, 2, ...)
+    episodes_df = episodes_df.sort_values("date", ascending=False).reset_index(drop=True)
 
     episodes_df["date"] = episodes_df["date"].apply(lambda x: format_date(x))
 
@@ -335,11 +336,11 @@ def afficher_selection_episode():
             key="episode_selector",
         )
 
-        # Mettre à jour l'index si l'utilisateur change la sélection
-        current_index = episodes_df[episodes_df["selecteur"] == selected].index[0]
-        actual_index = episodes_df.index.get_loc(current_index)
-        if actual_index != st.session_state.selected_episode_index:
-            st.session_state.selected_episode_index = actual_index
+        # Mettre à jour l'index si l'utilisateur change la sélection manuellement
+        # Avec reset_index, l'index correspond directement à la position
+        selected_position = episodes_df[episodes_df["selecteur"] == selected].index[0]
+        if selected_position != st.session_state.selected_episode_index:
+            st.session_state.selected_episode_index = selected_position
 
     # Boutons de navigation alignés verticalement avec la selectbox
     with col_nav1:
