@@ -9,7 +9,7 @@ This directory contains Docker configuration files for deploying lmelp (Le Masqu
 1. **Copy environment template:**
    ```bash
    cd docker/
-   cp .env.template .env
+   cp ../.env.example .env
    ```
 
 2. **Edit `.env` and fill in your API keys:**
@@ -24,10 +24,20 @@ This directory contains Docker configuration files for deploying lmelp (Le Masqu
 4. **Access the application:**
    - Open http://localhost:8501 in your browser
 
+### Auto-Update Deployment
+
+To enable automatic updates when new Docker images are published:
+
+```bash
+# With Watchtower (checks every 6 hours)
+docker compose -f docker-compose.yml -f docker-compose.watchtower.yml up -d
+```
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete auto-update configuration with Watchtower or Portainer.
+
 ### NAS Synology Deployment
 
-Use `docker-compose.nas.yml` with Portainer:
-- See [NAS Deployment Guide](../docs/deployment/nas-deployment.md) (to be created)
+Use `docker-compose.nas.yml` with Portainer - see [DEPLOYMENT.md](DEPLOYMENT.md) for webhook configuration.
 
 ## 📂 Files Overview
 
@@ -36,8 +46,11 @@ Use `docker-compose.nas.yml` with Portainer:
 | `Dockerfile` | Multi-stage build for lmelp application |
 | `docker-compose.yml` | PC local deployment (includes MongoDB) |
 | `docker-compose.nas.yml` | NAS deployment (uses existing MongoDB) |
-| `.env.template` | Environment variables template |
+| `docker-compose.watchtower.yml` | Auto-update configuration with Watchtower |
 | `entrypoint.sh` | Container entrypoint supporting multiple modes |
+| `test-local.sh` | Test with local MongoDB (development) |
+| **[DEPLOYMENT.md](DEPLOYMENT.md)** | **Complete deployment guide with auto-updates** |
+| | |
 | `scripts/start.sh` | Start containers |
 | `scripts/stop.sh` | Stop containers |
 | `scripts/update.sh` | Update to latest version |
