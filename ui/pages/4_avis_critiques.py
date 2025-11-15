@@ -338,7 +338,8 @@ def afficher_selection_episode():
 
         # Mettre à jour l'index si l'utilisateur change la sélection manuellement
         # Avec reset_index, l'index correspond directement à la position
-        selected_position = episodes_df[episodes_df["selecteur"] == selected].index[0]
+        # Convertir explicitement en int Python pour éviter les problèmes avec numpy types
+        selected_position = int(episodes_df[episodes_df["selecteur"] == selected].index[0])
         if selected_position != st.session_state.selected_episode_index:
             st.session_state.selected_episode_index = selected_position
 
@@ -348,13 +349,13 @@ def afficher_selection_episode():
         st.write("")
         if st.button(
             "⬅️ Précédent",
-            disabled=(st.session_state.selected_episode_index >= len(episodes_df) - 1),
+            disabled=bool(st.session_state.selected_episode_index >= len(episodes_df) - 1),
             use_container_width=True,
             key="prev_btn",
         ):
-            st.session_state.selected_episode_index = min(
+            st.session_state.selected_episode_index = int(min(
                 len(episodes_df) - 1, st.session_state.selected_episode_index + 1
-            )
+            ))
             st.rerun()
 
     with col_nav3:
@@ -362,13 +363,13 @@ def afficher_selection_episode():
         st.write("")
         if st.button(
             "Suivant ➡️",
-            disabled=(st.session_state.selected_episode_index == 0),
+            disabled=bool(st.session_state.selected_episode_index == 0),
             use_container_width=True,
             key="next_btn",
         ):
-            st.session_state.selected_episode_index = max(
+            st.session_state.selected_episode_index = int(max(
                 0, st.session_state.selected_episode_index - 1
-            )
+            ))
             st.rerun()
 
     # Ajouter la navigation clavier après que les boutons soient créés
