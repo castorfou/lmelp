@@ -125,9 +125,9 @@ docker exec -it lmelp-local bash
 
 Une fois le conteneur lancé :
 
-**URL :** http://localhost:8501
+**URL :** http://localhost:8502
 
-L'application Streamlit est accessible sur le port 8501 de votre machine hôte.
+L'application Streamlit est accessible sur le port 8502 de votre machine hôte (le port 8501 étant généralement utilisé par le devcontainer).
 
 ## ⚙️ Configuration
 
@@ -138,7 +138,7 @@ Les scripts configurent automatiquement :
 | `DB_HOST` | `172.17.0.1` | Adresse du bridge Docker pour accéder au MongoDB du hôte |
 | `DB_NAME` | `masque_et_la_plume` | Nom de la base de données |
 | `DB_LOGS` | `true` | Active les logs MongoDB |
-| Port | `8501:8501` | Port de l'interface web |
+| Port | `8502:8501` | Port de l'interface web (8502 sur host → 8501 dans conteneur) |
 
 ## 🐛 Dépannage
 
@@ -176,14 +176,16 @@ ServerSelectionTimeoutError: 172.17.0.1:27017: [Errno 111] Connection refused
 
 **Symptôme :**
 ```
-Error: Bind for 0.0.0.0:8501 failed: port is already allocated
+Error: Bind for 0.0.0.0:8502 failed: port is already allocated
 ```
+
+**Note :** Le script test-local.sh utilise le port 8502 pour éviter les conflits avec le devcontainer (qui utilise 8501).
 
 **Solutions :**
 
 1. **Vérifier si un conteneur utilise déjà le port :**
    ```bash
-   docker ps | grep 8501
+   docker ps | grep 8502
    ```
 
 2. **Arrêter l'ancien conteneur :**
@@ -191,12 +193,12 @@ Error: Bind for 0.0.0.0:8501 failed: port is already allocated
    docker stop lmelp-local
    ```
 
-3. **Ou utiliser un port différent :**
+3. **Si le port 8502 est aussi occupé, utiliser un autre port :**
    ```bash
-   docker run -d --name lmelp-local -p 8502:8501 \
+   docker run --rm -it --name lmelp-local -p 8503:8501 \
      -e DB_HOST=172.17.0.1 -e DB_NAME=masque_et_la_plume \
      lmelp:local
-   # Accès sur http://localhost:8502
+   # Accès sur http://localhost:8503
    ```
 
 ### Erreur : "locale.Error: unsupported locale setting"
@@ -228,7 +230,7 @@ Ce problème est déjà corrigé dans le Dockerfile. Si vous le rencontrez :
 3. **Vérifier le port mapping :**
    ```bash
    docker port lmelp-local
-   # Devrait montrer : 8501/tcp -> 0.0.0.0:8501
+   # Devrait montrer : 8501/tcp -> 0.0.0.0:8502
    ```
 
 ## 🔄 Workflow de développement
