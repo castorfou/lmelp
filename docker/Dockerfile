@@ -34,7 +34,9 @@ COPY .devcontainer/requirements.txt .
 # Note: Some packages (dbus-python) may fail in Docker - that's expected and handled
 RUN uv pip install --system -r requirements.txt || \
     (grep -v "dbus-python" requirements.txt > requirements-docker.txt && \
-     uv pip install --system -r requirements-docker.txt)
+     uv pip install --system -r requirements-docker.txt) && \
+    # Clean up uv cache to save space
+    rm -rf /root/.cache/uv /tmp/*
 
 # Stage 3: Runtime image
 FROM base AS runtime
