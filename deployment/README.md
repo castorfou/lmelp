@@ -84,7 +84,15 @@ Les autres variables (Google Search, etc.) sont optionnelles.
    - **Compose path**: `deployment/docker-compose.yml`
 
 3. **Environment variables**:
-   - **Manuellement** copier le contenu de votre `.env` local dans les variables d'environnement
+   - ⚠️ **IMPORTANT**: Ne PAS cocher "Load variables from .env file" (le fichier .env n'est pas dans Git)
+   - Cliquer sur **"+ Add environment variable"** et ajouter chaque variable manuellement:
+     ```
+     AZURE_API_KEY=votre_clé_azure
+     AZURE_ENDPOINT=https://votre-resource.openai.azure.com/
+     AZURE_DEPLOYMENT_NAME=gpt-4o
+     AZURE_API_VERSION=2024-05-01-preview
+     # Ajouter les autres variables si nécessaire
+     ```
 
 4. **Deploy the stack**
 
