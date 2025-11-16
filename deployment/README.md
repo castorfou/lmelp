@@ -196,6 +196,26 @@ Error response from daemon: manifest unknown
 
 **Solution** : Le package Docker n'est pas public. Contactez le mainteneur ou consultez [IMAGES.md](../docker/IMAGES.md#rendre-le-package-public)
 
+### Erreur "reference not found" lors du clone Git
+
+```
+Unable to clone git repository: failed to clone git repository: reference not found
+```
+
+**Cause** : La référence de branche est mal saisie dans Portainer.
+
+**Solution** : Vérifiez le champ **Repository reference** dans Portainer :
+
+- ✅ **Correct** : `refs/heads/main` (ou `refs/heads/nom-de-votre-branche`)
+- ❌ **Incorrect** : `main` (sans préfixe), `ref/heads/main` (faute de frappe), etc.
+
+**Exemples de références valides :**
+- Branche main : `refs/heads/main`
+- Branche de développement : `refs/heads/claude/review-code-01JpacPfALVvwqPorZfNeX6c`
+- Tag : `refs/tags/v1.0.0`
+
+**Astuce** : Copiez-collez la référence depuis la documentation pour éviter les erreurs de frappe.
+
 ### Port 8501 déjà utilisé
 
 Modifier dans votre stack Portainer ou dans `docker-compose.yml` local :
