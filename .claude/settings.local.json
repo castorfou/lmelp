@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__MongoDB__list-collections",
+      "mcp__MongoDB__find",
+      "Bash(git add:*)",
+      "Bash(PYTHONPATH=/workspaces/lmelp/src pytest:*)",
+      "Bash(npm test:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue develop:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(ruff check:*)",
+      "Bash(mypy:*)",
+      "Bash(git checkout:*)",
+      "Bash(ruff format:*)",
+      "Bash(mkdir -p /workspaces/lmelp/docs/claude/memory)",
+      "WebFetch(domain:www.babelio.com)",
+      "WebSearch",
+      "mcp__MongoDB__collection-schema",
+      "mcp__MongoDB__list-databases",
+      "Bash(/workspaces/lmelp/.claude/get-services-info.sh:*)",
+      "Bash(/workspaces/lmelp/.claude/get-backend-info.sh:*)",
+      "Bash(/workspaces/lmelp/.claude/get-frontend-info.sh:*)",
+      "Bash(/workspaces/lmelp/.claude/check-backend-freshness.sh:*)",
+      "mcp__MongoDB__count",
+      "Bash(mcp__MongoDB__collection-schema:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(PYTHONPATH=/workspaces/lmelp/src python -m pytest:*)",
+      "Bash(uv run ruff check:*)",
+      "Bash(PYTHONPATH=/workspaces/lmelp/src uv run pytest:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "MongoDB"
+  ]
+}

@@ -40,7 +40,8 @@
 				"GitHub.copilot-chat",
 				"GitHub.copilot",
 				"dbaeumer.vscode-eslint",
-				"ms-python.autopep8"
+				"ms-python.autopep8",
+                "anthropic.claude-code"				
 			],
             "settings": {
                 // Configuration Python
@@ -78,21 +79,31 @@
 		}
 	},
 	"mounts": [
+        "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached,readonly",		
 		"type=bind,source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly",
-        "source=/etc/timezone,target=/etc/timezone,type=bind,consistency=cached,readonly",
         "source=/etc/localtime,target=/etc/localtime,type=bind,consistency=cached,readonly"
 	],
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 	"features": {
-		"ghcr.io/nils-geistmann/devcontainers-features/zsh:0": {}
+		"ghcr.io/nils-geistmann/devcontainers-features/zsh:0": {},
+        "ghcr.io/va-h/devcontainers-features/uv:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/git:1": {
+            "ppa": true
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "nodeGypDependencies": true,
+            "version": "lts"
+        }		
 	},
 	// Note: forwardPorts not needed with network=host - container uses host network directly
 
 	// Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": 
-		"./.devcontainer/linux/postCommand.sh"
+		"bash .devcontainer/linux/postCommand.sh",
+    "postStartCommand": "echo '🚀 lmelp - Environnement prêt!'",		
 	
 	// "postStartCommand": "source .venv/bin/activate",
 
@@ -102,4 +113,6 @@
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
+    // Utilisateur non-root pour la sécurité
+    "remoteUser": "vscode"	
 }
