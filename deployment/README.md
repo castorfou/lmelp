@@ -28,6 +28,9 @@ cp -r /path/to/lmelp/deployment/. .
 # Copier le template
 cp .env.template .env
 
+# Sécuriser le fichier (lecture/écriture uniquement pour le propriétaire)
+chmod 600 .env
+
 # Éditer .env avec vos clés API
 nano .env  # ou vim, code, etc.
 ```
