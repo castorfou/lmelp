@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - claude/review-code-01JpacPfALVvwqPorZfNeX6c  # Test branch for Docker builds
+      - claude/review-docker-directory-015pEs87qgU1f55k7g6BXVRx  # Test Docker refactoring
     tags:
       - 'v*.*.*'
   workflow_dispatch:
@@ -62,7 +63,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/claude/review-code-01JpacPfALVvwqPorZfNeX6c' }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/claude/review-code-01JpacPfALVvwqPorZfNeX6c' || github.ref == 'refs/heads/claude/review-docker-directory-015pEs87qgU1f55k7g6BXVRx' }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
