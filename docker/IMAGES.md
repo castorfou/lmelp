@@ -146,24 +146,35 @@ Vous y trouverez :
 
 ## 🔒 Visibilité du Package
 
-Par défaut, les packages GitHub sont **privés**.
+Par défaut, les packages GitHub sont **privés** et nécessitent une authentification pour être téléchargés.
 
 ### Rendre le package public
 
-1. Aller sur https://github.com/castorfou/lmelp/pkgs/container/lmelp
+⚠️ **Pour les mainteneurs du projet uniquement**
+
+Cette opération permet aux utilisateurs de déployer lmelp sans configurer d'authentification Docker.
+
+**Étapes :**
+
+1. Accéder à la page du package : https://github.com/castorfou/lmelp/pkgs/container/lmelp
 2. Cliquer sur **Package settings** (en bas à droite)
-3. Section **Danger Zone** → **Change visibility**
+3. Dans la section **Danger Zone** → **Change package visibility**
 4. Sélectionner **Public**
-5. Taper le nom du repository pour confirmer
+5. Taper le nom du package `lmelp` pour confirmer
+6. Cliquer sur **I understand, change package visibility**
+
+✅ Le package est maintenant accessible publiquement via `ghcr.io/castorfou/lmelp:latest`
 
 **Avantages du mode public :**
-- Pas besoin d'authentification pour pull
-- Plus simple pour les déploiements
-- Accessible à tous
+- ✅ Pas besoin d'authentification pour pull
+- ✅ Plus simple pour les déploiements (Portainer, docker-compose)
+- ✅ Accessible à tous sans configuration
 
 **Inconvénients :**
-- Visible par tout le monde
-- Peut contenir des informations sensibles si mal configuré
+- ⚠️ L'image Docker est visible par tout le monde
+- ⚠️ Vérifier qu'aucune information sensible n'est incluse dans l'image (pas de clés API hardcodées, etc.)
+
+**Note :** Cette opération est à faire **une seule fois** après le premier build. Les builds suivants hériteront de la visibilité configurée.
 
 ## 🔄 Workflow de Mise à Jour
 

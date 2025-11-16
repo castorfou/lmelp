@@ -265,6 +265,20 @@ ports:
   - "8502:8501"  # Utiliser le port 8502 à la place
 ```
 
+### Erreur "manifest unknown" lors du déploiement
+
+```
+Error response from daemon: manifest unknown
+```
+
+Cette erreur signifie que l'image Docker n'est pas accessible. Causes possibles :
+
+1. **Le package n'est pas public** : Contactez le mainteneur du projet pour qu'il rende le package public
+2. **L'image n'existe pas encore** : Vérifiez que les builds GitHub Actions sont terminés
+3. **Tag incorrect** : Vérifiez que vous utilisez `ghcr.io/castorfou/lmelp:latest`
+
+**Pour les mainteneurs** : Voir [Configuration du registre Docker](../docker/IMAGES.md#rendre-le-package-public)
+
 ## 📚 Documentation Complète
 
 - [Documentation principale](https://castorfou.github.io/lmelp/)
