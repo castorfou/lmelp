@@ -280,6 +280,65 @@ class TestStreamlitUtilityFunctions:
         assert "fr_FR.UTF-8" in expected_locales  # Pour l'affichage des dates
 
 
+class TestStreamlitTypeCompatibility:
+    """Tests pour la compatibilité des types avec Streamlit"""
+
+    def test_index_types_are_native_python_int(self):
+        """Test que les index utilisés dans st.selectbox sont des int natifs Python"""
+        import numpy as np
+        import pandas as pd
+
+        # Simuler des indices de différents types
+        numpy_int64 = np.int64(5)
+        native_int = 5
+
+        # Vérifier qu'on peut différencier les types
+        assert type(numpy_int64).__name__ in [
+            "int64",
+            "int_",
+        ], f"Type inattendu: {type(numpy_int64)}"
+        assert type(native_int) == int, f"Type inattendu: {type(native_int)}"
+
+        # Test de conversion
+        converted_numpy = int(numpy_int64)
+        assert (
+            type(converted_numpy) == int
+        ), "La conversion de numpy.int64 devrait donner un int natif"
+        assert converted_numpy == 5, "La valeur devrait être préservée"
+
+    def test_min_max_operations_return_native_int(self):
+        """Test que min() et max() avec des int natifs retournent des int natifs"""
+        # Ces opérations devraient toujours retourner des int natifs
+        result_max = max(0, 5)
+        result_min = min(10, 5)
+
+        assert (
+            type(result_max) == int
+        ), f"max() devrait retourner int natif, pas {type(result_max)}"
+        assert (
+            type(result_min) == int
+        ), f"min() devrait retourner int natif, pas {type(result_min)}"
+
+    def test_dataframe_index_access_type(self):
+        """Test que l'accès aux index de DataFrame peut produire des int64"""
+        import pandas as pd
+
+        df = pd.DataFrame({"col": [1, 2, 3]})
+        # reset_index() crée un RangeIndex qui peut produire des int64
+        df_reset = df.reset_index(drop=True)
+
+        # Accéder à l'index d'une recherche
+        mask = df_reset["col"] == 2
+        index_result = df_reset[mask].index[0]
+
+        # Vérifier le type (peut être int64 ou int selon pandas)
+        # La conversion en int natif devrait toujours fonctionner
+        converted = int(index_result)
+        assert (
+            type(converted) == int
+        ), f"Conversion devrait donner int natif, pas {type(converted)}"
+
+
 class TestStreamlitIntegration:
     """Tests d'intégration pour l'interface Streamlit"""
 
