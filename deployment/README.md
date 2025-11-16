@@ -18,8 +18,8 @@ Ce répertoire contient tout le nécessaire pour déployer **lmelp** sur votre P
 mkdir -p ~/bin/lmelp/docker
 cd ~/bin/lmelp/docker
 
-# Copier les fichiers depuis le repo Git
-cp /path/to/lmelp/deployment/* .
+# Copier les fichiers depuis le repo Git (y compris les fichiers cachés)
+cp -r /path/to/lmelp/deployment/. .
 ```
 
 ### 2. Configurer les variables d'environnement
