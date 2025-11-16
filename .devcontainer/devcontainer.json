@@ -102,7 +102,7 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": 
-		"bash .devcontainer/linux/postCommand.sh",
+		"bash .devcontainer/postCreateCommand.sh",
     "postStartCommand": "echo '🚀 lmelp - Environnement prêt!'",		
 	
 	// "postStartCommand": "source .venv/bin/activate",

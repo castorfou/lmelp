@@ -2,7 +2,7 @@ ipykernel
 transformers 
 virtualenv
 # datasets[audio] 
-dbus-python
+# dbus-python
 accelerate
 ipywidgets
 pre-commit 
