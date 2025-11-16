@@ -21,7 +21,13 @@ from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 
 # from datasets import load_dataset
 
-import dbus
+# Import dbus only if available (not available in Docker)
+try:
+    import dbus
+    DBUS_AVAILABLE = True
+except ImportError:
+    DBUS_AVAILABLE = False
+
 from functools import wraps
 from typing import Callable, Any
 
@@ -32,6 +38,9 @@ def prevent_sleep(func: Callable[..., Any]) -> Callable[..., Any]:
 
     Connects to the D-Bus session bus and inhibits the screensaver, ensuring
     that the system does not enter sleep mode while the decorated function runs.
+
+    Note: Only works if dbus-python is installed. In Docker environments without dbus,
+    this decorator does nothing and simply calls the function.
 
     Args:
         func (Callable[..., Any]): The function to be decorated.
@@ -58,6 +67,10 @@ def prevent_sleep(func: Callable[..., Any]) -> Callable[..., Any]:
         Returns:
             Any: The result of executing the decorated function.
         """
+        if not DBUS_AVAILABLE:
+            # D-Bus not available (e.g., in Docker), just run the function
+            return func(*args, **kwargs)
+
         # Connect to the D-Bus session bus and obtain the screensaver interface.
         bus = dbus.SessionBus()
         proxy = bus.get_object(

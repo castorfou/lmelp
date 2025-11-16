@@ -21,6 +21,7 @@ from datetime import datetime
 
 import pandas as pd
 from bson import ObjectId
+from config import get_DB_VARS
 from date_utils import DATE_FORMAT, format_date
 from llm import get_azure_llm
 from mongo import get_collection
@@ -42,11 +43,12 @@ st.caption(f"📅 {current_date}")
 def get_summary_from_cache(episode_oid):
     """Récupère un résumé existant depuis MongoDB"""
     try:
-        collection = get_collection(collection_name="avis_critiques")
+        DB_HOST, DB_NAME, _ = get_DB_VARS()
+        collection = get_collection(target_db=DB_HOST, client_name=DB_NAME, collection_name="avis_critiques")
         cached_summary = collection.find_one({"episode_oid": episode_oid})
         return cached_summary
     except Exception as e:
-        st.error(f"Erreur lors de la récupération du cache: {str(e)}")
+        st.error(f"Impossible de vérifier les résumés existants: {str(e)}")
         return None
 
 
@@ -189,7 +191,8 @@ def save_summary_to_cache(episode_oid, episode_title, episode_date, summary):
             )
             return False
 
-        collection = get_collection(collection_name="avis_critiques")
+        DB_HOST, DB_NAME, _ = get_DB_VARS()
+        collection = get_collection(target_db=DB_HOST, client_name=DB_NAME, collection_name="avis_critiques")
 
         # Supprimer l'ancien résumé s'il existe
         collection.delete_one({"episode_oid": episode_oid})
@@ -236,7 +239,8 @@ def get_episodes_with_transcriptions():
 def check_existing_summaries(episodes_df):
     """Vérifie quels épisodes ont déjà des résumés d'avis critiques"""
     try:
-        collection = get_collection(collection_name="avis_critiques")
+        DB_HOST, DB_NAME, _ = get_DB_VARS()
+        collection = get_collection(target_db=DB_HOST, client_name=DB_NAME, collection_name="avis_critiques")
 
         # Récupérer tous les OIDs d'épisodes qui ont des résumés
         existing_summaries = collection.find({}, {"episode_oid": 1})
@@ -276,7 +280,8 @@ def afficher_selection_episode():
     episodes_df = episodes_df.copy()
 
     # Trier par date décroissante AVANT de convertir en string
-    episodes_df = episodes_df.sort_values("date", ascending=False)
+    # Reset index pour que l'index corresponde aux positions (0, 1, 2, ...)
+    episodes_df = episodes_df.sort_values("date", ascending=False).reset_index(drop=True)
 
     episodes_df["date"] = episodes_df["date"].apply(lambda x: format_date(x))
 
@@ -324,18 +329,21 @@ def afficher_selection_episode():
         if st.session_state.selected_episode_index >= len(episodes_df):
             st.session_state.selected_episode_index = 0
 
-        selected = st.selectbox(
+        # Le selectbox affiche l'élément à la position selected_episode_index
+        # Pas de key ni de callback - on détecte les changements manuels en comparant la valeur retournée
+        selected_value = st.selectbox(
             "Sélectionnez un épisode",
             episodes_df["selecteur"],
             index=st.session_state.selected_episode_index,
-            key="episode_selector",
         )
 
-        # Mettre à jour l'index si l'utilisateur change la sélection
-        current_index = episodes_df[episodes_df["selecteur"] == selected].index[0]
-        actual_index = episodes_df.index.get_loc(current_index)
-        if actual_index != st.session_state.selected_episode_index:
-            st.session_state.selected_episode_index = actual_index
+        # Détecter si l'utilisateur a changé manuellement le selectbox
+        # En comparant avec l'élément attendu à l'index actuel
+        expected_value = episodes_df.iloc[st.session_state.selected_episode_index]["selecteur"]
+        if selected_value != expected_value:
+            # L'utilisateur a changé manuellement - trouver le nouvel index
+            new_index = episodes_df[episodes_df["selecteur"] == selected_value].index[0]
+            st.session_state.selected_episode_index = new_index
 
     # Boutons de navigation alignés verticalement avec la selectbox
     with col_nav1:
@@ -343,13 +351,13 @@ def afficher_selection_episode():
         st.write("")
         if st.button(
             "⬅️ Précédent",
-            disabled=(st.session_state.selected_episode_index >= len(episodes_df) - 1),
+            disabled=bool(st.session_state.selected_episode_index >= len(episodes_df) - 1),
             use_container_width=True,
             key="prev_btn",
         ):
-            st.session_state.selected_episode_index = min(
+            st.session_state.selected_episode_index = int(min(
                 len(episodes_df) - 1, st.session_state.selected_episode_index + 1
-            )
+            ))
             st.rerun()
 
     with col_nav3:
@@ -357,13 +365,13 @@ def afficher_selection_episode():
         st.write("")
         if st.button(
             "Suivant ➡️",
-            disabled=(st.session_state.selected_episode_index == 0),
+            disabled=bool(st.session_state.selected_episode_index == 0),
             use_container_width=True,
             key="next_btn",
         ):
-            st.session_state.selected_episode_index = max(
+            st.session_state.selected_episode_index = int(max(
                 0, st.session_state.selected_episode_index - 1
-            )
+            ))
             st.rerun()
 
     # Ajouter la navigation clavier après que les boutons soient créés
@@ -466,8 +474,9 @@ def afficher_selection_episode():
         height=0,
     )
 
-    # Filtrer le DataFrame pour trouver la ligne correspondant à la sélection
-    episode = episodes_df[episodes_df["selecteur"] == selected]
+    # Récupérer l'épisode via l'index sélectionné
+    # Utiliser iloc avec double brackets pour obtenir un DataFrame (pas une Series)
+    episode = episodes_df.iloc[[st.session_state.selected_episode_index]]
 
     if not episode.empty:
         episode = episode.iloc[0]

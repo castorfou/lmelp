@@ -2,6 +2,7 @@ audios/
 .ipynb_checkpoints/
 __pycache__/
 .env
+.env.docker
 db/À écouter plus tard I Radio France/À écouter plus tard I Radio France_files
 db/À écouter plus tard I Radio France/À écouter plus tard I Radio France.html
 db/masque_et_la_plume
@@ -14,4 +15,4 @@ nbs/french_authors_cache.json
 .coverage.*
 htmlcov/
 .pytest_cache/
-.venv/
+.venv/PR-description.md

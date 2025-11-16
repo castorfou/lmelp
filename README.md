@@ -92,6 +92,98 @@ Expliqué à https://castorfou.github.io/lmelp/readme_doc/ 👍
 
 # pour utiliser 🚀
 
+## 🐳 Déploiement Docker
+
+**lmelp** peut être déployé sous forme de conteneur Docker sur **PC local** ou **NAS Synology**.
+
+### Quick Start - PC Local
+
+```bash
+cd docker/
+cp .env.template .env
+# Éditer .env avec vos clés API (au moins une requise)
+./scripts/start.sh
+```
+
+Accéder à l'application : **http://localhost:8501** 🌐
+
+### Quick Start - Tests Locaux (connexion à MongoDB existant)
+
+Pour tester rapidement avec votre MongoDB local sans docker-compose :
+
+```bash
+# 1. Configurer les clés API (optionnel mais recommandé)
+cp .env.example .env
+# Éditer .env avec vos clés Azure OpenAI, Google Search, etc.
+
+# 2. Lancer le conteneur
+./docker/test-local.sh
+# Interface accessible sur http://localhost:8501
+```
+
+**Configuration des clés API :**
+- Le script détecte automatiquement `.env` ou `.env.docker` à la racine
+- Sans ces clés, certaines fonctionnalités (résumés IA) ne seront pas disponibles
+- Voir `.env.example` pour la liste complète des variables
+
+**Prérequis :**
+- MongoDB doit accepter les connexions depuis Docker (voir [Guide d'utilisation Docker local](docs/deployment/docker-local-usage.md))
+- Le port 8501 doit être libre (arrêtez le devcontainer si nécessaire)
+
+### Images Docker
+
+Images publiées automatiquement sur GitHub Container Registry :
+
+- `ghcr.io/castorfou/lmelp:latest` - Dernière version stable
+- `ghcr.io/castorfou/lmelp:v1.0.0` - Versions spécifiques
+
+[![Docker Build](https://github.com/castorfou/lmelp/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/castorfou/lmelp/actions/workflows/docker-publish.yml)
+
+### Scripts de Gestion
+
+```bash
+./docker/scripts/start.sh      # Démarrer les conteneurs
+./docker/scripts/stop.sh       # Arrêter les conteneurs
+./docker/scripts/update.sh     # Mettre à jour vers la dernière version
+./docker/scripts/logs.sh       # Voir les logs
+./docker/scripts/backup-db.sh  # Sauvegarder MongoDB
+./docker/scripts/test-build.sh # Tester le build en local
+```
+
+### Mode Batch (Scripts)
+
+Exécuter les scripts de traitement en mode batch :
+
+```bash
+# Mise à jour RSS
+docker run --rm --network lmelp-network \
+  -e DB_HOST=mongodb -e LMELP_MODE=batch-update \
+  ghcr.io/castorfou/lmelp:latest
+
+# Transcription d'un épisode
+docker run --rm --network lmelp-network \
+  -v lmelp-audios:/app/audios \
+  -e DB_HOST=mongodb -e LMELP_MODE=batch-transcribe \
+  -e EPISODE_ID=20240120 -e GEMINI_API_KEY=$GEMINI_API_KEY \
+  ghcr.io/castorfou/lmelp:latest
+```
+
+### Documentation Complète
+
+- 📖 [Guide de déploiement Docker](docker/README.md) - Quick start, configuration, usage
+- 🐳 [Déploiement Portainer standalone](deployment/README.md) - Installation PC/NAS avec auto-update
+- 🧪 [Guide d'utilisation Docker local](docs/deployment/docker-local-usage.md) - Tests locaux avec MongoDB existant
+- 🔧 [Configuration GitHub Actions](docs/deployment/github-actions-setup.md) - CI/CD automatique
+- 📝 [Issue #64 - Plan complet](docs/deployment/issue-dockerisation.md) - Spécifications détaillées
+
+### Spécifications Techniques
+
+- **Base** : Python 3.11 + uv
+- **Taille** : ~2.5-3 GB (avec modèles ML)
+- **Ressources** : 4 GB RAM, 2 CPU cores
+- **Volumes** : audios (50-100 GB), db-backup, logs
+- **Healthchecks** : Automatiques toutes les 30s
+
 ## 💾 base de données mongodb
 
 mongodb est utilisée pour conserver toutes les données de l'application ([voir schéma](https://castorfou.github.io/lmelp/readme_data_model/)). 📊  

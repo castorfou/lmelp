@@ -47,7 +47,15 @@ import subprocess
 # Bouton de rafraîchissement des épisodes avec affichage avancé de l'output
 if st.button("🔄 Rafraîchir Episodes"):
     nb_episodes = episodes.len_total_entries()
-    locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
+    # Essayer de définir la locale, avec fallback si non disponible
+    try:
+        locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
+    except locale.Error:
+        try:
+            locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+        except locale.Error:
+            # Si aucune locale ne fonctionne, continuer sans changer la locale
+            pass
     with st.spinner("Mise à jour des épisodes en cours..."):
         podcast = Podcast()
         # Capturer la sortie de la fonction
@@ -112,9 +120,13 @@ from date_utils import DATE_FORMAT, format_date
 
 def affiche_last_date(episodes=episodes):
     episodes.get_entries(limit=1)
+    if len(episodes) > 0:
+        date_text = format_date(episodes[0].to_dict().get('date'))
+    else:
+        date_text = "No episodes yet"
     card(
         title="last episode",
-        text=f"{format_date(episodes[0].to_dict().get('date'))}",
+        text=date_text,
         image="http://placekitten.com/300/250",
         url="/episodes",
     )

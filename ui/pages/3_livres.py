@@ -8,17 +8,17 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from ui_tools import add_to_sys_path
 
-from mongo_livre import Livre
-
 add_to_sys_path()
+
+from mongo_livre import Livre
 
 
 def afficher_livres():
     st.write("### Livres")
     st.write("Liste des livres discutés dans l'émission.")
-    # Récupération et tri des noms
-    docs = Livre("test").collection.find({}, {"nom": 1, "_id": 0})
-    livres = sorted([doc["nom"] for doc in docs], key=lambda n: n.lower())
+    # Récupération et tri des titres
+    docs = Livre("test").collection.find({}, {"titre": 1, "_id": 0})
+    livres = sorted([doc["titre"] for doc in docs], key=lambda n: n.lower())
 
     # Champ de filtre dynamique
     filtre = st.text_input("Filtrer les livres:", "")
