@@ -120,9 +120,13 @@ from date_utils import DATE_FORMAT, format_date
 
 def affiche_last_date(episodes=episodes):
     episodes.get_entries(limit=1)
+    if len(episodes) > 0:
+        date_text = format_date(episodes[0].to_dict().get('date'))
+    else:
+        date_text = "No episodes yet"
     card(
         title="last episode",
-        text=f"{format_date(episodes[0].to_dict().get('date'))}",
+        text=date_text,
         image="http://placekitten.com/300/250",
         url="/episodes",
     )
