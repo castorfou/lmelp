@@ -67,7 +67,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8501/_stcore/health || exit 1
 
 # Copy entrypoint script
-COPY docker/entrypoint.sh /app/entrypoint.sh
+COPY docker/build/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 # Default to web mode (Streamlit UI)

@@ -68,7 +68,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/Dockerfile
+          file: docker/build/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -109,6 +109,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Update Local Deployment" >> $GITHUB_STEP_SUMMARY
           echo '```bash' >> $GITHUB_STEP_SUMMARY
-          echo "cd docker/" >> $GITHUB_STEP_SUMMARY
-          echo "./scripts/update.sh" >> $GITHUB_STEP_SUMMARY
+          echo "cd docker/deployment/" >> $GITHUB_STEP_SUMMARY
+          echo "docker compose pull && docker compose up -d" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
