@@ -17,6 +17,14 @@ update_system() {
     echo "Système mis à jour"
 }
 
+# Install locales françaises et ffmpeg
+install_locales() {}
+    sudo apt install -y locales
+    sudo sed -i 's/^# *\(fr_FR.UTF-8\)/\1/' /etc/locale.gen
+    sudo dpkg-reconfigure locales -f noninteractive
+    sudo apt install -y ffmpeg
+}
+
 # Vérification et installation d'uv (priorité: devcontainer feature, fallback: installation manuelle)
 ensure_uv() {
     echo "Vérification de uv..."
@@ -189,6 +197,7 @@ Features: ruff, mypy, pre-commit hooks"
 
 # Exécution des étapes
 update_system
+install_locales
 ensure_uv
 create_python_environment
 setup_node
