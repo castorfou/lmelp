@@ -48,7 +48,7 @@ Les autres variables (Google Search, etc.) sont optionnelles.
 
 ### 3. Déployer dans Portainer
 
-#### Option A: Via l'interface Web Portainer
+#### Option A: Via l'interface Web Portainer (Recommandé)
 
 1. **Ouvrir Portainer** : http://localhost:9000
 2. **Stacks** → **Add stack**
@@ -60,17 +60,33 @@ Les autres variables (Google Search, etc.) sont optionnelles.
    - Upload `.env`
 6. **Deploy the stack**
 
-#### Option B: Via Git Repository (recommandé pour auto-update)
+⚠️ **Cette méthode est la plus simple** et ne nécessite pas de configurer l'authentification GitHub.
 
-1. **Stacks** → **Add stack**
-2. **Name** : `lmelp`
-3. **Build method** : Repository
-   - Repository URL: `https://github.com/castorfou/lmelp`
-   - Repository reference: `refs/heads/main`
-   - Compose path: `deployment/docker-compose.yml`
-4. **Environment variables** :
-   - **Manuellement** copier le contenu de votre `.env` local
-5. **Deploy the stack**
+#### Option B: Via Git Repository (nécessite authentification GitHub)
+
+⚠️ **Attention:** Cette méthode nécessite un Personal Access Token (PAT) GitHub.
+
+1. **Créer un PAT GitHub** (si pas déjà fait):
+   - GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - Generate new token (classic)
+   - Cocher: `repo` (Full control of private repositories)
+   - Copier le token généré
+
+2. **Dans Portainer**:
+   - **Stacks** → **Add stack**
+   - **Name** : `lmelp`
+   - **Build method** : Repository
+   - **Authentication**: On
+   - **Username**: votre nom d'utilisateur GitHub
+   - **Personal Access Token**: coller votre PAT
+   - **Repository URL**: `https://github.com/castorfou/lmelp`
+   - **Repository reference**: `refs/heads/main`
+   - **Compose path**: `deployment/docker-compose.yml`
+
+3. **Environment variables**:
+   - **Manuellement** copier le contenu de votre `.env` local dans les variables d'environnement
+
+4. **Deploy the stack**
 
 #### Option C: Via CLI Docker Compose
 
