@@ -38,8 +38,8 @@ services:
       - lmelp-audios:/app/audios
       - lmelp-db-backup:/app/db
       - lmelp-logs:/app/logs
-    env_file:
-      - .env
+    # Note: env_file is not used for Git Repository deployment
+    # Variables are passed via Portainer's stack.env file
     environment:
       # Database connection
       - DB_HOST=mongodb
