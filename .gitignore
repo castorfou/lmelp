@@ -15,4 +15,4 @@ nbs/french_authors_cache.json
 .coverage.*
 htmlcov/
 .pytest_cache/
-.venv/
+.venv/PR-description.md
