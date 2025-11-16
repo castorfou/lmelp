@@ -1,40 +1,14 @@
 version: '3.8'
 
-# lmelp - Déploiement Portainer PC Local
-# Utilise l'image buildée depuis GitHub Container Registry
+# lmelp - Déploiement Standalone (sans MongoDB)
+# Pour se connecter à une instance MongoDB existante sur l'hôte ou le réseau
 
 services:
-  # MongoDB database
-  mongodb:
-    image: mongo:7
-    container_name: lmelp-mongodb
-    restart: unless-stopped
-    # Note: Pas d'exposition de port nécessaire
-    # L'app communique avec MongoDB via le réseau Docker interne (lmelp-network)
-    # Pour accéder à MongoDB depuis l'hôte (debug), décommenter:
-    # ports:
-    #   - "27017:27017"
-    volumes:
-      - lmelp-mongodb-data:/data/db
-    environment:
-      - MONGO_INITDB_DATABASE=masque_et_la_plume
-    networks:
-      - lmelp-network
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
-
   # lmelp application (Streamlit)
   app:
     image: ghcr.io/castorfou/lmelp:latest
     container_name: lmelp-app
     restart: unless-stopped
-    depends_on:
-      mongodb:
-        condition: service_healthy
     ports:
       - "8501:8501"
     volumes:
@@ -44,8 +18,17 @@ services:
     # Note: env_file is not used for Git Repository deployment
     # Variables are passed via Portainer's stack.env file
     environment:
-      # Database connection
-      - DB_HOST=mongodb
+      # Database connection - IMPORTANT: Configure DB_HOST selon votre environnement
+      #
+      # Pour PC avec MongoDB sur l'hôte (localhost) :
+      #   - Linux: DB_HOST=172.17.0.1 (gateway Docker par défaut)
+      #   - Mac: DB_HOST=host.docker.internal
+      #   - Windows: DB_HOST=host.docker.internal
+      #
+      # Pour NAS avec MongoDB dans un autre conteneur Docker :
+      #   - DB_HOST=nom_du_conteneur_mongodb (ex: mongo, mongodb-nas, etc.)
+      #
+      - DB_HOST=172.17.0.1  # ← À CHANGER selon votre environnement
       - DB_NAME=masque_et_la_plume
       - DB_LOGS=true
       # RSS Feed
@@ -54,8 +37,8 @@ services:
       - AUDIO_BASE_PATH=/app/audios
       # Mode (web by default)
       - LMELP_MODE=web
-    networks:
-      - lmelp-network
+    # Note: Pas de dépendance depends_on car MongoDB est externe
+    # Note: Pas de network personnalisé car on se connecte à MongoDB externe
     deploy:
       resources:
         limits:
@@ -74,16 +57,9 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
 
 volumes:
-  lmelp-mongodb-data:
-    name: lmelp-mongodb-data
   lmelp-audios:
     name: lmelp-audios
   lmelp-db-backup:
     name: lmelp-db-backup
   lmelp-logs:
     name: lmelp-logs
-
-networks:
-  lmelp-network:
-    driver: bridge
-    name: lmelp-network

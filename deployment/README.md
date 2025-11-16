@@ -1,257 +1,133 @@
-# 🚀 Déploiement lmelp - PC Local avec Portainer
+# 🚀 Déploiement lmelp - Portainer Stack
 
-Ce répertoire contient tout le nécessaire pour déployer **lmelp** sur votre PC local via Portainer.
-
-## 📦 Fichiers de déploiement
-
-**Deux configurations disponibles selon votre environnement :**
-
-| Fichier | MongoDB | Utilisation |
-|---------|---------|-------------|
-| `docker-compose.yml` | ✅ Inclus (conteneur MongoDB intégré) | Déploiement complet "from scratch" sans MongoDB existant |
-| `docker-compose.standalone.yml` | ❌ Externe (utilise MongoDB existant) | **PC ou NAS avec MongoDB déjà installé** |
-
-**Quelle configuration choisir ?**
-
-- ✅ **Utilisez `docker-compose.standalone.yml`** si :
-  - Vous avez déjà MongoDB qui tourne sur votre PC/NAS
-  - Vous voulez utiliser votre base de données existante
-  - Vous avez déjà des backups configurés pour votre MongoDB
-
-- ✅ **Utilisez `docker-compose.yml`** si :
-  - Vous n'avez pas MongoDB installé
-  - Vous voulez un déploiement complet avec tout intégré
-  - Vous démarrez de zéro
+Ce répertoire contient la configuration pour déployer **lmelp** via Portainer en utilisant votre **MongoDB existant**.
 
 ## 📋 Prérequis
 
 - Docker et Docker Compose installés
 - Portainer installé et accessible (http://localhost:9000 ou https://localhost:9443)
+- **MongoDB déjà installé** (sur l'hôte ou dans un conteneur Docker)
 - 4 GB RAM minimum (8 GB recommandé)
 - 50-100 GB espace disque pour les audios
 
-## 🔧 Installation
+## 🔧 Configuration
 
-### 1. Copier ce répertoire sur votre PC
+### 1. Créer votre fichier .env local
 
 ```bash
-# Créer le répertoire de déploiement
+# Créer un répertoire pour votre config
 mkdir -p ~/bin/lmelp/docker
 cd ~/bin/lmelp/docker
 
-# Copier les fichiers depuis le repo Git (y compris les fichiers cachés)
-cp -r /path/to/lmelp/deployment/. .
-```
+# Copier le template depuis le repo Git
+cp /path/to/lmelp/deployment/.env.template .env
 
-### 2. Configurer les variables d'environnement
-
-```bash
-# Copier le template
-cp .env.template .env
-
-# Sécuriser le fichier (lecture/écriture uniquement pour le propriétaire)
+# Sécuriser le fichier
 chmod 600 .env
 
-# Éditer .env avec vos clés API
-nano .env  # ou vim, code, etc.
+# Éditer avec vos clés API
+nano .env
 ```
 
-**Variables requises minimum :**
+### 2. Configurer les variables obligatoires
+
+Éditez `.env` et remplissez au minimum :
+
 ```env
-# Azure OpenAI (pour les résumés IA)
+# Azure OpenAI (requis pour les résumés IA)
 AZURE_API_KEY=votre_clé_azure
 AZURE_ENDPOINT=https://votre-resource.openai.azure.com/
 AZURE_DEPLOYMENT_NAME=gpt-4o
 AZURE_API_VERSION=2024-05-01-preview
-```
 
-Les autres variables (Google Search, etc.) sont optionnelles.
-
-### 2bis. Configuration MongoDB externe (pour docker-compose.standalone.yml uniquement)
-
-⚠️ **Important** : Si vous utilisez `docker-compose.standalone.yml`, configurez la variable `DB_HOST` selon votre environnement.
-
-**Ajoutez cette variable dans votre fichier `.env` :**
-
-```env
-# Pour PC avec MongoDB sur l'hôte (localhost)
-# Linux :
-DB_HOST=172.17.0.1
-
-# Mac ou Windows :
-DB_HOST=host.docker.internal
+# MongoDB - IMPORTANT: Configurer selon votre environnement
+# Pour PC avec MongoDB sur l'hôte (localhost) :
+DB_HOST=172.17.0.1              # Linux
+# DB_HOST=host.docker.internal  # Mac/Windows
 
 # Pour NAS avec MongoDB dans un autre conteneur Docker :
-DB_HOST=nom_du_conteneur_mongodb  # ex: mongo, mongodb-nas, etc.
+# DB_HOST=mongo  # Nom du conteneur MongoDB
 ```
 
 **Vérifier que MongoDB est accessible :**
 
 ```bash
-# Depuis votre PC/NAS, vérifier que MongoDB répond
-mongo --host localhost --port 27017 --eval "db.adminCommand('ping')"
-# Ou avec mongosh:
+# Test de connexion
 mongosh --host localhost --port 27017 --eval "db.adminCommand('ping')"
 ```
 
-### 3. Déployer dans Portainer
+## 🚀 Déploiement dans Portainer
 
-#### Option A: Via l'interface Web Portainer (Recommandé)
+### Via Git Repository (Méthode recommandée)
 
-1. **Ouvrir Portainer** : http://localhost:9000
-2. **Stacks** → **Add stack**
-3. **Name** : `lmelp`
-4. **Build method** : Upload
-   - Upload `docker-compose.yml` OU `docker-compose.standalone.yml` (selon votre configuration)
-5. **Environment variables** :
-   - Cocher "Load variables from .env file"
-   - Upload `.env`
-6. **Deploy the stack**
+Cette méthode permet les mises à jour automatiques via webhook ou pull manuel.
 
-⚠️ **Cette méthode est la plus simple** et ne nécessite pas de configurer l'authentification GitHub.
+**1. Créer un Personal Access Token GitHub (une seule fois)**
 
-#### Option B: Via Git Repository (nécessite authentification GitHub)
+- Aller sur : https://github.com/settings/tokens/new
+- **Note** : "Portainer lmelp deployment"
+- **Expiration** : No expiration (ou selon vos préférences)
+- **Scopes** : Cocher `repo` (Full control of private repositories)
+- **Generate token** et **copier le token**
 
-⚠️ **Attention:** Cette méthode nécessite un Personal Access Token (PAT) GitHub.
+**2. Déployer la stack dans Portainer**
 
-1. **Créer un PAT GitHub** (si pas déjà fait):
-   - GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
-   - Generate new token (classic)
-   - Cocher: `repo` (Full control of private repositories)
-   - Copier le token généré
+- **Stacks** → **Add stack**
+- **Name** : `lmelp`
+- **Build method** : **Repository**
+- **Authentication** : **On**
+  - **Username** : votre_username_github
+  - **Personal Access Token** : coller le token créé à l'étape 1
+- **Repository URL** : `https://github.com/castorfou/lmelp`
+- **Repository reference** : `refs/heads/main`
+- **Compose path** : `deployment/docker-compose.yml`
+- **Environment variables** :
+  - Cocher **"Load variables from .env file"**
+  - Cliquer sur **"Upload"** et sélectionner votre fichier `.env`
+  - ✅ Portainer va automatiquement charger toutes les variables
+- **Deploy the stack**
 
-2. **Dans Portainer**:
-   - **Stacks** → **Add stack**
-   - **Name** : `lmelp`
-   - **Build method** : Repository
-   - **Authentication**: On
-   - **Username**: votre nom d'utilisateur GitHub
-   - **Personal Access Token**: coller votre PAT
-   - **Repository URL**: `https://github.com/castorfou/lmelp`
-   - **Repository reference**: `refs/heads/main`
-   - **Compose path**: Choisir selon votre configuration :
-     - `deployment/docker-compose.yml` (avec MongoDB intégré)
-     - `deployment/docker-compose.standalone.yml` (MongoDB externe)
+**3. Vérifier le déploiement**
 
-3. **Environment variables** :
-
-   Vous avez **deux options** :
-
-   **Option 3a : Charger depuis votre fichier .env local (Recommandé)**
-
-   - Cocher **"Load variables from .env file"**
-   - Cliquer sur **"Upload"** et sélectionner votre fichier `.env` local (créé à l'étape 2)
-   - Portainer va automatiquement lire et renseigner toutes les variables
-
-   **Option 3b : Ajouter manuellement**
-
-   - Cliquer sur **"+ Add environment variable"** pour chaque variable
-   - Exemple :
-     ```
-     AZURE_API_KEY=votre_clé_azure
-     AZURE_ENDPOINT=https://votre-resource.openai.azure.com/
-     AZURE_DEPLOYMENT_NAME=gpt-4o
-     AZURE_API_VERSION=2024-05-01-preview
-     ```
-
-4. **Deploy the stack**
-
-#### Option C: Via CLI Docker Compose
-
-```bash
-cd ~/bin/lmelp/docker
-docker compose up -d
-```
-
-## 🌐 Accès à l'application
-
-Une fois déployé, l'application est accessible sur :
-
-**http://localhost:8501**
-
-## 📊 Monitoring dans Portainer
-
-### Vérifier l'état de la stack
-
-1. **Portainer** → **Stacks** → `lmelp`
-2. Vérifier que les 2 conteneurs sont "running" :
-   - `lmelp-mongodb` (base de données)
-   - `lmelp-app` (application Streamlit)
-
-### Voir les logs
-
-1. **Containers** → `lmelp-app` → **Logs**
-2. Ou via CLI :
-   ```bash
-   docker logs -f lmelp-app
-   ```
-
-### Vérifier la santé
-
-Les healthchecks sont configurés :
-- MongoDB : vérifie toutes les 10s
-- App : vérifie toutes les 30s
-
-État visible dans **Containers** (icône de cœur).
+- Accéder à l'application : **http://localhost:8501**
+- Vérifier les logs : `docker logs lmelp-app`
+- Vérifier la connexion MongoDB :
+  ```bash
+  docker exec lmelp-app env | grep DB_HOST
+  ```
 
 ## 🔄 Mises à jour
 
-### Manuel (via Portainer)
+### Update manuel (via Portainer)
 
 1. **Stacks** → `lmelp` → **Pull and redeploy**
 2. Portainer va :
    - Pull la dernière image `ghcr.io/castorfou/lmelp:latest`
-   - Redémarrer les conteneurs
+   - Redémarrer le conteneur
 
-### Automatique (avec Watchtower)
+### Update automatique (Watchtower)
 
-Ajoutez Watchtower à votre stack :
+Voir [Guide Watchtower](../docker/DEPLOYMENT.md#watchtower-auto-update)
 
-```yaml
-# Ajouter dans docker-compose.yml
-services:
-  watchtower:
-    image: containrrr/watchtower:latest
-    container_name: lmelp-watchtower
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - WATCHTOWER_POLL_INTERVAL=21600  # 6 heures
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_INCLUDE_STOPPED=true
-```
+### Update via Webhook
 
-### Via Webhook Portainer
-
-1. **Stacks** → `lmelp` → **Webhooks**
-2. **Create a webhook**
-3. Copier l'URL du webhook
-4. Configurer dans GitHub Actions (voir documentation principale)
+Voir [Guide Webhook](../docker/DEPLOYMENT.md#portainer-webhook)
 
 ## 📦 Volumes Persistants
 
-La stack crée 4 volumes Docker :
+La stack crée 3 volumes Docker :
 
 | Volume | Description | Taille estimée |
 |--------|-------------|----------------|
-| `lmelp-mongodb-data` | Base de données MongoDB | ~500 MB |
 | `lmelp-audios` | Fichiers audio téléchargés | 50-100 GB |
 | `lmelp-db-backup` | Sauvegardes DB | ~100 MB |
 | `lmelp-logs` | Logs applicatifs | ~10 MB |
 
-### Voir les volumes
+**Note** : MongoDB est géré en dehors de cette stack (sur votre hôte ou conteneur existant).
 
 ```bash
+# Voir les volumes
 docker volume ls | grep lmelp
-```
-
-### Backup des données
-
-```bash
-# Backup MongoDB
-docker exec lmelp-mongodb mongodump --out=/dump
-docker cp lmelp-mongodb:/dump ./mongodb-backup-$(date +%Y%m%d)
 
 # Backup des audios
 docker run --rm -v lmelp-audios:/data -v $(pwd):/backup alpine tar czf /backup/audios-backup.tar.gz /data
@@ -260,24 +136,17 @@ docker run --rm -v lmelp-audios:/data -v $(pwd):/backup alpine tar czf /backup/a
 ## 🛠️ Commandes Utiles
 
 ```bash
-# Voir l'état de la stack
-docker compose ps
-
 # Logs en temps réel
-docker compose logs -f
+docker logs -f lmelp-app
 
-# Redémarrer la stack
-docker compose restart
+# Redémarrer
+docker restart lmelp-app
 
-# Arrêter la stack
-docker compose down
+# Shell dans le conteneur
+docker exec -it lmelp-app bash
 
-# Arrêter ET supprimer les volumes (⚠️ perte de données)
-docker compose down -v
-
-# Mettre à jour vers la dernière image
-docker compose pull
-docker compose up -d
+# Tester la connexion MongoDB
+docker exec lmelp-app python -c "from pymongo import MongoClient; print(MongoClient('mongodb://172.17.0.1:27017').admin.command('ping'))"
 ```
 
 ## 🔍 Troubleshooting
@@ -288,62 +157,60 @@ docker compose up -d
 # Vérifier les logs
 docker logs lmelp-app
 
-# Vérifier MongoDB
-docker logs lmelp-mongodb
+# Vérifier les variables d'environnement
+docker exec lmelp-app env | grep DB
 
 # Redémarrer
-docker compose restart
+docker restart lmelp-app
 ```
 
-### Erreur "No space left on device"
+### Erreur de connexion MongoDB
 
-```bash
-# Nettoyer les anciennes images
-docker system prune -a
-
-# Voir l'utilisation
-docker system df
+```
+pymongo.errors.ServerSelectionTimeoutError: connection refused
 ```
 
-### Les résumés IA ne fonctionnent pas
+**Causes possibles :**
 
-Vérifier que les clés API sont bien configurées :
+1. **DB_HOST mal configuré** : Vérifiez la valeur dans votre `.env`
+   - PC Linux : `DB_HOST=172.17.0.1`
+   - PC Mac/Windows : `DB_HOST=host.docker.internal`
+   - NAS : `DB_HOST=nom_conteneur_mongodb`
 
-```bash
-# Voir les variables d'environnement
-docker exec lmelp-app env | grep AZURE
+2. **MongoDB non accessible** : Vérifiez que MongoDB accepte les connexions externes
+   ```bash
+   # Sur l'hôte
+   netstat -an | grep 27017
+
+   # Tester la connexion
+   mongosh --host localhost --port 27017
+   ```
+
+3. **Firewall** : Vérifiez que le port 27017 n'est pas bloqué
+
+### Erreur "manifest unknown"
+
+```
+Error response from daemon: manifest unknown
 ```
 
-Si vide, vérifier votre fichier `.env`.
+**Solution** : Le package Docker n'est pas public. Contactez le mainteneur ou consultez [IMAGES.md](../docker/IMAGES.md#rendre-le-package-public)
 
 ### Port 8501 déjà utilisé
 
-Modifier dans `docker-compose.yml` :
+Modifier dans votre stack Portainer ou dans `docker-compose.yml` local :
 
 ```yaml
 ports:
   - "8502:8501"  # Utiliser le port 8502 à la place
 ```
 
-### Erreur "manifest unknown" lors du déploiement
-
-```
-Error response from daemon: manifest unknown
-```
-
-Cette erreur signifie que l'image Docker n'est pas accessible. Causes possibles :
-
-1. **Le package n'est pas public** : Contactez le mainteneur du projet pour qu'il rende le package public
-2. **L'image n'existe pas encore** : Vérifiez que les builds GitHub Actions sont terminés
-3. **Tag incorrect** : Vérifiez que vous utilisez `ghcr.io/castorfou/lmelp:latest`
-
-**Pour les mainteneurs** : Voir [Configuration du registre Docker](../docker/IMAGES.md#rendre-le-package-public)
-
-## 📚 Documentation Complète
+## 📚 Documentation
 
 - [Documentation principale](https://castorfou.github.io/lmelp/)
-- [Guide Docker](https://github.com/castorfou/lmelp/tree/main/docker)
+- [Guide Docker complet](../docker/README.md)
 - [Images Docker](https://github.com/castorfou/lmelp/pkgs/container/lmelp)
+- [Auto-updates avec Watchtower](../docker/DEPLOYMENT.md)
 
 ## 🆘 Support
 
