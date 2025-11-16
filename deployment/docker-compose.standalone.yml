@@ -1,0 +1,65 @@
+version: '3.8'
+
+# lmelp - Déploiement Standalone (sans MongoDB)
+# Pour se connecter à une instance MongoDB existante sur l'hôte ou le réseau
+
+services:
+  # lmelp application (Streamlit)
+  app:
+    image: ghcr.io/castorfou/lmelp:latest
+    container_name: lmelp-app
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    volumes:
+      - lmelp-audios:/app/audios
+      - lmelp-db-backup:/app/db
+      - lmelp-logs:/app/logs
+    # Note: env_file is not used for Git Repository deployment
+    # Variables are passed via Portainer's stack.env file
+    environment:
+      # Database connection - IMPORTANT: Configure DB_HOST selon votre environnement
+      #
+      # Pour PC avec MongoDB sur l'hôte (localhost) :
+      #   - Linux: DB_HOST=172.17.0.1 (gateway Docker par défaut)
+      #   - Mac: DB_HOST=host.docker.internal
+      #   - Windows: DB_HOST=host.docker.internal
+      #
+      # Pour NAS avec MongoDB dans un autre conteneur Docker :
+      #   - DB_HOST=nom_du_conteneur_mongodb (ex: mongo, mongodb-nas, etc.)
+      #
+      - DB_HOST=172.17.0.1  # ← À CHANGER selon votre environnement
+      - DB_NAME=masque_et_la_plume
+      - DB_LOGS=true
+      # RSS Feed
+      - RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml
+      # Paths
+      - AUDIO_BASE_PATH=/app/audios
+      # Mode (web by default)
+      - LMELP_MODE=web
+    # Note: Pas de dépendance depends_on car MongoDB est externe
+    # Note: Pas de network personnalisé car on se connecte à MongoDB externe
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+volumes:
+  lmelp-audios:
+    name: lmelp-audios
+  lmelp-db-backup:
+    name: lmelp-db-backup
+  lmelp-logs:
+    name: lmelp-logs

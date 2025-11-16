@@ -2,6 +2,27 @@
 
 Ce répertoire contient tout le nécessaire pour déployer **lmelp** sur votre PC local via Portainer.
 
+## 📦 Fichiers de déploiement
+
+**Deux configurations disponibles selon votre environnement :**
+
+| Fichier | MongoDB | Utilisation |
+|---------|---------|-------------|
+| `docker-compose.yml` | ✅ Inclus (conteneur MongoDB intégré) | Déploiement complet "from scratch" sans MongoDB existant |
+| `docker-compose.standalone.yml` | ❌ Externe (utilise MongoDB existant) | **PC ou NAS avec MongoDB déjà installé** |
+
+**Quelle configuration choisir ?**
+
+- ✅ **Utilisez `docker-compose.standalone.yml`** si :
+  - Vous avez déjà MongoDB qui tourne sur votre PC/NAS
+  - Vous voulez utiliser votre base de données existante
+  - Vous avez déjà des backups configurés pour votre MongoDB
+
+- ✅ **Utilisez `docker-compose.yml`** si :
+  - Vous n'avez pas MongoDB installé
+  - Vous voulez un déploiement complet avec tout intégré
+  - Vous démarrez de zéro
+
 ## 📋 Prérequis
 
 - Docker et Docker Compose installés
@@ -46,6 +67,33 @@ AZURE_API_VERSION=2024-05-01-preview
 
 Les autres variables (Google Search, etc.) sont optionnelles.
 
+### 2bis. Configuration MongoDB externe (pour docker-compose.standalone.yml uniquement)
+
+⚠️ **Important** : Si vous utilisez `docker-compose.standalone.yml`, configurez la variable `DB_HOST` selon votre environnement.
+
+**Ajoutez cette variable dans votre fichier `.env` :**
+
+```env
+# Pour PC avec MongoDB sur l'hôte (localhost)
+# Linux :
+DB_HOST=172.17.0.1
+
+# Mac ou Windows :
+DB_HOST=host.docker.internal
+
+# Pour NAS avec MongoDB dans un autre conteneur Docker :
+DB_HOST=nom_du_conteneur_mongodb  # ex: mongo, mongodb-nas, etc.
+```
+
+**Vérifier que MongoDB est accessible :**
+
+```bash
+# Depuis votre PC/NAS, vérifier que MongoDB répond
+mongo --host localhost --port 27017 --eval "db.adminCommand('ping')"
+# Ou avec mongosh:
+mongosh --host localhost --port 27017 --eval "db.adminCommand('ping')"
+```
+
 ### 3. Déployer dans Portainer
 
 #### Option A: Via l'interface Web Portainer (Recommandé)
@@ -54,7 +102,7 @@ Les autres variables (Google Search, etc.) sont optionnelles.
 2. **Stacks** → **Add stack**
 3. **Name** : `lmelp`
 4. **Build method** : Upload
-   - Upload `docker-compose.yml`
+   - Upload `docker-compose.yml` OU `docker-compose.standalone.yml` (selon votre configuration)
 5. **Environment variables** :
    - Cocher "Load variables from .env file"
    - Upload `.env`
@@ -81,7 +129,9 @@ Les autres variables (Google Search, etc.) sont optionnelles.
    - **Personal Access Token**: coller votre PAT
    - **Repository URL**: `https://github.com/castorfou/lmelp`
    - **Repository reference**: `refs/heads/main`
-   - **Compose path**: `deployment/docker-compose.yml`
+   - **Compose path**: Choisir selon votre configuration :
+     - `deployment/docker-compose.yml` (avec MongoDB intégré)
+     - `deployment/docker-compose.standalone.yml` (MongoDB externe)
 
 3. **Environment variables** :
 
