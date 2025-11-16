@@ -83,15 +83,25 @@ Les autres variables (Google Search, etc.) sont optionnelles.
    - **Repository reference**: `refs/heads/main`
    - **Compose path**: `deployment/docker-compose.yml`
 
-3. **Environment variables**:
-   - ⚠️ **IMPORTANT**: Ne PAS cocher "Load variables from .env file" (le fichier .env n'est pas dans Git)
-   - Cliquer sur **"+ Add environment variable"** et ajouter chaque variable manuellement:
+3. **Environment variables** :
+
+   Vous avez **deux options** :
+
+   **Option 3a : Charger depuis votre fichier .env local (Recommandé)**
+
+   - Cocher **"Load variables from .env file"**
+   - Cliquer sur **"Upload"** et sélectionner votre fichier `.env` local (créé à l'étape 2)
+   - Portainer va automatiquement lire et renseigner toutes les variables
+
+   **Option 3b : Ajouter manuellement**
+
+   - Cliquer sur **"+ Add environment variable"** pour chaque variable
+   - Exemple :
      ```
      AZURE_API_KEY=votre_clé_azure
      AZURE_ENDPOINT=https://votre-resource.openai.azure.com/
      AZURE_DEPLOYMENT_NAME=gpt-4o
      AZURE_API_VERSION=2024-05-01-preview
-     # Ajouter les autres variables si nécessaire
      ```
 
 4. **Deploy the stack**
