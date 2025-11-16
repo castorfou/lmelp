@@ -171,6 +171,7 @@ docker run --rm --network lmelp-network \
 ### Documentation Complète
 
 - 📖 [Guide de déploiement Docker](docker/README.md) - Quick start, configuration, usage
+- 🐳 [Déploiement Portainer standalone](deployment/README.md) - Installation PC/NAS avec auto-update
 - 🧪 [Guide d'utilisation Docker local](docs/deployment/docker-local-usage.md) - Tests locaux avec MongoDB existant
 - 🔧 [Configuration GitHub Actions](docs/deployment/github-actions-setup.md) - CI/CD automatique
 - 📝 [Issue #64 - Plan complet](docs/deployment/issue-dockerisation.md) - Spécifications détaillées

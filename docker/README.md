@@ -39,6 +39,22 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for complete auto-update configuration with W
 
 Use `docker-compose.nas.yml` with Portainer - see [DEPLOYMENT.md](DEPLOYMENT.md) for webhook configuration.
 
+### Portainer Standalone Deployment (PC/NAS)
+
+For a simplified standalone deployment with Portainer (ready to copy to `~/bin/lmelp/docker`):
+
+```bash
+# See the deployment/ directory at the root of the repository
+# Complete guide: ../deployment/README.md
+```
+
+The `deployment/` package includes:
+- Pre-configured `docker-compose.yml` using `ghcr.io/castorfou/lmelp:latest`
+- `.env.template` with all required variables
+- Complete installation and auto-update guide
+
+**Perfect for:** Installing on a PC or NAS without cloning the full Git repository.
+
 ## 📂 Files Overview
 
 | File | Description |
@@ -274,7 +290,12 @@ docker run -p 8501:8501 \
 
 ## 📚 Documentation
 
-For detailed documentation, see:
+**Available Guides:**
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Complete deployment guide with auto-updates (Watchtower, Portainer)
+- [IMAGES.md](IMAGES.md) - Docker images registry, tags, and pull instructions
+- [Portainer Standalone Package](../deployment/README.md) - Simplified deployment for PC/NAS
+
+**Additional Resources:**
 - [Docker Setup Guide](../docs/deployment/docker-setup.md) (to be created)
 - [Local Deployment Guide](../docs/deployment/local-deployment.md) (to be created)
 - [NAS Deployment Guide](../docs/deployment/nas-deployment.md) (to be created)
