@@ -9,8 +9,11 @@ services:
     image: mongo:7
     container_name: lmelp-mongodb
     restart: unless-stopped
-    ports:
-      - "27017:27017"
+    # Note: Pas d'exposition de port nécessaire
+    # L'app communique avec MongoDB via le réseau Docker interne (lmelp-network)
+    # Pour accéder à MongoDB depuis l'hôte (debug), décommenter:
+    # ports:
+    #   - "27017:27017"
     volumes:
       - lmelp-mongodb-data:/data/db
     environment:
