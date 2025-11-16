@@ -20,7 +20,7 @@ mkdir -p ~/bin/lmelp/docker
 cd ~/bin/lmelp/docker
 
 # Copier le template depuis le repo Git
-cp /path/to/lmelp/deployment/.env.template .env
+cp /path/to/lmelp/docker/deployment/.env.template .env
 
 # Sécuriser le fichier
 chmod 600 .env
@@ -80,7 +80,7 @@ Cette méthode permet les mises à jour automatiques via webhook ou pull manuel.
   - **Personal Access Token** : coller le token créé à l'étape 1
 - **Repository URL** : `https://github.com/castorfou/lmelp`
 - **Repository reference** : `refs/heads/main`
-- **Compose path** : `deployment/docker-compose.yml`
+- **Compose path** : `docker/deployment/docker-compose.yml`
 - **Environment variables** :
   - Cocher **"Load variables from .env file"**
   - Cliquer sur **"Upload"** et sélectionner votre fichier `.env`
@@ -105,13 +105,9 @@ Cette méthode permet les mises à jour automatiques via webhook ou pull manuel.
    - Pull la dernière image `ghcr.io/castorfou/lmelp:latest`
    - Redémarrer le conteneur
 
-### Update automatique (Watchtower)
+### Update automatique
 
-Voir [Guide Watchtower](../docker/DEPLOYMENT.md#watchtower-auto-update)
-
-### Update via Webhook
-
-Voir [Guide Webhook](../docker/DEPLOYMENT.md#portainer-webhook)
+Pour un update automatique, configurez Watchtower ou utilisez les webhooks Portainer (voir documentation Portainer).
 
 ## 📦 Volumes Persistants
 
@@ -194,7 +190,7 @@ pymongo.errors.ServerSelectionTimeoutError: connection refused
 Error response from daemon: manifest unknown
 ```
 
-**Solution** : Le package Docker n'est pas public. Contactez le mainteneur ou consultez [IMAGES.md](../docker/IMAGES.md#rendre-le-package-public)
+**Solution** : Le package Docker n'est pas public. Contactez le mainteneur pour qu'il rende le package public sur GitHub Container Registry.
 
 ### Erreur "reference not found" lors du clone Git
 
@@ -228,13 +224,12 @@ ports:
 ## 📚 Documentation
 
 - [Documentation principale](https://castorfou.github.io/lmelp/)
-- [Guide Docker complet](../docker/README.md)
 - [Images Docker](https://github.com/castorfou/lmelp/pkgs/container/lmelp)
-- [Auto-updates avec Watchtower](../docker/DEPLOYMENT.md)
+- [Configuration GitHub Actions](../../docs/deployment/github-actions-setup.md)
 
 ## 🆘 Support
 
 En cas de problème :
 1. Consulter les logs : `docker logs lmelp-app`
-2. Vérifier la [documentation](https://github.com/castorfou/lmelp/tree/main/docker)
+2. Vérifier la [documentation](https://github.com/castorfou/lmelp/tree/main/docker/deployment)
 3. Créer une [GitHub Issue](https://github.com/castorfou/lmelp/issues)

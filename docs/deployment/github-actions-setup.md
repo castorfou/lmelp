@@ -154,8 +154,8 @@ services:
 
 Update to latest:
 ```bash
-cd docker/
-./scripts/update.sh
+cd docker/deployment/
+docker compose pull && docker compose up -d
 ```
 
 ## Build Cache
@@ -207,7 +207,7 @@ For testing or emergency deployments:
 
 ```bash
 # Build locally
-docker build -f docker/Dockerfile -t ghcr.io/castorfou/lmelp:manual .
+docker build -f docker/build/Dockerfile -t ghcr.io/castorfou/lmelp:manual .
 
 # Login to GitHub Container Registry
 echo $GITHUB_TOKEN | docker login ghcr.io -u castorfou --password-stdin
