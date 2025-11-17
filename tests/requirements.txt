@@ -23,3 +23,7 @@ requests>=2.25.0
 # Dependencies mockées mais parfois référencées
 # Note: Ces modules sont mockés dans les tests, pas vraiment installés
 beautifulsoup4>=4.0.0
+
+# Dependencies pour tests de compatibilité des types Streamlit
+numpy>=1.20.0
+pandas>=1.3.0
