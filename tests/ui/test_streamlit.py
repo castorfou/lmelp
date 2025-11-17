@@ -286,7 +286,6 @@ class TestStreamlitTypeCompatibility:
     def test_index_types_are_native_python_int(self):
         """Test que les index utilisés dans st.selectbox sont des int natifs Python"""
         import numpy as np
-        import pandas as pd
 
         # Simuler des indices de différents types
         numpy_int64 = np.int64(5)
