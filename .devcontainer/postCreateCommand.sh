@@ -18,7 +18,7 @@ update_system() {
 }
 
 # Install locales françaises et ffmpeg
-install_locales() {}
+install_locales() {
     sudo apt install -y locales
     sudo sed -i 's/^# *\(fr_FR.UTF-8\)/\1/' /etc/locale.gen
     sudo dpkg-reconfigure locales -f noninteractive
