@@ -18,7 +18,7 @@ update_system() {
 }
 
 # Install locales françaises et ffmpeg
-install_locales() {}
+install_locales() {
     sudo apt install -y locales
     sudo sed -i 's/^# *\(fr_FR.UTF-8\)/\1/' /etc/locale.gen
     sudo dpkg-reconfigure locales -f noninteractive
@@ -195,6 +195,23 @@ Features: ruff, mypy, pre-commit hooks"
     echo "Configuration Git terminée"
 }
 
+# Patch du favicon Streamlit
+patch_streamlit_favicon() {
+    echo "Patch du favicon Streamlit..."
+
+    # Le venv doit être activé pour que le script trouve Streamlit
+    if [ -f ".venv/bin/activate" ]; then
+        source .venv/bin/activate
+        if python ui/assets/favicons/scripts/patch_streamlit_favicon.py; then
+            echo "✅ Favicon Streamlit patché"
+        else
+            echo "⚠️  Échec du patch du favicon (non critique)"
+        fi
+    else
+        echo "⚠️  Environnement virtuel non trouvé, skip du patch favicon"
+    fi
+}
+
 # Exécution des étapes
 update_system
 install_locales
@@ -202,10 +219,12 @@ ensure_uv
 create_python_environment
 setup_node
 setup_git
+patch_streamlit_favicon
 
 echo ""
 echo "=================================================================="
 echo "✅ Configuration terminée !"
 echo "Dépôt Git initialisé avec pre-commit hooks"
 echo "Node.js et npm configurés pour le développement frontend"
+echo "Favicon Streamlit personnalisé (plus de flash de la couronne)"
 echo "Redémarrez le terminal pour activer l'environnement"
