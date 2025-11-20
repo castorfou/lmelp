@@ -12,7 +12,9 @@ Ce répertoire contient tous les fichiers favicon pour l'application web lmelp.
 - `apple-touch-icon.png` - Icône Apple (180x180)
 - `android-chrome-192x192.png` - Icône Android/PWA (192x192)
 - `android-chrome-512x512.png` - Icône Android/PWA (512x512)
-- `scripts/generate_favicons.py` - Script de génération
+- `scripts/generate_favicons.py` - Script de génération multi-formats
+- `scripts/patch_streamlit_favicon.py` - Script de patch Streamlit (fix le flash de la couronne)
+- `scripts/README_patch_favicon.md` - Documentation complète du patch Streamlit
 
 ## Génération des favicons
 
@@ -30,17 +32,44 @@ Le script :
 
 ## Utilisation dans Streamlit
 
-Les favicons sont configurés dans les fichiers UI :
+### Configuration du favicon personnalisé
+
+Les favicons sont configurés dans le fichier UI principal avec PIL.Image :
 
 ```python
+from pathlib import Path
+from PIL import Image
+
+# Load favicon
+favicon_path = Path(__file__).parent / "assets" / "favicons" / "favicon-32x32.png"
+favicon = Image.open(favicon_path)
+
 st.set_page_config(
     page_title="le masque et la plume",
-    page_icon="assets/favicons/favicon.ico",  # Page principale
-    # ou
-    page_icon="../assets/favicons/favicon.ico",  # Pages dans ui/pages/
+    page_icon=favicon,  # Objet PIL.Image
     layout="wide",
 )
 ```
+
+### Patch Streamlit (fix du flash de couronne)
+
+**Problème** : Streamlit affiche brièvement son favicon par défaut (couronne blanche) avant de charger notre favicon personnalisé.
+
+**Solution** : Patcher l'installation Streamlit pour remplacer le favicon par défaut.
+
+```bash
+# Appliquer le patch
+python ui/assets/favicons/scripts/patch_streamlit_favicon.py
+
+# Restaurer l'original
+python ui/assets/favicons/scripts/patch_streamlit_favicon.py --restore
+```
+
+**Automatisation** : Le patch est appliqué automatiquement lors de :
+- La création du devcontainer (`.devcontainer/postCreateCommand.sh`)
+- La construction de l'image Docker (`docker/build/Dockerfile`)
+
+📖 Voir [`scripts/README_patch_favicon.md`](scripts/README_patch_favicon.md) pour la documentation complète
 
 ## Source
 
