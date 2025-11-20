@@ -4,6 +4,18 @@ from pathlib import Path
 
 import pytest
 
+# Skip all tests if streamlit is not installed (e.g., in CI/CD)
+try:
+    import streamlit  # noqa: F401
+
+    STREAMLIT_AVAILABLE = True
+except ImportError:
+    STREAMLIT_AVAILABLE = False
+
+pytestmark = pytest.mark.skipif(
+    not STREAMLIT_AVAILABLE, reason="Streamlit not installed (minimal test environment)"
+)
+
 
 class TestStreamlitPatch:
     """Test that Streamlit favicon has been patched with our custom icon."""
