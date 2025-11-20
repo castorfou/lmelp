@@ -8,13 +8,6 @@ from ui_tools import add_to_sys_path
 
 add_to_sys_path()
 
-st.set_page_config(
-    page_title="le masque et la plume - avis critiques",
-    page_icon=":material/rate_review:",
-    layout="wide",
-    initial_sidebar_state="auto",
-)
-
 import locale
 import re
 from datetime import datetime
