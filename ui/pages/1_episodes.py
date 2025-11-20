@@ -7,13 +7,6 @@ from ui_tools import add_to_sys_path
 
 add_to_sys_path()
 
-st.set_page_config(
-    page_title="le masque et la plume",
-    page_icon=":material/music_note:",
-    layout="wide",
-    initial_sidebar_state="auto",
-)
-
 from mongo_episode import Episodes, Episode
 import pandas as pd
 

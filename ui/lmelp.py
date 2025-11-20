@@ -1,14 +1,20 @@
 import streamlit as st
 from streamlit_card import card
 from ui_tools import add_to_sys_path
+from pathlib import Path
+from PIL import Image
 
 add_to_sys_path()
 
 from rss import Podcast  # Ajout de l'importation nécessaire
 
+# Load favicon
+favicon_path = Path(__file__).parent / "assets" / "favicons" / "favicon-32x32.png"
+favicon = Image.open(favicon_path)
+
 st.set_page_config(
     page_title="le masque et la plume",
-    page_icon=":book:",
+    page_icon=favicon,
     layout="wide",
     initial_sidebar_state="auto",
 )
@@ -121,7 +127,7 @@ from date_utils import DATE_FORMAT, format_date
 def affiche_last_date(episodes=episodes):
     episodes.get_entries(limit=1)
     if len(episodes) > 0:
-        date_text = format_date(episodes[0].to_dict().get('date'))
+        date_text = format_date(episodes[0].to_dict().get("date"))
     else:
         date_text = "No episodes yet"
     card(
