@@ -1,0 +1,1544 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Fix Streamlit int64 Type Error - Issue #69 - Documentation des APIs du repo lmelp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fix-streamlit-int64-type-error-issue-69" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-header__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation des APIs du repo lmelp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fix Streamlit int64 Type Error - Issue #69
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-nav__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation des APIs du repo lmelp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../whisper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module whisper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module rss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_episode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_episode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_auteur/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_auteur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_livre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_livre
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other kind of docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other kind of docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    manage doc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    write markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_vscode_hints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    some vs_code hints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_google/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    about Google services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_data_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_uv_devcontainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    uv devcontainer venv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_import_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    import strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_unit_test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unit tests guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    development workflow (Docker + Portainer)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#probleme-rencontre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problème Rencontré
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Problème Rencontré">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#symptome" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Symptôme
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cause-racine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cause Racine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contexte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contexte
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution-implementee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution Implémentée
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Solution Implémentée">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#approche-tdd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Approche TDD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modifications-de-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modifications de Code
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modifications de Code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-ligne-338-parametre-index-de-stselectbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Ligne 338 - Paramètre index de st.selectbox()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-ligne-348-stockage-du-nouvel-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Ligne 348 - Stockage du nouvel index
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-lignes-361-363-bouton-precedent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Lignes 361-363 - Bouton "Précédent"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-lignes-376-378-bouton-suivant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Lignes 376-378 - Bouton "Suivant"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-ligne-484-acces-avec-iloc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Ligne 484 - Accès avec iloc
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests-ajoutes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests Ajoutés
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apprentissages-cles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apprentissages Clés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Apprentissages Clés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-compatibilite-des-types-streamlit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Compatibilité des Types Streamlit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-pattern-de-correction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Pattern de Correction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-tests-de-compatibilite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Tests de Compatibilité
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-cas-similaires-a-surveiller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Cas Similaires à Surveiller
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resultats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résultats
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Résultats">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation-utilisateur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation Utilisateur
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#commentaires-ajoutes-au-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commentaires Ajoutés au Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-github" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue GitHub
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommandations-futures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommandations Futures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recommandations Futures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-lintertype-checker-custom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Linter/Type Checker Custom
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-helper-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Helper Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-documentation-projet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Documentation Projet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-review-systematique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Review Systématique
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandes-utilisees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commandes Utilisées
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#liens-et-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Liens et Références
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="fix-streamlit-int64-type-error-issue-69">Fix Streamlit int64 Type Error - Issue #69<a class="headerlink" href="#fix-streamlit-int64-type-error-issue-69" title="Permanent link">&para;</a></h1>
+<p><strong>Date</strong>: 2025-11-16 23:19
+<strong>Issue</strong>: <a href="https://github.com/castorfou/lmelp/issues/69">#69</a>
+<strong>Branch</strong>: <code>69-bug-impossible-de-generer-la-transcription-dun-nouvel-episode</code></p>
+<h2 id="probleme-rencontre">Problème Rencontré<a class="headerlink" href="#probleme-rencontre" title="Permanent link">&para;</a></h2>
+<h3 id="symptome">Symptôme<a class="headerlink" href="#symptome" title="Permanent link">&para;</a></h3>
+<p>Erreur <code>Selectbox Value has invalid type: int64</code> lors du clic sur "Générer le résumé des avis critiques" dans l'interface Streamlit.</p>
+<h3 id="cause-racine">Cause Racine<a class="headerlink" href="#cause-racine" title="Permanent link">&para;</a></h3>
+<p>Dans <a href="ui/pages/4_avis_critiques.py">ui/pages/4_avis_critiques.py</a>, le paramètre <code>index</code> de <code>st.selectbox()</code> recevait des valeurs de type <code>numpy.int64</code> ou <code>pandas.Int64</code> au lieu de <code>int</code> natif Python. Streamlit n'accepte pas ces types numpy/pandas pour ses paramètres.</p>
+<h3 id="contexte">Contexte<a class="headerlink" href="#contexte" title="Permanent link">&para;</a></h3>
+<ul>
+<li>L'utilisateur mentionnait avoir déjà eu ce problème et pensait que la correction était partielle</li>
+<li>Le problème se produisait spécifiquement sur la page des avis critiques (page 4)</li>
+<li>Les DataFrames pandas retournent naturellement des <code>int64</code> lors d'opérations comme <code>reset_index()</code> ou <code>.index[0]</code></li>
+</ul>
+<h2 id="solution-implementee">Solution Implémentée<a class="headerlink" href="#solution-implementee" title="Permanent link">&para;</a></h2>
+<h3 id="approche-tdd">Approche TDD<a class="headerlink" href="#approche-tdd" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Tests RED</strong>: Création de tests de compatibilité des types dans <a href="tests/ui/test_streamlit.py">tests/ui/test_streamlit.py</a></li>
+<li><strong>Implémentation</strong>: Ajout de conversions <code>int()</code> systématiques</li>
+<li><strong>Tests GREEN</strong>: Validation avec 268 tests passants</li>
+</ol>
+<h3 id="modifications-de-code">Modifications de Code<a class="headerlink" href="#modifications-de-code" title="Permanent link">&para;</a></h3>
+<p><strong>Fichier</strong>: <a href="ui/pages/4_avis_critiques.py">ui/pages/4_avis_critiques.py</a></p>
+<h4 id="1-ligne-338-parametre-index-de-stselectbox">1. Ligne 338 - Paramètre index de st.selectbox()<a class="headerlink" href="#1-ligne-338-parametre-index-de-stselectbox" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python"># AVANT (implicite, causait l'erreur)
+selected_value = st.selectbox(
+    &quot;Sélectionnez un épisode&quot;,
+    episodes_df[&quot;selecteur&quot;],
+    index=st.session_state.selected_episode_index,  # ❌ Pouvait être int64
+)
+
+# APRÈS (correction)
+selected_value = st.selectbox(
+    &quot;Sélectionnez un épisode&quot;,
+    episodes_df[&quot;selecteur&quot;],
+    index=int(st.session_state.selected_episode_index),  # ✅ Toujours int natif
+)
+</code></pre>
+<h4 id="2-ligne-348-stockage-du-nouvel-index">2. Ligne 348 - Stockage du nouvel index<a class="headerlink" href="#2-ligne-348-stockage-du-nouvel-index" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python"># AVANT
+new_index = episodes_df[episodes_df[&quot;selecteur&quot;] == selected_value].index[0]
+st.session_state.selected_episode_index = new_index  # ❌ int64
+
+# APRÈS
+new_index = episodes_df[episodes_df[&quot;selecteur&quot;] == selected_value].index[0]
+st.session_state.selected_episode_index = int(new_index)  # ✅ int natif
+</code></pre>
+<h4 id="3-lignes-361-363-bouton-precedent">3. Lignes 361-363 - Bouton "Précédent"<a class="headerlink" href="#3-lignes-361-363-bouton-precedent" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python"># AVANT
+st.session_state.selected_episode_index = int(min(
+    len(episodes_df) - 1, st.session_state.selected_episode_index + 1
+))
+
+# APRÈS
+st.session_state.selected_episode_index = int(min(
+    len(episodes_df) - 1, int(st.session_state.selected_episode_index) + 1
+))  # ✅ Double conversion pour sécurité
+</code></pre>
+<h4 id="4-lignes-376-378-bouton-suivant">4. Lignes 376-378 - Bouton "Suivant"<a class="headerlink" href="#4-lignes-376-378-bouton-suivant" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python"># AVANT
+st.session_state.selected_episode_index = int(max(
+    0, st.session_state.selected_episode_index - 1
+))
+
+# APRÈS
+st.session_state.selected_episode_index = int(max(
+    0, int(st.session_state.selected_episode_index) - 1
+))  # ✅ Double conversion pour sécurité
+</code></pre>
+<h4 id="5-ligne-484-acces-avec-iloc">5. Ligne 484 - Accès avec iloc<a class="headerlink" href="#5-ligne-484-acces-avec-iloc" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python"># AVANT
+episode = episodes_df.iloc[[st.session_state.selected_episode_index]]
+
+# APRÈS
+episode = episodes_df.iloc[[int(st.session_state.selected_episode_index)]]  # ✅ int natif
+</code></pre>
+<h3 id="tests-ajoutes">Tests Ajoutés<a class="headerlink" href="#tests-ajoutes" title="Permanent link">&para;</a></h3>
+<p><strong>Fichier</strong>: <a href="tests/ui/test_streamlit.py">tests/ui/test_streamlit.py</a></p>
+<p>Nouvelle classe de tests <code>TestStreamlitTypeCompatibility</code> avec 3 tests:</p>
+<ol>
+<li><strong>test_index_types_are_native_python_int</strong>: Vérifie la conversion numpy.int64 → int natif</li>
+<li><strong>test_min_max_operations_return_native_int</strong>: Valide que min()/max() retournent des int natifs</li>
+<li><strong>test_dataframe_index_access_type</strong>: Teste l'accès aux index de DataFrame et leur conversion</li>
+</ol>
+<pre><code class="language-python">def test_index_types_are_native_python_int(self):
+    &quot;&quot;&quot;Test que les index utilisés dans st.selectbox sont des int natifs Python&quot;&quot;&quot;
+    import numpy as np
+
+    numpy_int64 = np.int64(5)
+    native_int = 5
+
+    # Vérifier la différence de types
+    assert type(numpy_int64).__name__ in ['int64', 'int_']
+    assert type(native_int) == int
+
+    # Test de conversion
+    converted_numpy = int(numpy_int64)
+    assert type(converted_numpy) == int
+    assert converted_numpy == 5
+</code></pre>
+<h2 id="apprentissages-cles">Apprentissages Clés<a class="headerlink" href="#apprentissages-cles" title="Permanent link">&para;</a></h2>
+<h3 id="1-compatibilite-des-types-streamlit">1. Compatibilité des Types Streamlit<a class="headerlink" href="#1-compatibilite-des-types-streamlit" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Streamlit est strict sur les types</strong>: N'accepte que des <code>int</code> natifs Python, pas <code>numpy.int64</code> ou <code>pandas.Int64</code></li>
+<li><strong>Les DataFrames pandas retournent des int64</strong>: Opérations comme <code>.index[0]</code>, <code>reset_index()</code> produisent naturellement des int64</li>
+<li><strong>Solution</strong>: Conversion systématique avec <code>int()</code> avant passage à Streamlit</li>
+</ul>
+<h3 id="2-pattern-de-correction">2. Pattern de Correction<a class="headerlink" href="#2-pattern-de-correction" title="Permanent link">&para;</a></h3>
+<p>Toujours appliquer cette conversion lors de:
+- Utilisation d'index dans <code>st.selectbox(index=...)</code>
+- Stockage dans <code>st.session_state</code>
+- Opérations arithmétiques avec des index pandas</p>
+<h3 id="3-tests-de-compatibilite">3. Tests de Compatibilité<a class="headerlink" href="#3-tests-de-compatibilite" title="Permanent link">&para;</a></h3>
+<p>Les tests de type sont essentiels pour détecter ces problèmes:</p>
+<pre><code class="language-python">assert type(value) == int  # Vérification stricte du type natif
+</code></pre>
+<h3 id="4-cas-similaires-a-surveiller">4. Cas Similaires à Surveiller<a class="headerlink" href="#4-cas-similaires-a-surveiller" title="Permanent link">&para;</a></h3>
+<p>D'autres widgets Streamlit peuvent avoir des problèmes similaires:
+- <code>st.slider(value=...)</code>
+- <code>st.number_input(value=...)</code>
+- <code>st.radio(index=...)</code></p>
+<h2 id="resultats">Résultats<a class="headerlink" href="#resultats" title="Permanent link">&para;</a></h2>
+<h3 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h3>
+<ul>
+<li>✅ <strong>268 tests passants</strong> (100% de succès)</li>
+<li>✅ <strong>3 nouveaux tests</strong> de compatibilité des types</li>
+<li>✅ Pas de régression sur les tests existants</li>
+</ul>
+<h3 id="validation-utilisateur">Validation Utilisateur<a class="headerlink" href="#validation-utilisateur" title="Permanent link">&para;</a></h3>
+<ul>
+<li>✅ Bug confirmé résolu par l'utilisateur</li>
+<li>✅ Interface fonctionnelle sans erreur</li>
+<li>✅ Génération de résumés d'avis critiques opérationnelle</li>
+</ul>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<h3 id="commentaires-ajoutes-au-code">Commentaires Ajoutés au Code<a class="headerlink" href="#commentaires-ajoutes-au-code" title="Permanent link">&para;</a></h3>
+<p>Tous les points de conversion incluent maintenant un commentaire explicatif:</p>
+<pre><code class="language-python"># IMPORTANT: Convertir l'index en int natif Python pour éviter les erreurs de type avec Streamlit
+</code></pre>
+<h3 id="issue-github">Issue GitHub<a class="headerlink" href="#issue-github" title="Permanent link">&para;</a></h3>
+<p>Commentaire détaillé ajouté à l'issue #69 documentant:
+- Cause racine
+- Fichiers concernés
+- Solution proposée
+- Approche TDD
+- Notes sur les corrections précédentes</p>
+<h2 id="recommandations-futures">Recommandations Futures<a class="headerlink" href="#recommandations-futures" title="Permanent link">&para;</a></h2>
+<h3 id="1-lintertype-checker-custom">1. Linter/Type Checker Custom<a class="headerlink" href="#1-lintertype-checker-custom" title="Permanent link">&para;</a></h3>
+<p>Créer une règle de linting pour détecter automatiquement:
+- Accès à <code>.index[0]</code> sans conversion <code>int()</code>
+- Paramètres Streamlit recevant potentiellement des int64</p>
+<h3 id="2-helper-function">2. Helper Function<a class="headerlink" href="#2-helper-function" title="Permanent link">&para;</a></h3>
+<p>Envisager une fonction utilitaire:</p>
+<pre><code class="language-python">def safe_int_for_streamlit(value):
+    &quot;&quot;&quot;Convertit toute valeur en int natif Python pour Streamlit&quot;&quot;&quot;
+    return int(value) if value is not None else 0
+</code></pre>
+<h3 id="3-documentation-projet">3. Documentation Projet<a class="headerlink" href="#3-documentation-projet" title="Permanent link">&para;</a></h3>
+<p>Ajouter une section dans CLAUDE.md sur les bonnes pratiques Streamlit:
+- Toujours convertir les index pandas en int natif
+- Liste des widgets sensibles aux types
+- Exemples de conversions</p>
+<h3 id="4-review-systematique">4. Review Systématique<a class="headerlink" href="#4-review-systematique" title="Permanent link">&para;</a></h3>
+<p>Lors de code review, vérifier systématiquement:
+- Tous les <code>st.selectbox()</code> avec paramètre <code>index</code>
+- Tous les <code>st.session_state</code> stockant des index
+- Toute opération arithmétique sur des index pandas</p>
+<h2 id="commandes-utilisees">Commandes Utilisées<a class="headerlink" href="#commandes-utilisees" title="Permanent link">&para;</a></h2>
+<pre><code class="language-bash"># Création de la branche
+gh issue develop 69 --checkout
+
+# Exécution des tests
+PYTHONPATH=/workspaces/lmelp/src uv run pytest tests/ -v
+
+# Tests spécifiques de compatibilité
+PYTHONPATH=/workspaces/lmelp/src uv run pytest tests/ui/test_streamlit.py::TestStreamlitTypeCompatibility -v
+
+# Commentaire sur l'issue
+gh issue comment 69 --body &quot;...&quot;
+</code></pre>
+<h2 id="liens-et-references">Liens et Références<a class="headerlink" href="#liens-et-references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Issue GitHub</strong>: <a href="https://github.com/castorfou/lmelp/issues/69">#69</a></li>
+<li><strong>Branch</strong>: <code>69-bug-impossible-de-generer-la-transcription-dun-nouvel-episode</code></li>
+<li><strong>Fichiers modifiés</strong>:</li>
+<li><a href="ui/pages/4_avis_critiques.py">ui/pages/4_avis_critiques.py</a> (5 emplacements)</li>
+<li><a href="tests/ui/test_streamlit.py">tests/ui/test_streamlit.py</a> (nouvelle classe de tests)</li>
+<li><strong>Documentation Streamlit</strong>: Les widgets Streamlit nécessitent des types Python natifs</li>
+<li><strong>Pandas Index Documentation</strong>: Les index pandas peuvent être de type int64</li>
+</ul>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>Cette correction résout définitivement le problème de compatibilité des types entre pandas/numpy et Streamlit. L'approche systématique avec conversions <code>int()</code> garantit qu'aucun type int64 ne sera passé aux widgets Streamlit, éliminant cette classe d'erreurs.</p>
+<p>Le pattern établi peut être réutilisé pour d'autres pages Streamlit du projet et sert de référence pour les bonnes pratiques de développement avec Streamlit et pandas.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

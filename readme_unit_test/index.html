@@ -1,0 +1,2621 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../readme_import_strategy/">
+      
+      
+        <link rel="next" href="../development-workflow/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>unit tests guide - Documentation des APIs du repo lmelp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#guide-des-tests-unitaires" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Documentation des APIs du repo lmelp" class="md-header__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation des APIs du repo lmelp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              unit tests guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Documentation des APIs du repo lmelp" class="md-nav__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation des APIs du repo lmelp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../whisper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module whisper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module rss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongo_episode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_episode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongo_auteur/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_auteur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongo_livre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_livre
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other kind of docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other kind of docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    manage doc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    write markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_vscode_hints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    some vs_code hints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_google/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    about Google services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_data_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_uv_devcontainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    uv devcontainer venv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_import_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    import strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unit tests guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unit tests guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vue-densemble" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vue d'ensemble
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-des-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture des Tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture des Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#structure-des-dossiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure des Dossiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#infrastructure-cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure CI/CD 🚀
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Infrastructure CI/CD 🚀">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frameworks-et-outils" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frameworks et Outils
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Frameworks et Outils">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dependances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dépendances
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#patterns-de-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Patterns de Test
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Patterns de Test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-structure-arrange-act-assert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Structure ARRANGE-ACT-ASSERT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-mocking-avec-monkeypatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Mocking avec Monkeypatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-organisation-en-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Organisation en Classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#strategies-de-mocking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stratégies de Mocking
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stratégies de Mocking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-isolation-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Isolation Complète
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-mocking-des-dependances-lourdes-mlia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Mocking des Dépendances Lourdes (ML/IA) 🤖
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-variables-denvironnement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Variables d'Environnement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-mocking-de-classes-et-methodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Mocking de Classes et Méthodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixtures-globales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixtures Globales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fixtures Globales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fixtures-disponibles-conftestpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixtures Disponibles (conftest.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#utilisation-des-fixtures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Utilisation des Fixtures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#couverture-de-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Couverture de Code
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Couverture de Code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mesurer-la-couverture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mesurer la Couverture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interpreter-les-resultats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interpréter les Résultats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#objectifs-de-couverture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objectifs de Couverture
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandes-principales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commandes Principales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Commandes Principales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#execution-des-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exécution des Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-et-developpement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debug et Développement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rapports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rapports
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bonnes-pratiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bonnes Pratiques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bonnes Pratiques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-nommage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Nommage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-lisibilite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Lisibilité
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-mocking-des-dependances-lourdes-lecons-github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Mocking des Dépendances Lourdes (Leçons GitHub Actions) 🚀
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#patterns-avances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Patterns Avancés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Patterns Avancés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-mocking-de-hierarchies-complexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Mocking de Hiérarchies Complexes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-tests-parametres" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Tests Paramétrés
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-tests-dexception" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Tests d'Exception
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#depannage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dépannage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dépannage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#problemes-courants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problèmes Courants
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Problèmes Courants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#variables-denvironnement-persistantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables d'Environnement Persistantes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#imports-et-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Imports et Paths
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-des-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debug des Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evolution-et-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Évolution et Maintenance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Évolution et Maintenance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ajout-de-nouveaux-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ajout de Nouveaux Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#refactoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Refactoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    development workflow (Docker + Portainer)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vue-densemble" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vue d'ensemble
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-des-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture des Tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture des Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#structure-des-dossiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure des Dossiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#infrastructure-cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure CI/CD 🚀
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Infrastructure CI/CD 🚀">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frameworks-et-outils" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frameworks et Outils
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Frameworks et Outils">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dependances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dépendances
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#patterns-de-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Patterns de Test
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Patterns de Test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-structure-arrange-act-assert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Structure ARRANGE-ACT-ASSERT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-mocking-avec-monkeypatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Mocking avec Monkeypatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-organisation-en-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Organisation en Classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#strategies-de-mocking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stratégies de Mocking
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stratégies de Mocking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-isolation-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Isolation Complète
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-mocking-des-dependances-lourdes-mlia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Mocking des Dépendances Lourdes (ML/IA) 🤖
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-variables-denvironnement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Variables d'Environnement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-mocking-de-classes-et-methodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Mocking de Classes et Méthodes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixtures-globales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixtures Globales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fixtures Globales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fixtures-disponibles-conftestpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixtures Disponibles (conftest.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#utilisation-des-fixtures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Utilisation des Fixtures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#couverture-de-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Couverture de Code
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Couverture de Code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mesurer-la-couverture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mesurer la Couverture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interpreter-les-resultats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interpréter les Résultats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#objectifs-de-couverture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objectifs de Couverture
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandes-principales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commandes Principales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Commandes Principales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#execution-des-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exécution des Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-et-developpement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debug et Développement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rapports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rapports
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bonnes-pratiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bonnes Pratiques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bonnes Pratiques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-nommage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Nommage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-lisibilite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Lisibilité
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-mocking-des-dependances-lourdes-lecons-github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Mocking des Dépendances Lourdes (Leçons GitHub Actions) 🚀
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#patterns-avances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Patterns Avancés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Patterns Avancés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-mocking-de-hierarchies-complexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Mocking de Hiérarchies Complexes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-tests-parametres" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Tests Paramétrés
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-tests-dexception" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Tests d'Exception
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#depannage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dépannage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dépannage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#problemes-courants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problèmes Courants
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Problèmes Courants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#variables-denvironnement-persistantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables d'Environnement Persistantes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#imports-et-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Imports et Paths
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-des-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debug des Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evolution-et-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Évolution et Maintenance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Évolution et Maintenance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ajout-de-nouveaux-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ajout de Nouveaux Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#refactoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Refactoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="guide-des-tests-unitaires">Guide des Tests Unitaires 🧪<a class="headerlink" href="#guide-des-tests-unitaires" title="Permanent link">&para;</a></h1>
+<h2 id="vue-densemble">Vue d'ensemble<a class="headerlink" href="#vue-densemble" title="Permanent link">&para;</a></h2>
+<p>Le projet LMELP utilise <strong>pytest</strong> comme framework de tests avec une approche de <strong>mocking complet</strong> pour isoler les tests de l'environnement extérieur (MongoDB, APIs, système de fichiers).</p>
+<h2 id="architecture-des-tests">Architecture des Tests<a class="headerlink" href="#architecture-des-tests" title="Permanent link">&para;</a></h2>
+<h3 id="structure-des-dossiers">Structure des Dossiers<a class="headerlink" href="#structure-des-dossiers" title="Permanent link">&para;</a></h3>
+<pre><code>tests/
+├── __init__.py                 # Package principal
+├── conftest.py                # Configuration globale et fixtures
+├── requirements.txt           # 🆕 Dépendances minimales pour tests
+├── fixtures/                  # 🆕 Données de test et utilitaires
+│   ├── __init__.py           #     Fonctions load_sample_json/text
+│   └── data/                 #     Données d'exemple
+│       └── sample_config.json
+└── unit/                      # Tests unitaires
+    ├── __init__.py
+    ├── test_config.py         # Tests du module nbs/config.py
+    ├── test_fixtures.py       # 🆕 Tests infrastructure fixtures
+    └── test_mongo.py          # Tests du module nbs/mongo.py (à venir)
+
+# Infrastructure CI/CD
+.env.test                      # 🆕 Variables d'environnement de test
+.github/workflows/tests.yml    # 🆕 GitHub Actions pour CI/CD
+</code></pre>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>pytest.ini</strong> : Configuration principale avec chemins et options + pytest-env</li>
+<li><strong>.env.test</strong> : <strong>Variables d'environnement isolées pour tests</strong></li>
+<li><strong>tests/requirements.txt</strong> : <strong>Dépendances optimisées (sans PyTorch/ML)</strong></li>
+<li><strong>conftest.py</strong> : Fixtures globales et fonction <code>load_env_test()</code></li>
+</ul>
+<h2 id="infrastructure-cicd">Infrastructure CI/CD 🚀<a class="headerlink" href="#infrastructure-cicd" title="Permanent link">&para;</a></h2>
+<h3 id="github-actions">GitHub Actions<a class="headerlink" href="#github-actions" title="Permanent link">&para;</a></h3>
+<p>Le projet utilise <strong>GitHub Actions</strong> pour l'intégration continue avec un workflow optimisé :</p>
+<pre><code class="language-yaml"># .github/workflows/tests.yml
+name: Tests Unitaires
+on:
+  push:
+    branches: [ main, develop, &quot;**devops**&quot;, &quot;**test**&quot; ]
+  pull_request:
+    branches: [ main, develop ]
+</code></pre>
+<p><strong>Optimisations clés :</strong>
+- ✅ <strong>Dépendances minimales</strong> : <code>pip install -r tests/requirements.txt</code> (30s vs 2m30s)
+- ✅ <strong>Coverage ciblée</strong> : <code>--cov=nbs.config</code> (97% sur module testé)
+- ✅ <strong>Chemins portables</strong> : Fonction <code>get_project_root()</code> pour dev/CI
+- ✅ <strong>Tests robustesse</strong> : Validation CI/CD depuis <code>/tmp</code></p>
+<h3 id="performance">Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Avant</th>
+<th>Après</th>
+<th>Gain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2m30s installation</td>
+<td>30s installation</td>
+<td><strong>5x plus rapide</strong></td>
+</tr>
+<tr>
+<td>Tests sur tout <code>nbs/</code></td>
+<td>Tests sur <code>nbs.config</code></td>
+<td><strong>Focus ciblé</strong></td>
+</tr>
+<tr>
+<td>Chemins absolus</td>
+<td>Chemins relatifs</td>
+<td><strong>Portable</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="frameworks-et-outils">Frameworks et Outils<a class="headerlink" href="#frameworks-et-outils" title="Permanent link">&para;</a></h2>
+<h3 id="dependances">Dépendances<a class="headerlink" href="#dependances" title="Permanent link">&para;</a></h3>
+<pre><code class="language-txt"># tests/requirements.txt - Dépendances minimales optimisées
+pytest&gt;=7.0           # Framework de tests
+pytest-mock&gt;=3.10     # Mocking avancé
+pytest-env&gt;=0.8       # Variables d'environnement
+pytest-cov&gt;=4.0       # Couverture de code
+python-dotenv&gt;=1.0.0  # Gestion .env
+PyYAML&gt;=6.0           # Parsing YAML (workflow tests)
+requests&gt;=2.25.0      # HTTP (tests futurs)
+</code></pre>
+<h3 id="patterns-de-test">Patterns de Test<a class="headerlink" href="#patterns-de-test" title="Permanent link">&para;</a></h3>
+<h4 id="1-structure-arrange-act-assert">1. Structure ARRANGE-ACT-ASSERT<a class="headerlink" href="#1-structure-arrange-act-assert" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python">def test_example_function(self, monkeypatch):
+    # ARRANGE : Préparer les données et mocks
+    test_value = &quot;example&quot;
+    monkeypatch.setenv(&quot;TEST_VAR&quot;, test_value)
+
+    # ACT : Exécuter la fonction à tester
+    result = function_to_test()
+
+    # ASSERT : Vérifier les résultats
+    assert result == expected_value
+</code></pre>
+<h4 id="2-mocking-avec-monkeypatch">2. Mocking avec Monkeypatch<a class="headerlink" href="#2-mocking-avec-monkeypatch" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python"># Variables d'environnement
+monkeypatch.setenv(&quot;API_KEY&quot;, &quot;fake_key&quot;)
+monkeypatch.delenv(&quot;OPTIONAL_VAR&quot;, raising=False)
+
+# Fonctions et méthodes
+def mock_function():
+    return &quot;fake_result&quot;
+
+monkeypatch.setattr(&quot;module.real_function&quot;, mock_function)
+</code></pre>
+<h4 id="3-organisation-en-classes">3. Organisation en Classes<a class="headerlink" href="#3-organisation-en-classes" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python">class TestConfigModule:
+    &quot;&quot;&quot;Tests pour le module de configuration&quot;&quot;&quot;
+
+    def test_specific_feature(self, monkeypatch):
+        # Test spécifique
+        pass
+</code></pre>
+<h2 id="strategies-de-mocking">Stratégies de Mocking<a class="headerlink" href="#strategies-de-mocking" title="Permanent link">&para;</a></h2>
+<h3 id="1-isolation-complete">1. Isolation Complète<a class="headerlink" href="#1-isolation-complete" title="Permanent link">&para;</a></h3>
+<p><strong>Principe</strong> : Aucun test ne doit dépendre de ressources externes.</p>
+<pre><code class="language-python"># ❌ Mauvais : Test dépend de MongoDB réel
+def test_save_entity():
+    entity = Entity(&quot;test&quot;)
+    entity.save()  # Sauvegarde dans la vraie DB
+
+# ✅ Bon : Test avec MongoDB mocké
+@patch('module.get_collection')
+def test_save_entity(mock_get_collection):
+    mock_collection = Mock()
+    mock_get_collection.return_value = mock_collection
+
+    entity = Entity(&quot;test&quot;)
+    entity.save()
+
+    mock_collection.insert_one.assert_called_once()
+</code></pre>
+<h3 id="11-mocking-des-dependances-lourdes-mlia">1.1. Mocking des Dépendances Lourdes (ML/IA) 🤖<a class="headerlink" href="#11-mocking-des-dependances-lourdes-mlia" title="Permanent link">&para;</a></h3>
+<p><strong>Problème</strong> : Les dépendances ML comme PyTorch, transformers, llama_index sont lourdes et causent des échecs en CI/CD.</p>
+<p><strong>Solution</strong> : Mock précoce au niveau <code>sys.modules</code> avant tout import.</p>
+<pre><code class="language-python">import sys
+from unittest.mock import Mock
+
+# 🔥 CRITIQUE : Mocking AVANT les imports
+# Mock des modules ML lourds
+sys.modules['torch'] = Mock()
+sys.modules['transformers'] = Mock()
+sys.modules['datasets'] = Mock()
+
+# Mock des modules système problématiques
+sys.modules['dbus'] = Mock()
+sys.modules['dbus.mainloop'] = Mock()
+sys.modules['dbus.mainloop.glib'] = Mock()
+
+# Mock des modules LlamaIndex et sous-modules
+sys.modules['llama_index'] = Mock()
+sys.modules['llama_index.core'] = Mock()
+sys.modules['llama_index.core.base'] = Mock()
+sys.modules['llama_index.core.base.embeddings'] = Mock()
+sys.modules['llama_index.embeddings'] = Mock()
+sys.modules['llama_index.embeddings.azure_openai'] = Mock()
+
+# Mock des modules Google AI
+sys.modules['google'] = Mock()
+sys.modules['google.generativeai'] = Mock()
+sys.modules['google.oauth2'] = Mock()
+sys.modules['google.oauth2.service_account'] = Mock()
+
+# PUIS seulement après, importer le module à tester
+from nbs.mongo_episode import MongoEpisode
+</code></pre>
+<p><strong>Cas d'Usage Typiques :</strong></p>
+<pre><code class="language-python">class TestMongoEpisodeWithML:
+    &quot;&quot;&quot;Tests nécessitant du mocking ML complet&quot;&quot;&quot;
+
+    def setup_method(self):
+        &quot;&quot;&quot;Mocking précoce pour chaque test&quot;&quot;&quot;
+        # Déjà fait au niveau module, mais on peut renforcer
+        pass
+
+    def test_transcription_without_torch(self):
+        &quot;&quot;&quot;Test de transcription sans installer PyTorch&quot;&quot;&quot;
+        # Le module est déjà mocké, on peut tester la logique
+        episode = MongoEpisode()
+        # Test de la logique métier sans dépendances ML
+        assert episode.collection_name == &quot;episodes&quot;
+</code></pre>
+<p><strong>⚠️ Points Critiques :</strong>
+- Le mocking doit être fait <strong>AVANT</strong> tout import du module testé
+- Utiliser <code>sys.modules</code> plutôt que <code>@patch</code> pour les dépendances transversales
+- Mocker les <strong>sous-modules</strong> également (ex: <code>llama_index.core.base</code>)
+- Tester en environnement <strong>propre</strong> (ex: nouveau terminal) pour valider</p>
+<h3 id="2-variables-denvironnement">2. Variables d'Environnement<a class="headerlink" href="#2-variables-denvironnement" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python">def test_config_with_env(self, monkeypatch):
+    # Test avec variable définie
+    monkeypatch.setenv(&quot;API_KEY&quot;, &quot;test_key&quot;)
+    result = get_api_key()
+    assert result == &quot;test_key&quot;
+
+def test_config_without_env(self, monkeypatch):
+    # Test sans variable (valeur par défaut)
+    monkeypatch.delenv(&quot;API_KEY&quot;, raising=False)
+    result = get_api_key()
+    assert result is None  # ou valeur par défaut
+</code></pre>
+<h3 id="3-mocking-de-classes-et-methodes">3. Mocking de Classes et Méthodes<a class="headerlink" href="#3-mocking-de-classes-et-methodes" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python">@patch('nbs.mongo.pymongo.MongoClient')
+def test_database_connection(mock_client):
+    mock_db = Mock()
+    mock_client.return_value = {&quot;test_db&quot;: mock_db}
+
+    collection = get_collection(&quot;localhost&quot;, &quot;test_db&quot;, &quot;test_coll&quot;)
+
+    mock_client.assert_called_once_with(&quot;mongodb://localhost:27017/&quot;)
+</code></pre>
+<h2 id="fixtures-globales">Fixtures Globales<a class="headerlink" href="#fixtures-globales" title="Permanent link">&para;</a></h2>
+<h3 id="fixtures-disponibles-conftestpy">Fixtures Disponibles (conftest.py)<a class="headerlink" href="#fixtures-disponibles-conftestpy" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python">@pytest.fixture
+def test_environment():
+    &quot;&quot;&quot;Environnement de test isolé&quot;&quot;&quot;
+
+@pytest.fixture  
+def mock_mongodb():
+    &quot;&quot;&quot;Mock complet de MongoDB&quot;&quot;&quot;
+
+@pytest.fixture
+def test_config():
+    &quot;&quot;&quot;Configuration de test standard&quot;&quot;&quot;
+</code></pre>
+<h3 id="utilisation-des-fixtures">Utilisation des Fixtures<a class="headerlink" href="#utilisation-des-fixtures" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python">def test_with_fixtures(self, test_environment, mock_mongodb):
+    # Les fixtures sont automatiquement injectées
+    # test_environment et mock_mongodb sont disponibles
+    pass
+</code></pre>
+<h2 id="couverture-de-code">Couverture de Code<a class="headerlink" href="#couverture-de-code" title="Permanent link">&para;</a></h2>
+<h3 id="mesurer-la-couverture">Mesurer la Couverture<a class="headerlink" href="#mesurer-la-couverture" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># Couverture pour un module
+pytest tests/unit/test_config.py --cov=nbs.config --cov-report=term-missing
+
+# Couverture globale
+pytest --cov=nbs --cov-report=html
+
+# Couverture avec seuil minimum
+pytest --cov=nbs --cov-fail-under=90
+</code></pre>
+<h3 id="interpreter-les-resultats">Interpréter les Résultats<a class="headerlink" href="#interpreter-les-resultats" title="Permanent link">&para;</a></h3>
+<pre><code>Name            Stmts   Miss  Cover   Missing
+---------------------------------------------
+nbs/config.py      60      2    97%   43, 154
+---------------------------------------------
+TOTAL              60      2    97%
+</code></pre>
+<ul>
+<li><strong>Stmts</strong> : Nombre total de lignes de code</li>
+<li><strong>Miss</strong> : Lignes non testées</li>
+<li><strong>Cover</strong> : Pourcentage de couverture</li>
+<li><strong>Missing</strong> : Numéros de lignes manquantes</li>
+</ul>
+<h3 id="objectifs-de-couverture">Objectifs de Couverture<a class="headerlink" href="#objectifs-de-couverture" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Minimum acceptable</strong> : 80%</li>
+<li><strong>Objectif</strong> : 90%+</li>
+<li><strong>Excellence</strong> : 95%+</li>
+</ul>
+<h2 id="commandes-principales">Commandes Principales<a class="headerlink" href="#commandes-principales" title="Permanent link">&para;</a></h2>
+<h3 id="execution-des-tests">Exécution des Tests<a class="headerlink" href="#execution-des-tests" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># Tous les tests
+pytest
+
+# Tests avec verbosité
+pytest -v
+
+# Tests spécifiques
+pytest tests/unit/test_config.py
+pytest tests/unit/test_config.py::TestConfig::test_specific
+
+# Tests avec pattern
+pytest -k &quot;test_config&quot;
+</code></pre>
+<h3 id="debug-et-developpement">Debug et Développement<a class="headerlink" href="#debug-et-developpement" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># Arrêter au premier échec
+pytest -x
+
+# Mode debug avec pdb
+pytest --pdb
+
+# Afficher les print()
+pytest -s
+
+# Tests en parallèle (avec pytest-xdist)
+pytest -n auto
+</code></pre>
+<h3 id="rapports">Rapports<a class="headerlink" href="#rapports" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># Rapport HTML de couverture
+pytest --cov=nbs --cov-report=html
+# Voir tests/htmlcov/index.html
+
+# Rapport XML (pour CI/CD)
+pytest --cov=nbs --cov-report=xml
+
+# Rapport JUnit
+pytest --junit-xml=tests/results.xml
+</code></pre>
+<h2 id="bonnes-pratiques">Bonnes Pratiques<a class="headerlink" href="#bonnes-pratiques" title="Permanent link">&para;</a></h2>
+<h3 id="1-nommage">1. Nommage<a class="headerlink" href="#1-nommage" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Fichiers</strong> : <code>test_module_name.py</code></li>
+<li><strong>Classes</strong> : <code>TestModuleName</code></li>
+<li><strong>Fonctions</strong> : <code>test_specific_behavior</code></li>
+</ul>
+<h3 id="2-documentation">2. Documentation<a class="headerlink" href="#2-documentation" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python">def test_function_behavior(self, monkeypatch):
+    &quot;&quot;&quot;Test que la fonction retourne la valeur attendue quand X&quot;&quot;&quot;
+    # Commentaires expliquant les étapes complexes
+</code></pre>
+<h3 id="3-isolation">3. Isolation<a class="headerlink" href="#3-isolation" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Chaque test doit être <strong>indépendant</strong></li>
+<li>Utiliser des <strong>mocks</strong> pour les dépendances externes</li>
+<li><strong>Nettoyer</strong> après chaque test (automatique avec fixtures)</li>
+</ul>
+<h3 id="4-lisibilite">4. Lisibilité<a class="headerlink" href="#4-lisibilite" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Un test = Un comportement</strong></li>
+<li><strong>Arrange-Act-Assert</strong> clairement séparés</li>
+<li><strong>Noms explicites</strong> pour les variables de test</li>
+</ul>
+<h3 id="5-mocking-des-dependances-lourdes-lecons-github-actions">5. Mocking des Dépendances Lourdes (Leçons GitHub Actions) 🚀<a class="headerlink" href="#5-mocking-des-dependances-lourdes-lecons-github-actions" title="Permanent link">&para;</a></h3>
+<p><strong>Problème Résolu</strong> : Import failures en CI/CD avec dépendances ML/IA</p>
+<p><strong>Stratégie Gagnante</strong> :
+1. <strong>Mock précoce</strong> : <code>sys.modules</code> avant imports
+2. <strong>Mock exhaustif</strong> : Inclure tous les sous-modules
+3. <strong>Test isolated</strong> : Valider en environnement propre
+4. <strong>Requirements split</strong> : <code>tests/requirements.txt</code> minimal</p>
+<pre><code class="language-python"># Pattern éprouvé pour nouveaux tests ML
+import sys
+from unittest.mock import Mock
+
+# Mock AVANT imports (dans l'ordre de découverte des erreurs)
+sys.modules['torch'] = Mock()
+sys.modules['transformers'] = Mock() 
+sys.modules['dbus'] = Mock()
+sys.modules['llama_index'] = Mock()
+sys.modules['google.generativeai'] = Mock()
+
+# Puis import du module
+from nbs.module_with_ml import ModuleToTest
+</code></pre>
+<p><strong>Métriques de Succès</strong> :
+- ✅ 214 tests passent en GitHub Actions
+- ✅ Installation CI : 30s (vs 2m30s avant)
+- ✅ Couverture maintenue : 72.72%
+- ✅ Zéro dépendance ML en tests</p>
+<h2 id="patterns-avances">Patterns Avancés<a class="headerlink" href="#patterns-avances" title="Permanent link">&para;</a></h2>
+<h3 id="1-mocking-de-hierarchies-complexes">1. Mocking de Hiérarchies Complexes<a class="headerlink" href="#1-mocking-de-hierarchies-complexes" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python">class MockRepo:
+    def __init__(self, path, search_parent_directories=True):
+        self.git = MockGit()
+
+class MockGit:
+    def rev_parse(self, option):
+        return &quot;/fake/git/root&quot;
+
+monkeypatch.setattr(&quot;nbs.config.Repo&quot;, MockRepo)
+</code></pre>
+<h3 id="2-tests-parametres">2. Tests Paramétrés<a class="headerlink" href="#2-tests-parametres" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python">@pytest.mark.parametrize(&quot;input,expected&quot;, [
+    (&quot;test1&quot;, &quot;result1&quot;),
+    (&quot;test2&quot;, &quot;result2&quot;),
+    (&quot;test3&quot;, &quot;result3&quot;),
+])
+def test_multiple_cases(input, expected):
+    assert function(input) == expected
+</code></pre>
+<h3 id="3-tests-dexception">3. Tests d'Exception<a class="headerlink" href="#3-tests-dexception" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python">def test_function_raises_error():
+    with pytest.raises(ValueError, match=&quot;Expected error message&quot;):
+        function_that_should_fail()
+</code></pre>
+<h2 id="depannage">Dépannage<a class="headerlink" href="#depannage" title="Permanent link">&para;</a></h2>
+<h3 id="problemes-courants">Problèmes Courants<a class="headerlink" href="#problemes-courants" title="Permanent link">&para;</a></h3>
+<h4 id="variables-denvironnement-persistantes">Variables d'Environnement Persistantes<a class="headerlink" href="#variables-denvironnement-persistantes" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python"># ❌ Les vraies variables interfèrent
+def test_without_env():
+    result = get_env_var()  # Utilise la vraie variable !
+
+# ✅ Mock complet
+def test_without_env(self, monkeypatch):
+    def mock_getenv(key, default=None):
+        return None
+    monkeypatch.setattr(os, &quot;getenv&quot;, mock_getenv)
+</code></pre>
+<h4 id="imports-et-paths">Imports et Paths<a class="headerlink" href="#imports-et-paths" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python"># ✅ Imports explicites pour les tests
+from nbs.config import function_to_test
+
+# ✅ Mocking avec le path complet
+monkeypatch.setattr(&quot;nbs.config.function&quot;, mock_function)
+</code></pre>
+<h3 id="debug-des-tests">Debug des Tests<a class="headerlink" href="#debug-des-tests" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python"># Afficher les valeurs pour debug
+def test_debug(self, monkeypatch):
+    result = function()
+    print(f&quot;Debug: result = {result}&quot;)  # Visible avec pytest -s
+    assert result == expected
+</code></pre>
+<h2 id="evolution-et-maintenance">Évolution et Maintenance<a class="headerlink" href="#evolution-et-maintenance" title="Permanent link">&para;</a></h2>
+<h3 id="ajout-de-nouveaux-tests">Ajout de Nouveaux Tests<a class="headerlink" href="#ajout-de-nouveaux-tests" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Identifier</strong> le module à tester</li>
+<li><strong>Créer</strong> le fichier <code>test_module.py</code></li>
+<li><strong>Définir</strong> les classes et méthodes de test</li>
+<li><strong>Implémenter</strong> les mocks nécessaires</li>
+<li><strong>Vérifier</strong> la couverture</li>
+</ol>
+<h3 id="refactoring">Refactoring<a class="headerlink" href="#refactoring" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Maintenir</strong> la couverture lors des changements</li>
+<li><strong>Adapter</strong> les mocks aux nouvelles signatures</li>
+<li><strong>Regrouper</strong> les fixtures communes</li>
+</ul>
+<hr />
+<p><em>Ce guide évolue avec le projet. N'hésitez pas à l'enrichir !</em> 🚀</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

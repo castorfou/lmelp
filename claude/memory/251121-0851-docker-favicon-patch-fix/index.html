@@ -1,0 +1,1595 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Fix du Patch Favicon dans Docker - Issue #78 - Documentation des APIs du repo lmelp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fix-du-patch-favicon-dans-docker-issue-78" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-header__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation des APIs du repo lmelp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fix du Patch Favicon dans Docker - Issue #78
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-nav__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation des APIs du repo lmelp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../whisper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module whisper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module rss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_episode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_episode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_auteur/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_auteur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_livre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_livre
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other kind of docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other kind of docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    manage doc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    write markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_vscode_hints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    some vs_code hints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_google/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    about Google services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_data_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_uv_devcontainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    uv devcontainer venv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_import_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    import strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_unit_test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unit tests guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    development workflow (Docker + Portainer)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#probleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problème
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagnostic-investigation-approfondie" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagnostic (Investigation approfondie)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Diagnostic (Investigation approfondie)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-bug-initial-dans-patch_streamlit_faviconpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Bug initial dans patch_streamlit_favicon.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-probleme-docker-cache-cleaning-trop-precoce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Problème Docker : Cache cleaning trop précoce
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-probleme-docker-majeur-copy-entre-stages-multi-stage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Problème Docker majeur : COPY entre stages multi-stage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution-finale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution finale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modifications-effectuees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modifications effectuées
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modifications effectuées">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-uiassetsfaviconsscriptspatch_streamlit_faviconpy-lignes-56-78" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. ui/assets/favicons/scripts/patch_streamlit_favicon.py (lignes 56-78)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-dockerbuilddockerfile-lignes-35-54" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. docker/build/Dockerfile (lignes 35-54)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-testsintegrationtest_streamlit_patchpy-lignes-112-151" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. tests/integration/test_streamlit_patch.py (lignes 112-151)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests-et-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests et validation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tests et validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tests-unitaires" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests unitaires
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests-complets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests complets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation Docker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation-visuelle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation visuelle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apprentissages-cles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apprentissages clés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Apprentissages clés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-multi-stage-docker-builds-et-modifications-de-fichiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Multi-stage Docker builds et modifications de fichiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-chemins-relatifs-dans-les-scripts-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Chemins relatifs dans les scripts Python
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-priorite-docker-vs-developpement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Priorité Docker vs développement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-cache-navigateur-et-favicons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Cache navigateur et favicons
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-debugging-docker-multi-stage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Debugging Docker multi-stage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Impact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#avant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Avant
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apres" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Après
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fichiers-modifies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fichiers modifiés
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#statistiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Statistiques
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandes-utiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commandes utiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Références
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-retenir-pour-le-futur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        À retenir pour le futur
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="fix-du-patch-favicon-dans-docker-issue-78">Fix du Patch Favicon dans Docker - Issue #78<a class="headerlink" href="#fix-du-patch-favicon-dans-docker-issue-78" title="Permanent link">&para;</a></h1>
+<p><strong>Date</strong>: 2025-11-21 08:51
+<strong>Issue</strong>: #78 - Icône crown toujours visible dans l'image Docker
+<strong>Branche</strong>: <code>78-bug-icone-crown-toujours-visible-dans-limage-docker</code>
+<strong>Issue liée</strong>: #76 (fix initial du favicon)</p>
+<h2 id="probleme">Problème<a class="headerlink" href="#probleme" title="Permanent link">&para;</a></h2>
+<p>Après la résolution de l'issue #76 qui corrigeait le flash du favicon, un nouveau bug persistait :
+- Le favicon personnalisé (masque de théâtre) fonctionnait en développement (devcontainer)
+- <strong>Mais dans l'image Docker</strong>, l'ancien favicon de Streamlit (couronne blanche) était toujours visible
+- Le patch appliqué dans le stage <code>builder</code> du Dockerfile ne se propageait pas au stage <code>runtime</code></p>
+<h2 id="diagnostic-investigation-approfondie">Diagnostic (Investigation approfondie)<a class="headerlink" href="#diagnostic-investigation-approfondie" title="Permanent link">&para;</a></h2>
+<h3 id="1-bug-initial-dans-patch_streamlit_faviconpy">1. Bug initial dans <code>patch_streamlit_favicon.py</code><a class="headerlink" href="#1-bug-initial-dans-patch_streamlit_faviconpy" title="Permanent link">&para;</a></h3>
+<p><strong>Problème découvert</strong> : Calcul incorrect du chemin du favicon personnalisé (ligne 59-60)</p>
+<pre><code class="language-python"># ❌ CODE BUGUÉ (ancien)
+project_root = Path(__file__).resolve().parent.parent
+custom_favicon = project_root / &quot;ui&quot; / &quot;assets&quot; / &quot;favicons&quot; / &quot;favicon-32x32.png&quot;
+</code></pre>
+<p>Ce code donnait :
+- <code>__file__</code> = <code>/path/to/ui/assets/favicons/scripts/patch_streamlit_favicon.py</code>
+- <code>.parent.parent</code> = <code>/path/to/ui/assets/favicons</code>
+- Chemin final = <code>/path/to/ui/assets/favicons/ui/assets/favicons/favicon-32x32.png</code> ❌ (duplication!)</p>
+<p><strong>Solution</strong> : Simplification du calcul du chemin</p>
+<pre><code class="language-python"># ✅ CODE CORRIGÉ
+script_dir = Path(__file__).resolve().parent  # scripts/
+favicons_dir = script_dir.parent  # favicons/
+custom_favicon = favicons_dir / &quot;favicon-32x32.png&quot;
+</code></pre>
+<h3 id="2-probleme-docker-cache-cleaning-trop-precoce">2. Problème Docker : Cache cleaning trop précoce<a class="headerlink" href="#2-probleme-docker-cache-cleaning-trop-precoce" title="Permanent link">&para;</a></h3>
+<p><strong>Problème</strong> : Dans le Dockerfile original, le nettoyage de <code>/tmp</code> intervenait AVANT la copie des fichiers du patch</p>
+<pre><code class="language-dockerfile"># ❌ BUGUÉ (ligne 39)
+RUN uv pip install --system -r requirements.txt || \
+    (grep -v &quot;dbus-python&quot; requirements.txt &gt; requirements-docker.txt &amp;&amp; \
+     uv pip install --system -r requirements-docker.txt) &amp;&amp; \
+    rm -rf /root/.cache/uv /tmp/*  # ← Efface /tmp !
+
+# Puis on essayait de copier dans /tmp (trop tard !)
+COPY ui/assets/favicons/favicon-32x32.png /tmp/custom-favicon.png
+</code></pre>
+<p><strong>Solution</strong> : Retirer <code>/tmp/*</code> du cleanup initial (ligne 39)</p>
+<h3 id="3-probleme-docker-majeur-copy-entre-stages-multi-stage">3. Problème Docker majeur : COPY entre stages multi-stage<a class="headerlink" href="#3-probleme-docker-majeur-copy-entre-stages-multi-stage" title="Permanent link">&para;</a></h3>
+<p><strong>Découverte critique</strong> : Le patch fonctionnait dans le stage <code>builder</code> mais PAS dans <code>runtime</code> !</p>
+<p><strong>Test effectué</strong> :</p>
+<pre><code class="language-bash"># Build du stage builder uniquement
+docker build --target builder -t lmelp-builder:debug -f docker/build/Dockerfile .
+
+# Vérification du favicon dans le builder
+docker run --rm --entrypoint bash lmelp-builder:debug -c \
+  &quot;md5sum /usr/local/lib/python3.11/site-packages/streamlit/static/favicon.png&quot;
+</code></pre>
+<p><strong>Résultat</strong> : MD5 = <code>42d91dcef2820c85b57b489f4e1b03cf</code> (notre favicon ✅)</p>
+<p><strong>Mais dans le runtime</strong> :</p>
+<pre><code class="language-bash">docker run --rm --entrypoint bash lmelp-test:issue-78 -c \
+  &quot;md5sum /usr/local/lib/python3.11/site-packages/streamlit/static/favicon.png&quot;
+</code></pre>
+<p><strong>Résultat</strong> : MD5 = <code>20356bee5e4f7b010a2d19d765d94d6f</code> (ancien favicon Streamlit ❌)</p>
+<p><strong>Cause racine</strong> : Quand Docker copie <code>/usr/local</code> du builder vers le runtime avec <code>COPY --from=builder</code>, il peut utiliser un cache ou ne pas copier correctement les fichiers modifiés APRÈS l'installation des packages.</p>
+<h2 id="solution-finale">Solution finale<a class="headerlink" href="#solution-finale" title="Permanent link">&para;</a></h2>
+<p><strong>Déplacer le patch du stage <code>builder</code> vers le stage <code>runtime</code>, APRÈS le COPY</strong></p>
+<pre><code class="language-dockerfile"># Stage 2: Builder - Install Python dependencies
+FROM base AS builder
+
+WORKDIR /build
+
+RUN pip install --no-cache-dir uv
+COPY .devcontainer/requirements.txt .
+RUN uv pip install --system -r requirements.txt || \
+    (grep -v &quot;dbus-python&quot; requirements.txt &gt; requirements-docker.txt &amp;&amp; \
+     uv pip install --system -r requirements-docker.txt) &amp;&amp; \
+    rm -rf /root/.cache/uv /tmp/*
+
+# Stage 3: Runtime image
+FROM base AS runtime
+
+WORKDIR /app
+
+# Copy Python packages from builder
+COPY --from=builder /usr/local /usr/local
+
+# ✅ Patch Streamlit favicon APRÈS avoir copié /usr/local
+# IMPORTANT: Must be done AFTER copying /usr/local from builder to ensure the patch persists
+COPY ui/assets/favicons/favicon-32x32.png /tmp/custom-favicon.png
+COPY ui/assets/favicons/scripts/patch_streamlit_favicon.py /tmp/patch_streamlit_favicon.py
+RUN python /tmp/patch_streamlit_favicon.py &amp;&amp; \
+    rm -rf /tmp/*
+</code></pre>
+<p><strong>Pourquoi ça fonctionne</strong> :
+1. Les packages Python (dont Streamlit) sont installés dans le builder
+2. <code>/usr/local</code> est copié du builder vers runtime (état initial de Streamlit)
+3. Le patch est appliqué DANS le runtime APRÈS la copie
+4. Les modifications persistent car elles sont faites directement dans l'image finale</p>
+<h2 id="modifications-effectuees">Modifications effectuées<a class="headerlink" href="#modifications-effectuees" title="Permanent link">&para;</a></h2>
+<h3 id="1-uiassetsfaviconsscriptspatch_streamlit_faviconpy-lignes-56-78">1. <code>ui/assets/favicons/scripts/patch_streamlit_favicon.py</code> (lignes 56-78)<a class="headerlink" href="#1-uiassetsfaviconsscriptspatch_streamlit_faviconpy-lignes-56-78" title="Permanent link">&para;</a></h3>
+<p><strong>Avant</strong> :</p>
+<pre><code class="language-python">def get_custom_favicon_path():
+    project_root = Path(__file__).resolve().parent.parent
+    custom_favicon = project_root / &quot;ui&quot; / &quot;assets&quot; / &quot;favicons&quot; / &quot;favicon-32x32.png&quot;
+    # ...
+</code></pre>
+<p><strong>Après</strong> :</p>
+<pre><code class="language-python">def get_custom_favicon_path():
+    &quot;&quot;&quot;Get the path to our custom favicon.&quot;&quot;&quot;
+    # First, check for Docker build context where file is copied to /tmp
+    docker_favicon = Path(&quot;/tmp/custom-favicon.png&quot;)
+    if docker_favicon.exists():
+        return docker_favicon
+
+    # Standard project location: simplified path calculation
+    script_dir = Path(__file__).resolve().parent  # scripts/
+    favicons_dir = script_dir.parent  # favicons/
+    custom_favicon = favicons_dir / &quot;favicon-32x32.png&quot;
+
+    if custom_favicon.exists():
+        return custom_favicon
+
+    return custom_favicon
+</code></pre>
+<h3 id="2-dockerbuilddockerfile-lignes-35-54">2. <code>docker/build/Dockerfile</code> (lignes 35-54)<a class="headerlink" href="#2-dockerbuilddockerfile-lignes-35-54" title="Permanent link">&para;</a></h3>
+<p><strong>Changements</strong> :
+- Ligne 39 : Retrait de <code>/tmp/*</code> du cleanup après <code>uv pip install</code>
+- Lignes 41-47 : <strong>Suppression</strong> du patch du stage builder
+- Lignes 49-54 : <strong>Ajout</strong> du patch dans le stage runtime, APRÈS <code>COPY --from=builder</code></p>
+<h3 id="3-testsintegrationtest_streamlit_patchpy-lignes-112-151">3. <code>tests/integration/test_streamlit_patch.py</code> (lignes 112-151)<a class="headerlink" href="#3-testsintegrationtest_streamlit_patchpy-lignes-112-151" title="Permanent link">&para;</a></h3>
+<p><strong>Nouveau test</strong> : <code>test_get_custom_favicon_path_returns_valid_path()</code></p>
+<p>Ce test vérifie que la fonction <code>get_custom_favicon_path()</code> retourne un chemin valide qui existe réellement.</p>
+<pre><code class="language-python">def test_get_custom_favicon_path_returns_valid_path(self):
+    &quot;&quot;&quot;Test that get_custom_favicon_path() returns a path that exists.&quot;&quot;&quot;
+    from patch_streamlit_favicon import get_custom_favicon_path
+
+    custom_path = get_custom_favicon_path()
+
+    assert custom_path.exists()
+    assert custom_path.is_file()
+    assert custom_path.name == &quot;favicon-32x32.png&quot;
+</code></pre>
+<h2 id="tests-et-validation">Tests et validation<a class="headerlink" href="#tests-et-validation" title="Permanent link">&para;</a></h2>
+<h3 id="tests-unitaires">Tests unitaires<a class="headerlink" href="#tests-unitaires" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># Tests du patch Streamlit (6 tests)
+pytest tests/integration/test_streamlit_patch.py -v
+</code></pre>
+<p><strong>Résultat</strong> : ✅ 6/6 tests passent</p>
+<h3 id="tests-complets">Tests complets<a class="headerlink" href="#tests-complets" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash">pytest tests/ -x
+</code></pre>
+<p><strong>Résultat</strong> : ✅ 283/283 tests passent</p>
+<h3 id="validation-docker">Validation Docker<a class="headerlink" href="#validation-docker" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># Build de l'image
+docker build -t lmelp-test -f docker/build/Dockerfile .
+
+# Vérification du MD5
+docker run --rm --entrypoint bash lmelp-test -c \
+  &quot;md5sum /usr/local/lib/python3.11/site-packages/streamlit/static/favicon.png&quot;
+</code></pre>
+<p><strong>Résultat</strong> : MD5 = <code>42d91dcef2820c85b57b489f4e1b03cf</code> ✅ (notre favicon personnalisé)</p>
+<h3 id="validation-visuelle">Validation visuelle<a class="headerlink" href="#validation-visuelle" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Lancer le container : <code>docker run --rm -p 8501:8501 lmelp-test</code></li>
+<li>Ouvrir le navigateur : http://localhost:8501</li>
+<li><strong>Important</strong> : Vider le cache du navigateur (Ctrl+Shift+R)</li>
+<li>✅ Le masque de théâtre s'affiche sans flash de la couronne</li>
+</ol>
+<h2 id="apprentissages-cles">Apprentissages clés<a class="headerlink" href="#apprentissages-cles" title="Permanent link">&para;</a></h2>
+<h3 id="1-multi-stage-docker-builds-et-modifications-de-fichiers">1. Multi-stage Docker builds et modifications de fichiers<a class="headerlink" href="#1-multi-stage-docker-builds-et-modifications-de-fichiers" title="Permanent link">&para;</a></h3>
+<p><strong>Leçon</strong> : Les modifications apportées aux fichiers dans un stage builder peuvent ne pas persister lors d'un <code>COPY --from=builder</code>.</p>
+<p><strong>Raison</strong> : Docker peut utiliser des caches de layers ou copier l'état initial des répertoires, pas l'état après modifications.</p>
+<p><strong>Solution</strong> : Appliquer les modifications dans le stage final (runtime), APRÈS avoir copié les dépendances.</p>
+<h3 id="2-chemins-relatifs-dans-les-scripts-python">2. Chemins relatifs dans les scripts Python<a class="headerlink" href="#2-chemins-relatifs-dans-les-scripts-python" title="Permanent link">&para;</a></h3>
+<p><strong>Leçon</strong> : Calculer des chemins relatifs avec <code>.parent.parent</code> est fragile et source d'erreurs.</p>
+<p><strong>Bonne pratique</strong> :
+- Utiliser des variables intermédiaires explicites (<code>script_dir</code>, <code>favicons_dir</code>)
+- Ajouter des commentaires pour documenter chaque étape du calcul
+- Tester avec un test dédié</p>
+<h3 id="3-priorite-docker-vs-developpement">3. Priorité Docker vs développement<a class="headerlink" href="#3-priorite-docker-vs-developpement" title="Permanent link">&para;</a></h3>
+<p><strong>Stratégie du script <code>patch_streamlit_favicon.py</code></strong> :
+1. <strong>D'abord</strong> : Vérifier <code>/tmp/custom-favicon.png</code> (contexte Docker)
+2. <strong>Ensuite</strong> : Chercher dans le projet (contexte dev)</p>
+<p>Cette priorité garantit que le contexte Docker est toujours favorisé quand il existe.</p>
+<h3 id="4-cache-navigateur-et-favicons">4. Cache navigateur et favicons<a class="headerlink" href="#4-cache-navigateur-et-favicons" title="Permanent link">&para;</a></h3>
+<p><strong>Piège</strong> : Les navigateurs cachent agressivement les favicons !</p>
+<p><strong>Solution pour tester</strong> :
+- Vider complètement le cache (Ctrl+Shift+R ou Ctrl+F5)
+- Ou tester en navigation privée
+- Ou aller directement sur <code>/favicon.png</code> pour vérifier</p>
+<h3 id="5-debugging-docker-multi-stage">5. Debugging Docker multi-stage<a class="headerlink" href="#5-debugging-docker-multi-stage" title="Permanent link">&para;</a></h3>
+<p><strong>Techniques utilisées</strong> :</p>
+<pre><code class="language-bash"># Build d'un stage spécifique
+docker build --target builder -t debug-builder .
+
+# Inspection d'un stage
+docker run --rm --entrypoint bash debug-builder -c &quot;commandes...&quot;
+
+# Ajout de logs temporaires dans RUN
+RUN echo &quot;=== Debug ===&quot; &amp;&amp; commande &amp;&amp; echo &quot;=== End ===&quot;
+</code></pre>
+<h2 id="impact">Impact<a class="headerlink" href="#impact" title="Permanent link">&para;</a></h2>
+<h3 id="avant">Avant<a class="headerlink" href="#avant" title="Permanent link">&para;</a></h3>
+<ul>
+<li>❌ Favicon personnalisé ne fonctionnait pas dans Docker</li>
+<li>❌ Couronne blanche (défaut Streamlit) visible dans les containers</li>
+<li>❌ Bug dans le calcul du chemin du script de patch</li>
+<li>❌ Ordre incorrect des opérations dans le Dockerfile</li>
+</ul>
+<h3 id="apres">Après<a class="headerlink" href="#apres" title="Permanent link">&para;</a></h3>
+<ul>
+<li>✅ Favicon personnalisé fonctionne en dev ET en Docker</li>
+<li>✅ Aucun flash de la couronne lors du chargement</li>
+<li>✅ Chemin du favicon calculé correctement</li>
+<li>✅ Patch appliqué au bon moment dans le build Docker</li>
+<li>✅ 6 tests de validation du patch (100% pass)</li>
+<li>✅ Architecture Docker propre et maintenable</li>
+</ul>
+<h2 id="fichiers-modifies">Fichiers modifiés<a class="headerlink" href="#fichiers-modifies" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong><code>ui/assets/favicons/scripts/patch_streamlit_favicon.py</code></strong> (+10 lignes, -5 lignes)</li>
+<li>Correction du calcul du chemin du favicon</li>
+<li>
+<p>Priorité à <code>/tmp/custom-favicon.png</code> (Docker)</p>
+</li>
+<li>
+<p><strong><code>docker/build/Dockerfile</code></strong> (+6 lignes, -7 lignes)</p>
+</li>
+<li>Déplacement du patch du builder vers runtime</li>
+<li>Retrait de <code>/tmp/*</code> du cleanup initial</li>
+<li>
+<p>Ajout de commentaires explicatifs</p>
+</li>
+<li>
+<p><strong><code>tests/integration/test_streamlit_patch.py</code></strong> (+40 lignes)</p>
+</li>
+<li>Nouveau test <code>test_get_custom_favicon_path_returns_valid_path()</code></li>
+</ol>
+<h2 id="statistiques">Statistiques<a class="headerlink" href="#statistiques" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Temps d'investigation</strong> : ~2h (tests Docker, debugging multi-stage)</li>
+<li><strong>Lignes modifiées</strong> : 56 (+56, -12)</li>
+<li><strong>Tests ajoutés</strong> : 1 (total: 6 tests de patch favicon)</li>
+<li><strong>Couverture</strong> : 283/283 tests passent (100%)</li>
+</ul>
+<h2 id="commandes-utiles">Commandes utiles<a class="headerlink" href="#commandes-utiles" title="Permanent link">&para;</a></h2>
+<pre><code class="language-bash"># Build de l'image Docker
+docker build -t lmelp:latest -f docker/build/Dockerfile .
+
+# Test du favicon dans l'image
+docker run --rm --entrypoint bash lmelp:latest -c \
+  &quot;md5sum /usr/local/lib/python3.11/site-packages/streamlit/static/favicon.png&quot;
+
+# Lancement du container
+docker run --rm -p 8501:8501 lmelp:latest
+
+# Debug du stage builder
+docker build --target builder -t lmelp-builder:debug -f docker/build/Dockerfile .
+docker run --rm --entrypoint bash lmelp-builder:debug
+</code></pre>
+<h2 id="references">Références<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Issue #78</strong> : https://github.com/castorfou/lmelp/issues/78</li>
+<li><strong>Issue #76</strong> : https://github.com/castorfou/lmelp/issues/76 (fix initial du favicon)</li>
+<li><strong>Streamlit Issue #9058</strong> : https://github.com/streamlit/streamlit/issues/9058</li>
+<li><strong>Mémoire précédente</strong> : <code>251120-2342-streamlit-favicon-flash-fix.md</code></li>
+</ul>
+<h2 id="a-retenir-pour-le-futur">À retenir pour le futur<a class="headerlink" href="#a-retenir-pour-le-futur" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Docker multi-stage</strong> : Les modifications de fichiers doivent être faites dans le stage final</li>
+<li><strong>Calcul de chemins</strong> : Toujours simplifier et documenter les calculs de chemins relatifs</li>
+<li><strong>Tests de chemins</strong> : Ajouter des tests qui vérifient l'existence des fichiers retournés</li>
+<li><strong>Cache navigateur</strong> : Toujours vider le cache lors des tests de favicons</li>
+<li><strong>Debugging Docker</strong> : Utiliser <code>--target</code> pour inspecter les stages intermédiaires</li>
+<li><strong>TDD sauve la vie</strong> : Le test RED a immédiatement révélé le bug du chemin</li>
+</ol>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>Cette issue a révélé <strong>deux bugs distincts</strong> :</p>
+<ol>
+<li><strong>Bug logique</strong> dans <code>patch_streamlit_favicon.py</code> : calcul incorrect du chemin</li>
+<li><strong>Bug d'architecture Docker</strong> : patch appliqué au mauvais moment (avant le COPY)</li>
+</ol>
+<p>La solution finale combine :
+- Correction du code Python (chemin simplifié)
+- Réorganisation du Dockerfile (patch dans runtime)
+- Tests robustes (validation du chemin)</p>
+<p>Le favicon personnalisé fonctionne maintenant parfaitement en développement ET en production (Docker) ! 🎭</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

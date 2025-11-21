@@ -1,0 +1,1488 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Fix du Flash du Favicon Streamlit - Issue #76 - Documentation des APIs du repo lmelp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fix-du-flash-du-favicon-streamlit-issue-76" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-header__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation des APIs du repo lmelp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fix du Flash du Favicon Streamlit - Issue #76
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-nav__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation des APIs du repo lmelp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../whisper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module whisper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module rss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_episode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_episode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_auteur/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_auteur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_livre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_livre
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other kind of docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other kind of docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    manage doc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    write markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_vscode_hints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    some vs_code hints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_google/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    about Google services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_data_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_uv_devcontainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    uv devcontainer venv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_import_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    import strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_unit_test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unit tests guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    development workflow (Docker + Portainer)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#probleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problème
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cause-racine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cause Racine
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution-implementee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution Implémentée
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Solution Implémentée">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#script-de-patch-automatise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Script de Patch Automatisé
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatisation-deux-contextes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatisation : Deux Contextes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatisation : Deux Contextes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-devcontainer-devcontainerpostcreatecommandsh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Devcontainer (.devcontainer/postCreateCommand.sh)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-docker-dockerbuilddockerfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Docker (docker/build/Dockerfile)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests-tdd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests (TDD)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tests (TDD)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#strategie-de-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stratégie de Test
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fichiers-crees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fichiers Créés
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fichiers-modifies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fichiers Modifiés
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#statistiques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Statistiques
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apprentissages-cles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apprentissages Clés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Apprentissages Clés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-probleme-non-resolu-dans-streamlit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Problème Non Résolu dans Streamlit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-solution-hacky-mais-officiellement-recommandee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Solution "Hacky" Mais Officiellement Recommandée
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-automatisation-critique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Automatisation Critique
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-tests-de-modifications-systeme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Tests de Modifications Système
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-support-multi-environnement-dans-un-seul-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Support Multi-Environnement dans un Seul Script
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Impact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#avant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Avant
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apres" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Après
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandes-utiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commandes Utiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Références
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-retenir-pour-le-futur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        À Retenir pour le Futur
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="fix-du-flash-du-favicon-streamlit-issue-76">Fix du Flash du Favicon Streamlit - Issue #76<a class="headerlink" href="#fix-du-flash-du-favicon-streamlit-issue-76" title="Permanent link">&para;</a></h1>
+<p><strong>Date</strong>: 2025-11-20 23:42
+<strong>Issue</strong>: #76 - Bug favicon (flash de la couronne blanche)
+<strong>Branche</strong>: <code>76-bug-favicon</code>
+<strong>Commit</strong>: <code>6530621</code></p>
+<h2 id="probleme">Problème<a class="headerlink" href="#probleme" title="Permanent link">&para;</a></h2>
+<p>Après l'implémentation du favicon personnalisé (issue #74), un bug persistait :
+- Le favicon par défaut de Streamlit (couronne blanche/fond noir) s'affiche brièvement avant le favicon personnalisé (masque de théâtre/fond vert)
+- Les bookmarks capturent l'ancien favicon au lieu du nouveau
+- L'expérience utilisateur est dégradée par ce "flash"</p>
+<h2 id="cause-racine">Cause Racine<a class="headerlink" href="#cause-racine" title="Permanent link">&para;</a></h2>
+<p><strong>Limitation connue de Streamlit</strong> (GitHub issue #9058) :
+- Le favicon par défaut est hardcodé dans <code>streamlit/static/favicon.png</code>
+- Il est chargé dans le HTML initial <strong>avant</strong> que JavaScript n'exécute <code>st.set_page_config()</code>
+- Aucune option de configuration officielle (<code>server.favIconPath</code> n'existe pas dans Streamlit 1.51.0)</p>
+<p><strong>Consensus communautaire</strong> : La seule solution fiable est de <strong>patcher directement l'installation Streamlit</strong>.</p>
+<h2 id="solution-implementee">Solution Implémentée<a class="headerlink" href="#solution-implementee" title="Permanent link">&para;</a></h2>
+<h3 id="script-de-patch-automatise">Script de Patch Automatisé<a class="headerlink" href="#script-de-patch-automatise" title="Permanent link">&para;</a></h3>
+<p><strong>Fichier</strong> : <code>ui/assets/favicons/scripts/patch_streamlit_favicon.py</code> (144 lignes)</p>
+<p><strong>Fonctionnement</strong> :
+1. Détecte automatiquement le chemin d'installation de Streamlit
+2. Sauvegarde l'original (<code>favicon.png.original</code>)
+3. Remplace par notre favicon personnalisé (<code>favicon-32x32.png</code>)
+4. Support multi-environnement (dev + Docker)</p>
+<pre><code class="language-bash"># Appliquer le patch
+python ui/assets/favicons/scripts/patch_streamlit_favicon.py
+
+# Restaurer l'original
+python ui/assets/favicons/scripts/patch_streamlit_favicon.py --restore
+</code></pre>
+<h3 id="automatisation-deux-contextes">Automatisation : Deux Contextes<a class="headerlink" href="#automatisation-deux-contextes" title="Permanent link">&para;</a></h3>
+<h4 id="1-devcontainer-devcontainerpostcreatecommandsh">1. Devcontainer (<code>.devcontainer/postCreateCommand.sh</code>)<a class="headerlink" href="#1-devcontainer-devcontainerpostcreatecommandsh" title="Permanent link">&para;</a></h4>
+<p>Ajout d'une fonction <code>patch_streamlit_favicon()</code> exécutée après l'installation des dépendances :</p>
+<pre><code class="language-bash">patch_streamlit_favicon() {
+    if [ -f &quot;.venv/bin/activate&quot; ]; then
+        source .venv/bin/activate
+        python ui/assets/favicons/scripts/patch_streamlit_favicon.py
+    fi
+}
+</code></pre>
+<p><strong>Trigger</strong> : À chaque reconstruction du devcontainer</p>
+<h4 id="2-docker-dockerbuilddockerfile">2. Docker (<code>docker/build/Dockerfile</code>)<a class="headerlink" href="#2-docker-dockerbuilddockerfile" title="Permanent link">&para;</a></h4>
+<p>Intégration dans le stage <code>builder</code> après l'installation de Streamlit :</p>
+<pre><code class="language-dockerfile"># Patch Streamlit favicon to prevent default crown icon flash
+COPY ui/assets/favicons/favicon-32x32.png /tmp/custom-favicon.png
+COPY ui/assets/favicons/scripts/patch_streamlit_favicon.py /tmp/patch_streamlit_favicon.py
+RUN python /tmp/patch_streamlit_favicon.py &amp;&amp; \
+    rm /tmp/custom-favicon.png /tmp/patch_streamlit_favicon.py
+</code></pre>
+<p><strong>Avantage</strong> : Le favicon patché est copié dans l'image runtime avec <code>/usr/local</code></p>
+<h2 id="tests-tdd">Tests (TDD)<a class="headerlink" href="#tests-tdd" title="Permanent link">&para;</a></h2>
+<p><strong>Fichier</strong> : <code>tests/integration/test_streamlit_patch.py</code> (98 lignes, 5 tests)</p>
+<h3 id="strategie-de-test">Stratégie de Test<a class="headerlink" href="#strategie-de-test" title="Permanent link">&para;</a></h3>
+<p>Utilisation de <strong>hash MD5</strong> pour comparer les fichiers binaires (images PNG) :</p>
+<pre><code class="language-python">1. test_streamlit_favicon_exists
+   → Vérifie existence du favicon Streamlit
+
+2. test_custom_favicon_exists
+   → Vérifie existence de notre favicon
+
+3. test_backup_exists_after_patch
+   → Vérifie que le backup a été créé
+
+4. test_streamlit_favicon_matches_custom
+   → Compare MD5 : Streamlit = notre favicon
+
+5. test_backup_different_from_custom
+   → Compare MD5 : backup ≠ notre favicon (preuve du patch)
+</code></pre>
+<p><strong>Résultat</strong> : ✅ 5/5 tests passent</p>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<h3 id="fichiers-crees">Fichiers Créés<a class="headerlink" href="#fichiers-crees" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong><code>ui/assets/favicons/scripts/patch_streamlit_favicon.py</code></strong> (144 lignes)</li>
+<li>Script de patch avec backup automatique</li>
+<li>Support dev + Docker</li>
+<li>Messages clairs avec emojis</li>
+<li>
+<p>Réversible</p>
+</li>
+<li>
+<p><strong><code>ui/assets/favicons/scripts/README_patch_favicon.md</code></strong> (88 lignes)</p>
+</li>
+<li>Explication du problème</li>
+<li>Instructions d'utilisation</li>
+<li>Quand exécuter le patch</li>
+<li>
+<p>Références aux issues Streamlit</p>
+</li>
+<li>
+<p><strong><code>tests/integration/test_streamlit_patch.py</code></strong> (98 lignes)</p>
+</li>
+<li>5 tests de validation</li>
+<li>Vérification par hash MD5</li>
+</ol>
+<h3 id="fichiers-modifies">Fichiers Modifiés<a class="headerlink" href="#fichiers-modifies" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong><code>.devcontainer/postCreateCommand.sh</code></strong> (+19 lignes)</li>
+<li>Fonction <code>patch_streamlit_favicon()</code></li>
+<li>
+<p>Appelée après <code>setup_git</code></p>
+</li>
+<li>
+<p><strong><code>docker/build/Dockerfile</code></strong> (+7 lignes)</p>
+</li>
+<li>Patch dans stage <code>builder</code></li>
+<li>
+<p>Cleanup des fichiers temporaires</p>
+</li>
+<li>
+<p><strong><code>ui/assets/favicons/README.md</code></strong> (+34 lignes, -5 lignes)</p>
+</li>
+<li>Nouvelle section "Patch Streamlit"</li>
+<li>Documentation de l'automatisation</li>
+<li>Lien vers README_patch_favicon.md</li>
+</ol>
+<h2 id="statistiques">Statistiques<a class="headerlink" href="#statistiques" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Total lignes ajoutées</strong> : 390</li>
+<li><strong>Total lignes supprimées</strong> : 5</li>
+<li><strong>Fichiers créés</strong> : 3</li>
+<li><strong>Fichiers modifiés</strong> : 3</li>
+<li><strong>Tests</strong> : 5 (100% pass)</li>
+<li><strong>Temps de patch</strong> : &lt; 1 seconde</li>
+</ul>
+<h2 id="apprentissages-cles">Apprentissages Clés<a class="headerlink" href="#apprentissages-cles" title="Permanent link">&para;</a></h2>
+<h3 id="1-probleme-non-resolu-dans-streamlit">1. Problème Non Résolu dans Streamlit<a class="headerlink" href="#1-probleme-non-resolu-dans-streamlit" title="Permanent link">&para;</a></h3>
+<p>Ce n'est <strong>pas un bug</strong> mais une <strong>limitation d'architecture</strong> :
+- Le HTML initial contient le favicon par défaut
+- JavaScript (st.set_page_config) s'exécute après
+- Streamlit n'a pas d'option pour changer le favicon dans l'HTML initial</p>
+<h3 id="2-solution-hacky-mais-officiellement-recommandee">2. Solution "Hacky" Mais Officiellement Recommandée<a class="headerlink" href="#2-solution-hacky-mais-officiellement-recommandee" title="Permanent link">&para;</a></h3>
+<p>La communauté Streamlit recommande explicitement cette approche :</p>
+<blockquote>
+<p>"I do not believe there is an easy fix for this unless you go directly into root folder of streamlit and edit the title/favicon there"</p>
+</blockquote>
+<p>Références :
+- GitHub issue #9058 (ouvert depuis 2023, toujours ouvert)
+- Discussion #74003 (juillet 2024)
+- Discussion #30884 (septembre 2022)</p>
+<h3 id="3-automatisation-critique">3. Automatisation Critique<a class="headerlink" href="#3-automatisation-critique" title="Permanent link">&para;</a></h3>
+<p>Le patch doit être appliqué <strong>automatiquement</strong> car il est perdu à chaque :
+- Mise à jour de Streamlit (<code>pip install --upgrade streamlit</code>)
+- Reconstruction du devcontainer
+- Build de l'image Docker
+- Création d'un nouvel environnement virtuel</p>
+<p><strong>Notre solution</strong> : Intégrer dans les scripts d'installation (devcontainer + Docker)</p>
+<h3 id="4-tests-de-modifications-systeme">4. Tests de Modifications Système<a class="headerlink" href="#4-tests-de-modifications-systeme" title="Permanent link">&para;</a></h3>
+<p>Les tests vérifient une modification dans <code>site-packages</code> (hors du code du projet).</p>
+<p><strong>Technique</strong> : Utilisation de hash MD5 pour comparer des images binaires :</p>
+<pre><code class="language-python">with open(favicon_path, 'rb') as f:
+    file_hash = hashlib.md5(f.read()).hexdigest()
+</code></pre>
+<h3 id="5-support-multi-environnement-dans-un-seul-script">5. Support Multi-Environnement dans un Seul Script<a class="headerlink" href="#5-support-multi-environnement-dans-un-seul-script" title="Permanent link">&para;</a></h3>
+<p>Le script détecte automatiquement son contexte :
+- <strong>Développement</strong> : <code>project_root/ui/assets/favicons/favicon-32x32.png</code>
+- <strong>Docker</strong> : <code>/tmp/custom-favicon.png</code> (copié par Dockerfile)</p>
+<p>Cela évite de dupliquer la logique entre dev et prod.</p>
+<h2 id="impact">Impact<a class="headerlink" href="#impact" title="Permanent link">&para;</a></h2>
+<h3 id="avant">Avant<a class="headerlink" href="#avant" title="Permanent link">&para;</a></h3>
+<ul>
+<li>❌ Flash visible du favicon par défaut</li>
+<li>❌ Bookmarks capturent le mauvais favicon</li>
+<li>❌ Expérience utilisateur dégradée</li>
+</ul>
+<h3 id="apres">Après<a class="headerlink" href="#apres" title="Permanent link">&para;</a></h3>
+<ul>
+<li>✅ Aucun flash, favicon personnalisé dès le début</li>
+<li>✅ Bookmarks capturent le bon favicon</li>
+<li>✅ Automatisation complète (dev + prod)</li>
+<li>✅ Tests garantissent le bon fonctionnement</li>
+<li>✅ Documentation exhaustive</li>
+</ul>
+<h2 id="commandes-utiles">Commandes Utiles<a class="headerlink" href="#commandes-utiles" title="Permanent link">&para;</a></h2>
+<pre><code class="language-bash"># Appliquer le patch manuellement
+python ui/assets/favicons/scripts/patch_streamlit_favicon.py
+
+# Restaurer l'original
+python ui/assets/favicons/scripts/patch_streamlit_favicon.py --restore
+
+# Tester le patch
+pytest tests/integration/test_streamlit_patch.py -v
+
+# Vérifier l'état du patch
+ls -la .venv/lib/python*/site-packages/streamlit/static/favicon.*
+</code></pre>
+<h2 id="references">Références<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Streamlit Issue #9058</strong> : https://github.com/streamlit/streamlit/issues/9058</li>
+<li><strong>Discussion #74003</strong> : https://discuss.streamlit.io/t/favicon-and-title-change-during-refresh/74003</li>
+<li><strong>Discussion #30884</strong> : https://discuss.streamlit.io/t/page-title-icon-flicker-before-override/30884</li>
+<li><strong>Issue #76</strong> : https://github.com/castorfou/lmelp/issues/76</li>
+<li><strong>PR</strong> : (à compléter après création de la PR)</li>
+</ul>
+<h2 id="a-retenir-pour-le-futur">À Retenir pour le Futur<a class="headerlink" href="#a-retenir-pour-le-futur" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Streamlit 1.51.0</strong> n'a pas d'option de configuration pour le favicon initial</li>
+<li><strong>Le patch est nécessaire</strong> tant que Streamlit n'implémente pas #9058</li>
+<li><strong>Automatisation essentielle</strong> : intégrer dans postCreateCommand + Dockerfile</li>
+<li><strong>Tests MD5</strong> : bonne approche pour vérifier des modifications de fichiers binaires</li>
+<li><strong>Script réversible</strong> : toujours backup avant de patcher</li>
+<li><strong>Multi-environnement</strong> : un seul script pour dev + Docker grâce à la détection de contexte</li>
+</ol>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>Cette solution résout <strong>définitivement</strong> le problème du flash du favicon en :
+1. <strong>Patchant</strong> directement l'installation Streamlit (seule solution viable)
+2. <strong>Automatisant</strong> le patch pour qu'il survive aux reconstructions
+3. <strong>Testant</strong> avec validation MD5 du patch
+4. <strong>Documentant</strong> pour la maintenabilité future</p>
+<p>C'est une approche "hacky" mais c'est la <strong>seule solution recommandée par la communauté</strong> en attendant une implémentation officielle dans Streamlit.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

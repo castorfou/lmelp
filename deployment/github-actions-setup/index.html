@@ -1,0 +1,1540 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>GitHub Actions Setup for Docker CI/CD - Documentation des APIs du repo lmelp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#github-actions-setup-for-docker-cicd" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Documentation des APIs du repo lmelp" class="md-header__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation des APIs du repo lmelp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              GitHub Actions Setup for Docker CI/CD
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Documentation des APIs du repo lmelp" class="md-nav__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation des APIs du repo lmelp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../whisper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module whisper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module rss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mongo_episode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_episode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mongo_auteur/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_auteur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mongo_livre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_livre
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other kind of docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other kind of docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    manage doc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    write markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_vscode_hints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    some vs_code hints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_google/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    about Google services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_data_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_uv_devcontainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    uv devcontainer venv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_import_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    import strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_unit_test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unit tests guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    development workflow (Docker + Portainer)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflow Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Triggers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tags-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github-secrets-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Secrets Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GitHub Secrets Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Required Secrets
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Required Secrets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#github_token-automatic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GITHUB_TOKEN (automatic)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional Secrets
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional Secrets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#portainer_webhook_url" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PORTAINER_WEBHOOK_URL
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Permissions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#first-time-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First Time Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="First Time Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-enable-github-container-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Enable GitHub Container Registry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-test-the-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Test the Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-monitor-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Monitor Build
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-verify-published-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Verify Published Image
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-published-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using the Published Image
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using the Published Image">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pull-latest-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull Latest Version
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pull-specific-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull Specific Version
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-in-docker-compose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use in docker-compose
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build Cache
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#build-fails-with-permission-denied" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build fails with "permission denied"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#portainer-webhook-not-triggered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Portainer webhook not triggered
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-takes-too-long" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build takes too long
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#out-of-disk-space-during-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Out of disk space during build
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-build-and-push" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Build and Push
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#release-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Release Process
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-status-badge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow Status Badge
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="github-actions-setup-for-docker-cicd">GitHub Actions Setup for Docker CI/CD<a class="headerlink" href="#github-actions-setup-for-docker-cicd" title="Permanent link">&para;</a></h1>
+<p>This guide explains how to configure GitHub Actions to automatically build and publish Docker images for lmelp.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The CI/CD pipeline automatically:
+1. Builds Docker image on push to <code>main</code> or version tags (<code>v*.*.*</code>)
+2. Publishes image to GitHub Container Registry (ghcr.io)
+3. Triggers Portainer webhook for auto-deployment on NAS (optional)</p>
+<h2 id="workflow-configuration">Workflow Configuration<a class="headerlink" href="#workflow-configuration" title="Permanent link">&para;</a></h2>
+<p>The workflow is defined in <code>.github/workflows/docker-publish.yml</code>.</p>
+<h3 id="triggers">Triggers<a class="headerlink" href="#triggers" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Push to <code>main</code></strong>: Builds and tags as <code>latest</code></li>
+<li><strong>Version tags</strong> (<code>v1.0.0</code>, <code>v1.2.3</code>, etc.): Builds and tags with version</li>
+<li><strong>Manual</strong>: Can be triggered manually via GitHub Actions UI</li>
+</ul>
+<h3 id="tags-strategy">Tags Strategy<a class="headerlink" href="#tags-strategy" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Git Action</th>
+<th>Docker Tags Generated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Push to <code>main</code></td>
+<td><code>latest</code>, <code>main</code></td>
+</tr>
+<tr>
+<td>Tag <code>v1.2.3</code></td>
+<td><code>latest</code>, <code>v1.2.3</code>, <code>v1.2</code>, <code>v1</code>, <code>1.2.3</code>, <code>1.2</code>, <code>1</code></td>
+</tr>
+<tr>
+<td>PR #42</td>
+<td><code>pr-42</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="github-secrets-configuration">GitHub Secrets Configuration<a class="headerlink" href="#github-secrets-configuration" title="Permanent link">&para;</a></h2>
+<h3 id="required-secrets">Required Secrets<a class="headerlink" href="#required-secrets" title="Permanent link">&para;</a></h3>
+<h4 id="github_token-automatic"><code>GITHUB_TOKEN</code> (automatic)<a class="headerlink" href="#github_token-automatic" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Description</strong>: Automatically provided by GitHub Actions</li>
+<li><strong>Purpose</strong>: Authenticate to GitHub Container Registry</li>
+<li><strong>Configuration</strong>: None needed - automatically available</li>
+</ul>
+<h3 id="optional-secrets">Optional Secrets<a class="headerlink" href="#optional-secrets" title="Permanent link">&para;</a></h3>
+<h4 id="portainer_webhook_url"><code>PORTAINER_WEBHOOK_URL</code><a class="headerlink" href="#portainer_webhook_url" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Description</strong>: Webhook URL from Portainer for auto-deployment</li>
+<li><strong>Purpose</strong>: Trigger automatic deployment on NAS when new image is pushed</li>
+<li><strong>Required</strong>: Only if you want auto-deployment on NAS</li>
+</ul>
+<p><strong>How to configure:</strong></p>
+<ol>
+<li><strong>Get webhook URL from Portainer:</strong></li>
+<li>Open Portainer web UI</li>
+<li>Navigate to your lmelp stack</li>
+<li>Go to "Webhooks" section</li>
+<li>Create a new webhook</li>
+<li>
+<p>Copy the webhook URL (format: <code>https://portainer.your-nas.com/api/webhooks/xxx</code>)</p>
+</li>
+<li>
+<p><strong>Add to GitHub:</strong></p>
+</li>
+<li>Go to your repository: https://github.com/castorfou/lmelp</li>
+<li>Click <code>Settings</code> → <code>Secrets and variables</code> → <code>Actions</code></li>
+<li>Click <code>New repository secret</code></li>
+<li>Name: <code>PORTAINER_WEBHOOK_URL</code></li>
+<li>Value: Paste the webhook URL from Portainer</li>
+<li>Click <code>Add secret</code></li>
+</ol>
+<h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h2>
+<p>The workflow requires the following permissions (already configured):</p>
+<pre><code class="language-yaml">permissions:
+  contents: read    # Read repository code
+  packages: write   # Publish to GitHub Container Registry
+</code></pre>
+<h2 id="first-time-setup">First Time Setup<a class="headerlink" href="#first-time-setup" title="Permanent link">&para;</a></h2>
+<h3 id="1-enable-github-container-registry">1. Enable GitHub Container Registry<a class="headerlink" href="#1-enable-github-container-registry" title="Permanent link">&para;</a></h3>
+<p>GitHub Container Registry (ghcr.io) is enabled by default for public repositories. For private repositories:</p>
+<ol>
+<li>Go to repository <code>Settings</code> → <code>Packages</code></li>
+<li>Ensure packages are enabled</li>
+</ol>
+<h3 id="2-test-the-workflow">2. Test the Workflow<a class="headerlink" href="#2-test-the-workflow" title="Permanent link">&para;</a></h3>
+<p><strong>Option A: Manual trigger</strong>
+1. Go to <code>Actions</code> tab in GitHub
+2. Select <code>Build and Publish Docker Image</code>
+3. Click <code>Run workflow</code>
+4. Select branch <code>main</code>
+5. Click <code>Run workflow</code></p>
+<p><strong>Option B: Push to main</strong></p>
+<pre><code class="language-bash"># Make a small change
+echo &quot;# Docker deployment&quot; &gt;&gt; docs/deployment/README.md
+git add docs/deployment/README.md
+git commit -m &quot;Trigger Docker build&quot;
+git push origin main
+</code></pre>
+<p><strong>Option C: Create a version tag</strong></p>
+<pre><code class="language-bash">git tag v0.1.0
+git push origin v0.1.0
+</code></pre>
+<h3 id="3-monitor-build">3. Monitor Build<a class="headerlink" href="#3-monitor-build" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Go to <code>Actions</code> tab in GitHub</li>
+<li>Click on the running workflow</li>
+<li>Watch the build progress</li>
+<li>Estimated time: 10-15 minutes (first build with cache)</li>
+</ol>
+<h3 id="4-verify-published-image">4. Verify Published Image<a class="headerlink" href="#4-verify-published-image" title="Permanent link">&para;</a></h3>
+<p>After successful build:</p>
+<ol>
+<li>Go to repository main page</li>
+<li>Click <code>Packages</code> (right sidebar)</li>
+<li>You should see <code>lmelp</code> package listed</li>
+<li>Click on it to see all tags</li>
+</ol>
+<p><strong>Or via command line:</strong></p>
+<pre><code class="language-bash"># List available tags
+docker pull ghcr.io/castorfou/lmelp:latest
+
+# View image details
+docker inspect ghcr.io/castorfou/lmelp:latest
+</code></pre>
+<h2 id="using-the-published-image">Using the Published Image<a class="headerlink" href="#using-the-published-image" title="Permanent link">&para;</a></h2>
+<h3 id="pull-latest-version">Pull Latest Version<a class="headerlink" href="#pull-latest-version" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash">docker pull ghcr.io/castorfou/lmelp:latest
+</code></pre>
+<h3 id="pull-specific-version">Pull Specific Version<a class="headerlink" href="#pull-specific-version" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash">docker pull ghcr.io/castorfou/lmelp:v1.0.0
+</code></pre>
+<h3 id="use-in-docker-compose">Use in docker-compose<a class="headerlink" href="#use-in-docker-compose" title="Permanent link">&para;</a></h3>
+<p>The <code>docker-compose.yml</code> already references the published image:</p>
+<pre><code class="language-yaml">services:
+  app:
+    image: ghcr.io/castorfou/lmelp:latest
+</code></pre>
+<p>Update to latest:</p>
+<pre><code class="language-bash">cd docker/deployment/
+docker compose pull &amp;&amp; docker compose up -d
+</code></pre>
+<h2 id="build-cache">Build Cache<a class="headerlink" href="#build-cache" title="Permanent link">&para;</a></h2>
+<p>The workflow uses GitHub Actions cache to speed up builds:</p>
+<ul>
+<li><strong>First build</strong>: ~10-15 minutes (no cache)</li>
+<li><strong>Subsequent builds</strong>: ~5-8 minutes (with cache)</li>
+</ul>
+<p>Cache is automatically managed by GitHub Actions.</p>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="build-fails-with-permission-denied">Build fails with "permission denied"<a class="headerlink" href="#build-fails-with-permission-denied" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: <code>GITHUB_TOKEN</code> doesn't have write access to packages</p>
+<p><strong>Solution</strong>:
+1. Check repository settings
+2. Ensure packages are enabled for the repository</p>
+<h3 id="portainer-webhook-not-triggered">Portainer webhook not triggered<a class="headerlink" href="#portainer-webhook-not-triggered" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: <code>PORTAINER_WEBHOOK_URL</code> secret not configured or incorrect</p>
+<p><strong>Solution</strong>:
+1. Verify webhook URL in Portainer
+2. Check secret is correctly configured in GitHub
+3. Check workflow logs for webhook call errors</p>
+<h3 id="build-takes-too-long">Build takes too long<a class="headerlink" href="#build-takes-too-long" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: Large ML models (Whisper, Transformers) need to be downloaded</p>
+<p><strong>Solution</strong>: This is normal for first build. Subsequent builds use cache.</p>
+<h3 id="out-of-disk-space-during-build">Out of disk space during build<a class="headerlink" href="#out-of-disk-space-during-build" title="Permanent link">&para;</a></h3>
+<p><strong>Cause</strong>: GitHub Actions runners have limited space</p>
+<p><strong>Solution</strong>:
+- The Dockerfile uses multi-stage build to minimize size
+- Clean up unnecessary files in <code>.dockerignore</code>
+- If still failing, review Dockerfile for optimization</p>
+<h2 id="manual-build-and-push">Manual Build and Push<a class="headerlink" href="#manual-build-and-push" title="Permanent link">&para;</a></h2>
+<p>For testing or emergency deployments:</p>
+<pre><code class="language-bash"># Build locally
+docker build -f docker/build/Dockerfile -t ghcr.io/castorfou/lmelp:manual .
+
+# Login to GitHub Container Registry
+echo $GITHUB_TOKEN | docker login ghcr.io -u castorfou --password-stdin
+
+# Push
+docker push ghcr.io/castorfou/lmelp:manual
+</code></pre>
+<h2 id="release-process">Release Process<a class="headerlink" href="#release-process" title="Permanent link">&para;</a></h2>
+<p>To create a new release:</p>
+<pre><code class="language-bash"># Create and push tag
+git tag -a v1.0.0 -m &quot;Release version 1.0.0&quot;
+git push origin v1.0.0
+
+# GitHub Actions will automatically:
+# 1. Build image
+# 2. Tag as v1.0.0, v1.0, v1, latest
+# 3. Push to ghcr.io
+# 4. Trigger Portainer webhook (if configured)
+</code></pre>
+<h2 id="workflow-status-badge">Workflow Status Badge<a class="headerlink" href="#workflow-status-badge" title="Permanent link">&para;</a></h2>
+<p>Add to README.md:</p>
+<pre><code class="language-markdown">[![Docker Build](https://github.com/castorfou/lmelp/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/castorfou/lmelp/actions/workflows/docker-publish.yml)
+</code></pre>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<p>After CI/CD is configured:</p>
+<ol>
+<li><a href="portainer-guide.md">Configure Portainer on NAS</a> (to be created)</li>
+<li><a href="nas-deployment.md">Setup reverse proxy</a> (to be created)</li>
+<li><a href="troubleshooting.md">Configure monitoring</a> (to be created)</li>
+</ol>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://docs.github.com/en/actions">GitHub Actions Documentation</a></li>
+<li><a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry">GitHub Container Registry</a></li>
+<li><a href="https://github.com/docker/build-push-action">Docker Build Action</a></li>
+<li><a href="https://github.com/docker/metadata-action">Docker Metadata Action</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
