@@ -55,17 +55,24 @@ def get_streamlit_favicon_path():
 
 def get_custom_favicon_path():
     """Get the path to our custom favicon."""
-    # First, try the standard project location
-    project_root = Path(__file__).resolve().parent.parent
-    custom_favicon = project_root / "ui" / "assets" / "favicons" / "favicon-32x32.png"
-
-    if custom_favicon.exists():
-        return custom_favicon
-
-    # Fallback for Docker build context where file is copied to /tmp
+    # First, check for Docker build context where file is copied to /tmp
     docker_favicon = Path("/tmp/custom-favicon.png")
     if docker_favicon.exists():
         return docker_favicon
+
+    # Standard project location: go up 4 levels from script location
+    # __file__ = /path/to/ui/assets/favicons/scripts/patch_streamlit_favicon.py
+    # .parent = /path/to/ui/assets/favicons/scripts
+    # .parent.parent = /path/to/ui/assets/favicons
+    # .parent.parent.parent = /path/to/ui/assets
+    # .parent.parent.parent.parent = /path/to/ui
+    # Then back down to favicons
+    script_dir = Path(__file__).resolve().parent  # scripts/
+    favicons_dir = script_dir.parent  # favicons/
+    custom_favicon = favicons_dir / "favicon-32x32.png"
+
+    if custom_favicon.exists():
+        return custom_favicon
 
     # If neither exists, return the standard location (will fail with proper error)
     return custom_favicon

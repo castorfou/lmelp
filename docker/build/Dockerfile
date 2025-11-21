@@ -38,13 +38,6 @@ RUN uv pip install --system -r requirements.txt || \
     # Clean up uv cache to save space
     rm -rf /root/.cache/uv /tmp/*
 
-# Patch Streamlit favicon to prevent default crown icon flash
-# Note: This must be done after Streamlit installation and before runtime stage
-COPY ui/assets/favicons/favicon-32x32.png /tmp/custom-favicon.png
-COPY ui/assets/favicons/scripts/patch_streamlit_favicon.py /tmp/patch_streamlit_favicon.py
-RUN python /tmp/patch_streamlit_favicon.py && \
-    rm /tmp/custom-favicon.png /tmp/patch_streamlit_favicon.py
-
 # Stage 3: Runtime image
 FROM base AS runtime
 
@@ -52,6 +45,13 @@ WORKDIR /app
 
 # Copy Python packages from builder
 COPY --from=builder /usr/local /usr/local
+
+# Patch Streamlit favicon to prevent default crown icon flash
+# IMPORTANT: Must be done AFTER copying /usr/local from builder to ensure the patch persists
+COPY ui/assets/favicons/favicon-32x32.png /tmp/custom-favicon.png
+COPY ui/assets/favicons/scripts/patch_streamlit_favicon.py /tmp/patch_streamlit_favicon.py
+RUN python /tmp/patch_streamlit_favicon.py && \
+    rm -rf /tmp/*
 
 # Copy application code
 COPY nbs/ /app/nbs/

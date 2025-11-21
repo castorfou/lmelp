@@ -108,3 +108,44 @@ class TestStreamlitPatch:
             "Backup favicon should be different from custom favicon. "
             "This suggests the original Streamlit favicon was never backed up properly."
         )
+
+    def test_get_custom_favicon_path_returns_valid_path(self):
+        """Test that get_custom_favicon_path() returns a path that exists."""
+        # Import the function from the patch script
+        import sys
+        from pathlib import Path
+
+        script_path = (
+            Path(__file__).resolve().parent.parent.parent
+            / "ui"
+            / "assets"
+            / "favicons"
+            / "scripts"
+            / "patch_streamlit_favicon.py"
+        )
+
+        # Add the script directory to sys.path to import it
+        sys.path.insert(0, str(script_path.parent))
+
+        try:
+            from patch_streamlit_favicon import get_custom_favicon_path
+
+            # Get the path from the function
+            custom_path = get_custom_favicon_path()
+
+            # Verify the path exists
+            assert (
+                custom_path.exists()
+            ), f"get_custom_favicon_path() returned non-existent path: {custom_path}"
+            assert (
+                custom_path.is_file()
+            ), f"get_custom_favicon_path() returned path is not a file: {custom_path}"
+
+            # Verify it's the right file (favicon-32x32.png)
+            assert (
+                custom_path.name == "favicon-32x32.png"
+            ), f"Expected filename 'favicon-32x32.png', got: {custom_path.name}"
+
+        finally:
+            # Clean up sys.path
+            sys.path.pop(0)
