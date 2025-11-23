@@ -116,6 +116,7 @@
 - `transcription`: Texte transcrit
 - `audio_file`: Chemin fichier audio
 - `title`, `summary`, `url`
+- `masked`: Booléen (défaut: False) - Permet de masquer un épisode sans le supprimer (ex: Goncourt, épisodes mal détectés)
 
 **RSS_episode** - Épisodes RSS
 - Hérite de `Episode`
