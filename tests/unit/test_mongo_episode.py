@@ -576,11 +576,15 @@ class TestMaskedField:
         """Test que Episode possède un champ masked"""
         from nbs.mongo_episode import Episode
 
-        # Arrange
-        episode = Episode(date="2024-12-22T09:59:39", titre="Test Episode")
+        # Arrange - Mock pour éviter la connexion MongoDB
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
 
-        # Assert
-        assert hasattr(episode, "masked"), "Episode should have a 'masked' field"
+        with patch("nbs.mongo_episode.get_collection", return_value=mock_collection):
+            episode = Episode(date="2024-12-22T09:59:39", titre="Test Episode")
+
+            # Assert
+            assert hasattr(episode, "masked"), "Episode should have a 'masked' field"
 
     def test_episode_masked_default_value(self):
         """Test que masked a False comme valeur par défaut"""
@@ -601,16 +605,20 @@ class TestMaskedField:
         """Test que to_dict() inclut le champ masked"""
         from nbs.mongo_episode import Episode
 
-        # Arrange
-        episode = Episode(date="2024-12-22T09:59:39", titre="Test Episode")
-        episode.masked = True
+        # Arrange - Mock pour éviter la connexion MongoDB
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
 
-        # Act
-        result = episode.to_dict()
+        with patch("nbs.mongo_episode.get_collection", return_value=mock_collection):
+            episode = Episode(date="2024-12-22T09:59:39", titre="Test Episode")
+            episode.masked = True
 
-        # Assert
-        assert "masked" in result, "to_dict() should include masked field"
-        assert result["masked"] is True
+            # Act
+            result = episode.to_dict()
+
+            # Assert
+            assert "masked" in result, "to_dict() should include masked field"
+            assert result["masked"] is True
 
     def test_episodes_get_entries_filters_masked_by_default(self):
         """Test que get_entries() filtre les épisodes masqués par défaut"""
