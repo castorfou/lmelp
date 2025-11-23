@@ -24,6 +24,7 @@ from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 # Import dbus only if available (not available in Docker)
 try:
     import dbus
+
     DBUS_AVAILABLE = True
 except ImportError:
     DBUS_AVAILABLE = False
@@ -192,6 +193,7 @@ class Episode:
             self.transcription: Optional[str] = episode.get("transcription")
             self.type: Optional[str] = episode.get("type")
             self.duree: int = episode.get("duree", -1)
+            self.masked: bool = episode.get("masked", False)
         else:
             self.description = None
             self.url_telechargement = None
@@ -199,6 +201,7 @@ class Episode:
             self.transcription = None
             self.type = None
             self.duree = -1  # en secondes
+            self.masked = False
 
     @classmethod
     def from_oid(cls, oid: ObjectId, collection_name: str = "episodes") -> "Episode":
@@ -281,6 +284,7 @@ class Episode:
                     "transcription": self.transcription,
                     "type": self.type,
                     "duree": self.duree,
+                    "masked": self.masked,
                 }
             )
             return 1
@@ -455,12 +459,12 @@ class Episode:
             {"_id": self.get_oid()}, {"$set": {"transcription": self.transcription}}
         )
 
-    def to_dict(self) -> Dict[str, Union[str, datetime, int, None]]:
+    def to_dict(self) -> Dict[str, Union[str, datetime, int, None, bool]]:
         """Convertit l'épisode en dictionnaire.
 
         Returns:
-            Dict[str, Union[str, datetime, int, None]]: Dictionnaire contenant les informations de l'épisode.
-                Les clés sont ['date', 'titre', 'description', 'url_telechargement', 'audio_rel_filename', 'transcription', 'type', 'duree'].
+            Dict[str, Union[str, datetime, int, None, bool]]: Dictionnaire contenant les informations de l'épisode.
+                Les clés sont ['date', 'titre', 'description', 'url_telechargement', 'audio_rel_filename', 'transcription', 'type', 'duree', 'masked'].
         """
         return {
             "date": self.date,
@@ -471,6 +475,7 @@ class Episode:
             "transcription": self.transcription,
             "type": self.type,
             "duree": self.duree,
+            "masked": self.masked,
         }
 
     def get_all_auteurs(self) -> List[str]:
@@ -832,7 +837,9 @@ class Episodes:
     #     """
     #     return self.get_entries()
 
-    def get_entries(self, request: Any = "", limit: int = -1):
+    def get_entries(
+        self, request: Any = "", limit: int = -1, include_masked: bool = False
+    ):
         """
         Mets dans self.oid_episodes les oids correspondant à une requête spécifique, triés par date décroissante.
         Si limit est spécifié, seuls les limit premiers résultats sont conservés.
@@ -840,21 +847,53 @@ class Episodes:
             request (Any): Requête MongoDB à exécuter. Exemples:
                 {"$or": [{"transcription": ""}, {"transcription": None}]}.
                 Par défaut, une requête vide qui retourne tous les épisodes.
+            include_masked (bool): Si False (par défaut), exclut les épisodes avec masked=True.
+                Si True, inclut tous les épisodes y compris les masqués.
         """
+        # Construire la requête finale en combinant request et le filtre masked
+        if not include_masked:
+            # Ajouter le filtre pour exclure les épisodes masqués
+            masked_filter = {
+                "$or": [{"masked": {"$ne": True}}, {"masked": {"$exists": False}}]
+            }
+
+            if request and request != "":
+                # Combiner la requête existante avec le filtre masked
+                final_request = {"$and": [request, masked_filter]}
+            else:
+                # Utiliser uniquement le filtre masked
+                final_request = masked_filter
+        else:
+            # Utiliser la requête telle quelle sans filtrer masked
+            final_request = request if request != "" else {}
+
         if limit == -1:
-            results = self.collection.find(request, {"_id": 1}).sort({"date": -1})
+            results = self.collection.find(final_request, {"_id": 1}).sort({"date": -1})
         else:
             results = (
-                self.collection.find(request, {"_id": 1})
+                self.collection.find(final_request, {"_id": 1})
                 .sort({"date": -1})
                 .limit(limit)
             )
         self.oid_episodes = [document["_id"] for document in results]
 
-    def len_total_entries(self) -> int:
+    def len_total_entries(self, include_masked: bool = False) -> int:
         """
-        Retourne le nombre total d'épisodes dans la collection."""
-        return self.collection.estimated_document_count()
+        Retourne le nombre total d'épisodes dans la collection.
+
+        Args:
+            include_masked (bool): Si False (par défaut), exclut les épisodes masqués du comptage.
+                Si True, compte tous les épisodes y compris les masqués.
+        """
+        if not include_masked:
+            # Compter uniquement les épisodes non masqués
+            masked_filter = {
+                "$or": [{"masked": {"$ne": True}}, {"masked": {"$exists": False}}]
+            }
+            return self.collection.count_documents(masked_filter)
+        else:
+            # Compter tous les épisodes
+            return self.collection.estimated_document_count()
 
     def get_missing_transcriptions(self):
         """

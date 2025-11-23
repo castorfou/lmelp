@@ -567,3 +567,132 @@ class TestEpisodeClassMethods:
 
             # Assert
             assert result is None
+
+
+class TestMaskedField:
+    """Tests pour le champ masked des épisodes"""
+
+    def test_episode_has_masked_field(self):
+        """Test que Episode possède un champ masked"""
+        from nbs.mongo_episode import Episode
+
+        # Arrange - Mock pour éviter la connexion MongoDB
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with patch("nbs.mongo_episode.get_collection", return_value=mock_collection):
+            episode = Episode(date="2024-12-22T09:59:39", titre="Test Episode")
+
+            # Assert
+            assert hasattr(episode, "masked"), "Episode should have a 'masked' field"
+
+    def test_episode_masked_default_value(self):
+        """Test que masked a False comme valeur par défaut"""
+        from nbs.mongo_episode import Episode
+
+        # Arrange - Mock pour s'assurer que l'épisode n'existe PAS en DB
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None  # L'épisode n'existe pas
+
+        with patch("nbs.mongo_episode.get_collection", return_value=mock_collection):
+            episode = Episode(date="2024-12-22T09:59:39", titre="Test Episode")
+
+            # Assert
+            assert hasattr(episode, "masked"), "Episode should have a 'masked' field"
+            assert episode.masked is False, "masked should default to False"
+
+    def test_episode_to_dict_includes_masked(self):
+        """Test que to_dict() inclut le champ masked"""
+        from nbs.mongo_episode import Episode
+
+        # Arrange - Mock pour éviter la connexion MongoDB
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with patch("nbs.mongo_episode.get_collection", return_value=mock_collection):
+            episode = Episode(date="2024-12-22T09:59:39", titre="Test Episode")
+            episode.masked = True
+
+            # Act
+            result = episode.to_dict()
+
+            # Assert
+            assert "masked" in result, "to_dict() should include masked field"
+            assert result["masked"] is True
+
+    def test_episodes_get_entries_filters_masked_by_default(self):
+        """Test que get_entries() filtre les épisodes masqués par défaut"""
+        from nbs.mongo_episode import Episodes
+
+        # Arrange - Mock MongoDB collection
+        mock_collection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_cursor.sort.return_value = mock_cursor
+
+        # Simuler 2 épisodes: 1 normal, 1 masqué
+        mock_cursor.__iter__.return_value = iter(
+            [
+                {"_id": ObjectId("507f1f77bcf86cd799439011")},
+            ]
+        )
+
+        mock_collection.find.return_value = mock_cursor
+
+        with patch("nbs.mongo_episode.get_collection", return_value=mock_collection):
+            # Act
+            episodes = Episodes()
+            episodes.get_entries()
+
+            # Assert - Vérifier que find() a été appelé avec le filtre masked
+            find_calls = mock_collection.find.call_args_list
+            assert len(find_calls) > 0, "find() should have been called"
+
+            # Le premier argument de find() devrait contenir le filtre
+            first_call_query = find_calls[0][0][0] if find_calls[0][0] else {}
+            assert (
+                "$or" in first_call_query or "masked" in first_call_query
+            ), "Query should filter masked episodes"
+
+    def test_episodes_get_entries_with_include_masked_true(self):
+        """Test que get_entries(include_masked=True) inclut les épisodes masqués"""
+        from nbs.mongo_episode import Episodes
+
+        # Arrange - Mock MongoDB collection
+        mock_collection = MagicMock()
+        mock_cursor = MagicMock()
+        mock_cursor.sort.return_value = mock_cursor
+
+        # Simuler 3 épisodes: 2 normaux, 1 masqué
+        mock_cursor.__iter__.return_value = iter(
+            [
+                {"_id": ObjectId("507f1f77bcf86cd799439011")},
+                {"_id": ObjectId("507f1f77bcf86cd799439012")},
+                {"_id": ObjectId("507f1f77bcf86cd799439013")},
+            ]
+        )
+
+        mock_collection.find.return_value = mock_cursor
+
+        with patch("nbs.mongo_episode.get_collection", return_value=mock_collection):
+            # Act
+            episodes = Episodes()
+            episodes.get_entries(include_masked=True)
+
+            # Assert - Vérifier que find() a été appelé sans filtre masked
+            find_calls = mock_collection.find.call_args_list
+            assert len(find_calls) > 0, "find() should have been called"
+
+            # Avec include_masked=True, la requête ne devrait PAS filtrer sur masked
+            first_call_query = find_calls[0][0][0] if find_calls[0][0] else {}
+            # Si c'est une string vide, c'est OK (pas de filtre)
+            # Si c'est un dict, il ne devrait pas contenir de filtre masked
+            if isinstance(first_call_query, dict) and first_call_query:
+                assert (
+                    "masked" not in first_call_query
+                    or first_call_query.get("masked") != False
+                ), "Query should NOT filter masked episodes when include_masked=True"
+
+            # Vérifier qu'on a bien 3 résultats
+            assert (
+                len(episodes.oid_episodes) == 3
+            ), "Should return all episodes including masked ones"
