@@ -19,6 +19,7 @@
         "**/.venv": true,
     },
     "markdown.extension.toc.updateOnSave": true,
+	"remote.autoForwardPorts": false,    
     "github-actions.workflows.pinned.workflows": [
         ".github/workflows/ci.yml",
         "dynamic/pages/pages-build-deployment"

@@ -55,7 +55,7 @@ def afficher_episodes(episodes_df):
     # Ajoutez ici le code pour afficher les épisodes
     episodes_df = episodes_df.copy()
     episodes_df["date"] = episodes_df["date"].apply(lambda x: format_date(x))
-    st.dataframe(episodes_df, use_container_width=True)
+    st.dataframe(episodes_df, width="stretch")
 
 
 def afficher_un_episode(episodes_df):
@@ -111,7 +111,7 @@ def nb_mots_transcription(episodes_df):
     )
 
     # Afficher le graphique
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 # Sidebar pour la navigation
