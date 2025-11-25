@@ -359,7 +359,7 @@ def afficher_selection_episode():
             disabled=bool(
                 st.session_state.selected_episode_index >= len(episodes_df) - 1
             ),
-            use_container_width=True,
+            width="stretch",
             key="prev_btn",
         ):
             # IMPORTANT: Convertir en int natif pour éviter les problèmes de type
@@ -377,7 +377,7 @@ def afficher_selection_episode():
         if st.button(
             "Suivant ➡️",
             disabled=bool(st.session_state.selected_episode_index == 0),
-            use_container_width=True,
+            width="stretch",
             key="next_btn",
         ):
             # IMPORTANT: Convertir en int natif pour éviter les problèmes de type
