@@ -4,7 +4,7 @@
 
 set -e
 
-# Mode d'exécution : web (Streamlit) ou batch (scripts)
+# Mode d'execution : web (Streamlit) ou batch (scripts)
 MODE=${LMELP_MODE:-web}
 
 echo "=================================="
