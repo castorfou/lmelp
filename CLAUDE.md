@@ -100,7 +100,8 @@
 │
 ├── .github/workflows/            # CI/CD
 │   ├── tests.yml                 # Tests unitaires + linting
-│   └── ci.yml                    # Déploiement documentation
+│   ├── docs.yml                  # Déploiement documentation (GitHub Pages)
+│   └── docker-publish.yml        # Build et publication image Docker
 │
 ├── db/                           # Sauvegardes DB & archives web
 ├── audios/                       # Fichiers audio téléchargés (par année)
@@ -303,7 +304,8 @@ Chaque branche de feature a son propre dossier `vibe/[BRANCH-NAME]/`.
 
 **GitHub Actions** (.github/workflows/):
 - `tests.yml` - Exécute tests + linting sur chaque push/PR
-- `ci.yml` - Déploie la documentation sur GitHub Pages
+- `docs.yml` - Déploie la documentation sur GitHub Pages (via artifacts)
+- `docker-publish.yml` - Build et publie l'image Docker sur ghcr.io
 
 ### Couverture par module
 

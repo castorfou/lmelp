@@ -6,8 +6,7 @@
   - [✏️ Modifier les docstrings](#️-modifier-les-docstrings)
   - [🖥️ Lancer le serveur de développement](#️-lancer-le-serveur-de-développement)
   - [🏗️ Générer la documentation statique](#️-générer-la-documentation-statique)
-  - [🚢 Pousser sous github pages](#-pousser-sous-github-pages)
-  - [🤖 automatisation complete avec github-actions github-pages](#-automatisation-complete-avec-github-actions-github-pages)
+  - [🤖 Automatisation complète avec GitHub Actions & GitHub Pages](#-automatisation-complète-avec-github-actions--github-pages)
 - [📄 Résumé](#-résumé)
 
 Voici une solution complète pour créer une documentation avec MkDocs et le thème Material, en incluant l'extraction automatique de la doc de vos fichiers .py grâce à l'extension mkdocstrings. 💡
@@ -141,24 +140,29 @@ uv run mkdocs build
 
 Le site sera créé dans le dossier `site/`, prêt à être déployé. 💡
 
-## 🚢 Pousser sous github pages
-```bash
-mkdocs gh-deploy
-```
+## 🤖 Automatisation complète avec GitHub Actions & GitHub Pages
 
-ou avec uv  
-```bash
-uv run mkdocs gh-deploy
-```
+Le projet utilise la **méthode moderne GitHub Actions artifacts** pour déployer automatiquement la documentation. 💡
 
-## 🤖 automatisation complete avec github-actions github-pages
-[doc Material for MkDocs: Publishing your site¶](https://squidfunk.github.io/mkdocs-material/publishing-your-site/) 💡
+### Configuration actuelle
 
-Several steps: 💡  
-- copy/paste `.github/workflows/ci.yml` ⭐  
-- at each commit/push (in main), this fires, builds and deploys doc ⭐  
-- it is accessible in [https://castorfou.github.io/lmelp](https://castorfou.github.io/lmelp) ⭐  
-- display a link to doc from repo GitHub page: `Edit repository details` > Check `Use your GitHub Pages website` ⭐  
+Le workflow `.github/workflows/docs.yml` se déclenche automatiquement : ⭐
+- À chaque push/commit sur la branche `main` ⭐
+- Uniquement si des fichiers dans `docs/**`, `mkdocs.yml` ou le workflow lui-même changent ⭐
+- Build la doc MkDocs et la déploie via artifacts (pas de branche `gh-pages`) ⭐
+- Documentation accessible sur [https://castorfou.github.io/lmelp](https://castorfou.github.io/lmelp) ⭐
+
+### Configuration GitHub Pages requise
+
+Pour que le déploiement fonctionne : ⭐
+1. Aller dans **Settings > Pages** du repo ⭐
+2. Dans **Source**, sélectionner **"GitHub Actions"** (pas "Deploy from a branch") ⭐
+3. Le lien vers la doc apparaît dans `About` : `Edit repository details` > ✓ `Use your GitHub Pages website` ⭐
+
+### Références
+
+- [Documentation officielle GitHub Pages avec GitHub Actions](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow) 💡
+- [Guide Material for MkDocs](https://squidfunk.github.io/mkdocs-material/publishing-your-site/) 💡  
 
 # 📄 Résumé
 
