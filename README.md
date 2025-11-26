@@ -85,7 +85,7 @@ on change la doc depuis `docs` (génie) 😊
 - APIs 🚀
 - Quelques astuces ou choix de conception 🔍
 
-Mkdocs+github actions ramasse tout cela (branche main uniquement) et publie sur le [github pages du projet](https://castorfou.github.io/lmelp/) 📦
+MkDocs + GitHub Actions (`.github/workflows/docs.yml`) compile et déploie automatiquement la documentation (branche main uniquement) sur [GitHub Pages](https://castorfou.github.io/lmelp/) 📦
 
 Expliqué à https://castorfou.github.io/lmelp/readme_doc/ 👍
 
