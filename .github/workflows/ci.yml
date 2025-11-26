@@ -2,8 +2,8 @@ name: Deploy MkDocs to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
-    paths: [ 'docs/**', 'mkdocs.yml' ]
+    branches: [ main, '67-moderniser-le-déploiement-github-pages-méthode-artifacts' ]
+    paths: [ 'docs/**', 'mkdocs.yml', '.github/workflows/ci.yml' ]
   pull_request:
     branches: [ main ]
     paths: [ 'docs/**', 'mkdocs.yml' ]
