@@ -16,3 +16,5 @@ nbs/french_authors_cache.json
 htmlcov/
 .pytest_cache/
 .venv/PR-description.md
+
+site/
