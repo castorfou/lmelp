@@ -7,17 +7,14 @@ set -e
 # Mode d'execution : web (Streamlit) ou batch (scripts)
 MODE=${LMELP_MODE:-web}
 
-echo "=================================="
-echo "lmelp - Le Masque et la Plume"
-echo "Mode: $MODE"
-echo "=================================="
+echo "[lmelp] Starting in $MODE mode..."
 
 if [ "$MODE" = "web" ]; then
-    echo "Starting Streamlit web interface..."
     exec streamlit run ui/lmelp.py \
         --server.port=8501 \
         --server.address=0.0.0.0 \
-        --server.headless=true
+        --server.headless=true \
+        --logger.level=info
 
 elif [ "$MODE" = "batch-update" ]; then
     echo "Running RSS update script..."

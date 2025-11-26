@@ -26,4 +26,6 @@
     ],
     // https://code.visualstudio.com/docs/python/run#_native-repl
     "python.REPL.sendToNativeREPL": true,
+    "terminal.integrated.suggest.cdPath": "off",
+    "terminal.integrated.suggest.inlineSuggestion": "off",
 }
