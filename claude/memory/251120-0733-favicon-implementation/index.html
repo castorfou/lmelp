@@ -1,0 +1,1326 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Implémentation du Favicon Streamlit - Issue #74 - Documentation des APIs du repo lmelp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#implementation-du-favicon-streamlit-issue-74" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-header__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation des APIs du repo lmelp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Implémentation du Favicon Streamlit - Issue #74
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-nav__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation des APIs du repo lmelp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../whisper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module whisper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module rss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_episode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_episode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_auteur/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_auteur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_livre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_livre
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other kind of docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other kind of docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    manage doc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    write markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_vscode_hints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    some vs_code hints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_google/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    about Google services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_data_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_uv_devcontainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    uv devcontainer venv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_import_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    import strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_unit_test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unit tests guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    development workflow (Docker + Portainer)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#contexte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contexte
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apprentissages-cles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apprentissages Clés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Apprentissages Clés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configuration-streamlit-multi-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configuration Streamlit Multi-Pages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-chargement-du-favicon-avec-pil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Chargement du Favicon avec PIL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-generation-multi-format-des-favicons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Génération Multi-Format des Favicons
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-structure-de-fichiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Structure de Fichiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-tests-tdd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Tests TDD
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decisions-techniques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Décisions Techniques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Décisions Techniques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pourquoi-favicon-32x32png-et-pas-faviconico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pourquoi favicon-32x32.png et pas favicon.ico ?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pourquoi-un-seul-point-de-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pourquoi un seul point de configuration ?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#organisation-des-fichiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organisation des fichiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pieges-evites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pièges Évités
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pièges Évités">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#piege-1-chemins-relatifs-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ Piège 1 : Chemins relatifs string
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#piege-2-duplication-dans-chaque-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ Piège 2 : Duplication dans chaque page
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#piege-3-format-ico-au-lieu-de-png" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❌ Piège 3 : Format ICO au lieu de PNG
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandes-utiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commandes Utiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Références
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-retenir-pour-le-futur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        À Retenir pour le Futur
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="implementation-du-favicon-streamlit-issue-74">Implémentation du Favicon Streamlit - Issue #74<a class="headerlink" href="#implementation-du-favicon-streamlit-issue-74" title="Permanent link">&para;</a></h1>
+<p><strong>Date</strong>: 2025-11-20 07:33
+<strong>Issue</strong>: #74 - Changer le favicon du site
+<strong>Branche</strong>: <code>74-changer-le-favicon-du-site</code></p>
+<h2 id="contexte">Contexte<a class="headerlink" href="#contexte" title="Permanent link">&para;</a></h2>
+<p>Remplacement du favicon par défaut de l'interface Streamlit par un favicon personnalisé provenant du projet back-office-lmelp.</p>
+<h2 id="apprentissages-cles">Apprentissages Clés<a class="headerlink" href="#apprentissages-cles" title="Permanent link">&para;</a></h2>
+<h3 id="1-configuration-streamlit-multi-pages">1. Configuration Streamlit Multi-Pages<a class="headerlink" href="#1-configuration-streamlit-multi-pages" title="Permanent link">&para;</a></h3>
+<p><strong>Découverte importante</strong> : Dans une application Streamlit multi-pages, le <code>st.set_page_config()</code> de la <strong>page principale</strong> s'applique automatiquement à toutes les sous-pages.</p>
+<p><strong>Architecture finale</strong> :
+- ✅ <strong>Page principale</strong> (<code>ui/lmelp.py</code>) : Configure le favicon une seule fois
+- ✅ <strong>Sous-pages</strong> (<code>ui/pages/*.py</code>) : Héritent automatiquement, pas de duplication
+- ❌ <strong>Anti-pattern</strong> : Répéter <code>st.set_page_config()</code> dans chaque sous-page</p>
+<h3 id="2-chargement-du-favicon-avec-pil">2. Chargement du Favicon avec PIL<a class="headerlink" href="#2-chargement-du-favicon-avec-pil" title="Permanent link">&para;</a></h3>
+<p><strong>Problème initial</strong> : Les chemins relatifs string ne fonctionnent pas toujours avec Streamlit.</p>
+<p><strong>Solution</strong> : Utiliser PIL.Image pour charger le favicon :</p>
+<pre><code class="language-python">from pathlib import Path
+from PIL import Image
+
+# Load favicon
+favicon_path = Path(__file__).parent / &quot;assets&quot; / &quot;favicons&quot; / &quot;favicon-32x32.png&quot;
+favicon = Image.open(favicon_path)
+
+st.set_page_config(
+    page_title=&quot;le masque et la plume&quot;,
+    page_icon=favicon,  # Objet PIL.Image, pas un string
+    layout=&quot;wide&quot;,
+    initial_sidebar_state=&quot;auto&quot;,
+)
+</code></pre>
+<p><strong>Pourquoi PIL ?</strong>
+- ✅ Chemins absolus résolus correctement
+- ✅ Objet Image accepté nativement par Streamlit
+- ✅ Pas de problèmes de cache navigateur
+- ❌ Les chemins string relatifs peuvent échouer silencieusement</p>
+<h3 id="3-generation-multi-format-des-favicons">3. Génération Multi-Format des Favicons<a class="headerlink" href="#3-generation-multi-format-des-favicons" title="Permanent link">&para;</a></h3>
+<p><strong>Script</strong> : <code>ui/assets/favicons/scripts/generate_favicons.py</code></p>
+<p><strong>Formats générés</strong> (7 fichiers) :
+- <code>favicon.ico</code> - Multi-taille (16, 32, 48)
+- <code>favicon-16x16.png</code>, <code>favicon-32x32.png</code>, <code>favicon-48x48.png</code> - Formats standard
+- <code>apple-touch-icon.png</code> (180x180) - iOS
+- <code>android-chrome-192x192.png</code>, <code>android-chrome-512x512.png</code> - Android/PWA</p>
+<p><strong>Technique</strong> : Redimensionnement avec <code>Image.Resampling.LANCZOS</code> pour qualité optimale</p>
+<h3 id="4-structure-de-fichiers">4. Structure de Fichiers<a class="headerlink" href="#4-structure-de-fichiers" title="Permanent link">&para;</a></h3>
+<pre><code>ui/
+├── lmelp.py                           # Configure favicon (PIL)
+├── assets/
+│   └── favicons/
+│       ├── favicon.png                # Source (1327x1328)
+│       ├── favicon-32x32.png          # Utilisé par Streamlit
+│       ├── [6 autres formats]
+│       ├── scripts/
+│       │   └── generate_favicons.py   # Script de génération
+│       └── README.md                  # Documentation
+└── pages/
+    ├── 1_episodes.py                  # Pas de page_icon
+    ├── 2_auteurs.py                   # Hérite du favicon
+    ├── 3_livres.py                    # Hérite du favicon
+    └── 4_avis_critiques.py            # Hérite du favicon
+</code></pre>
+<p><strong>Rationale</strong> : Script dans <code>ui/assets/favicons/scripts/</code> car utilisé rarement (pas dans <code>scripts/</code> principal)</p>
+<h3 id="5-tests-tdd">5. Tests TDD<a class="headerlink" href="#5-tests-tdd" title="Permanent link">&para;</a></h3>
+<p><strong>Approche</strong> : RED → GREEN → REFACTOR</p>
+<p><strong>Tests créés</strong> :
+1. <code>tests/integration/test_favicons.py</code> - Existence et validité des fichiers
+2. <code>tests/integration/test_favicon_usage.py</code> - Architecture et cohérence</p>
+<p><strong>Tests clés</strong> :</p>
+<pre><code class="language-python"># Vérifie que seule la page principale configure le favicon
+def test_main_page_uses_favicon_with_pil(ui_files)
+
+# Vérifie que les sous-pages n'ont PAS de configuration
+def test_subpages_dont_configure_favicon(ui_files)
+
+# Vérifie l'utilisation de PIL.Image
+def test_favicon_path_uses_pil_image(ui_files)
+</code></pre>
+<p><strong>Valeur</strong> : Les tests guident le refactoring et détectent les duplications</p>
+<h2 id="decisions-techniques">Décisions Techniques<a class="headerlink" href="#decisions-techniques" title="Permanent link">&para;</a></h2>
+<h3 id="pourquoi-favicon-32x32png-et-pas-faviconico">Pourquoi favicon-32x32.png et pas favicon.ico ?<a class="headerlink" href="#pourquoi-favicon-32x32png-et-pas-faviconico" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Streamlit gère mieux les PNG que les ICO</li>
+<li>Format standard pour navigateurs modernes</li>
+<li>Meilleure compatibilité cross-platform</li>
+</ul>
+<h3 id="pourquoi-un-seul-point-de-configuration">Pourquoi un seul point de configuration ?<a class="headerlink" href="#pourquoi-un-seul-point-de-configuration" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>DRY</strong> : Don't Repeat Yourself</li>
+<li><strong>Maintenabilité</strong> : Un seul endroit à modifier</li>
+<li><strong>Cohérence</strong> : Impossible d'avoir des favicons différents par page</li>
+<li><strong>Performance</strong> : Moins de code à charger</li>
+</ul>
+<h3 id="organisation-des-fichiers">Organisation des fichiers<a class="headerlink" href="#organisation-des-fichiers" title="Permanent link">&para;</a></h3>
+<p><strong>Décision</strong> : Script dans <code>ui/assets/favicons/scripts/</code> plutôt que <code>scripts/</code></p>
+<p><strong>Raison</strong> :
+- Utilisé uniquement lors de changements d'image (rare)
+- Proximité avec les ressources qu'il manipule
+- Ne pollue pas le répertoire <code>scripts/</code> principal</p>
+<h2 id="pieges-evites">Pièges Évités<a class="headerlink" href="#pieges-evites" title="Permanent link">&para;</a></h2>
+<h3 id="piege-1-chemins-relatifs-string">❌ Piège 1 : Chemins relatifs string<a class="headerlink" href="#piege-1-chemins-relatifs-string" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python"># NE FONCTIONNE PAS TOUJOURS
+page_icon=&quot;assets/favicons/favicon.ico&quot;
+</code></pre>
+<h3 id="piege-2-duplication-dans-chaque-page">❌ Piège 2 : Duplication dans chaque page<a class="headerlink" href="#piege-2-duplication-dans-chaque-page" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python"># ANTI-PATTERN
+# Dans chaque fichier ui/pages/*.py
+st.set_page_config(page_icon=&quot;...&quot;)  # Inutile !
+</code></pre>
+<h3 id="piege-3-format-ico-au-lieu-de-png">❌ Piège 3 : Format ICO au lieu de PNG<a class="headerlink" href="#piege-3-format-ico-au-lieu-de-png" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python"># MOINS COMPATIBLE
+page_icon=favicon_ico  # Préférer PNG 32x32
+</code></pre>
+<h2 id="commandes-utiles">Commandes Utiles<a class="headerlink" href="#commandes-utiles" title="Permanent link">&para;</a></h2>
+<pre><code class="language-bash"># Régénérer les favicons
+python ui/assets/favicons/scripts/generate_favicons.py
+
+# Tester l'implémentation
+pytest tests/integration/test_favicons.py -v
+pytest tests/integration/test_favicon_usage.py -v
+
+# Lancer l'UI
+./ui/lmelp_ui.sh
+</code></pre>
+<h2 id="references">Références<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Source originale</strong> : https://github.com/castorfou/back-office-lmelp/blob/main/frontend/public/gimp_favicon/favicon.png</li>
+<li><strong>Documentation Streamlit</strong> : <code>st.set_page_config()</code> page_icon parameter</li>
+<li><strong>Pillow docs</strong> : Image.Resampling.LANCZOS</li>
+</ul>
+<h2 id="impact">Impact<a class="headerlink" href="#impact" title="Permanent link">&para;</a></h2>
+<ul>
+<li>✅ Favicon personnalisé visible sur toutes les pages</li>
+<li>✅ Code maintenable et testable</li>
+<li>✅ Architecture propre (config centralisée)</li>
+<li>✅ Documentation complète</li>
+<li>✅ 9 tests passants (4 favicons + 5 usage)</li>
+</ul>
+<h2 id="a-retenir-pour-le-futur">À Retenir pour le Futur<a class="headerlink" href="#a-retenir-pour-le-futur" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Streamlit multi-pages</strong> : Configuration globale dans la page principale</li>
+<li><strong>Favicons</strong> : Toujours utiliser PIL.Image pour le chargement</li>
+<li><strong>TDD</strong> : Les tests guident vers une architecture propre</li>
+<li><strong>Simplicité</strong> : Ne pas dupliquer ce qui peut être hérité</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1455 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Fix Portainer Logging Issues - Issue #83 - Documentation des APIs du repo lmelp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fix-portainer-logging-issues-issue-83" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-header__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation des APIs du repo lmelp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fix Portainer Logging Issues - Issue #83
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-nav__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation des APIs du repo lmelp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../whisper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module whisper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module rss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_episode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_episode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_auteur/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_auteur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_livre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_livre
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other kind of docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other kind of docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    manage doc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    write markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_vscode_hints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    some vs_code hints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_google/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    about Google services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_data_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_uv_devcontainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    uv devcontainer venv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_import_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    import strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_unit_test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unit tests guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    development workflow (Docker + Portainer)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#probleme-initial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problème Initial
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Problème Initial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logs-avant-correction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs avant correction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#analyse-du-probleme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analyse du Problème
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Analyse du Problème">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#probleme-1-caracteres-bizarres" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problème 1 : Caractères bizarres
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#probleme-2-absence-de-logs-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problème 2 : Absence de logs HTTP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution-implementee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution Implémentée
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Solution Implémentée">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-simplification-du-banner-de-demarrage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Simplification du Banner de Démarrage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-configuration-streamlit-pour-logs-propres" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Configuration Streamlit pour Logs Propres
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-ajout-de-loption-logger-dans-entrypoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Ajout de l'Option Logger dans Entrypoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-copie-de-la-configuration-dans-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Copie de la Configuration dans Docker
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests-ajoutes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests Ajoutés
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resultats-apres-correction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résultats Après Correction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Résultats Après Correction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logs-de-demarrage-propres" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs de démarrage propres
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ce-qui-sera-visible-dans-portainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ce qui sera visible dans Portainer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ce-qui-ne-sera-pas-visible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ce qui NE sera PAS visible
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fichiers-modifies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fichiers Modifiés
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apprentissages-cles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apprentissages Clés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Apprentissages Clés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#limitation-streamlit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitation Streamlit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-cors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration CORS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#options-de-configuration-streamlit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Options de Configuration Streamlit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-entrypoint-best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker Entrypoint Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommandations-futures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommandations Futures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recommandations Futures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pour-de-vrais-logs-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pour de vrais logs HTTP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monitoring-alternatif" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring Alternatif
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandes-de-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commandes de Validation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="fix-portainer-logging-issues-issue-83">Fix Portainer Logging Issues - Issue #83<a class="headerlink" href="#fix-portainer-logging-issues-issue-83" title="Permanent link">&para;</a></h1>
+<p><strong>Date:</strong> 2025-11-26 19:10
+<strong>Issue:</strong> #83 - portainer - pas de log d'activite
+<strong>Branch:</strong> 83-portainer-pas-de-log-dactivite</p>
+<h2 id="probleme-initial">Problème Initial<a class="headerlink" href="#probleme-initial" title="Permanent link">&para;</a></h2>
+<p>Les logs Portainer pour le conteneur lmelp présentaient deux problèmes :</p>
+<ol>
+<li><strong>Affichage bizarre</strong> : Caractère <code>^A</code> suivi de <code>b</code> dans les logs</li>
+<li><strong>Absence de logs d'activité HTTP</strong> : Contrairement à backoffice-frontend qui affiche des logs HTTP détaillés</li>
+</ol>
+<h3 id="logs-avant-correction">Logs avant correction<a class="headerlink" href="#logs-avant-correction" title="Permanent link">&para;</a></h3>
+<pre><code>==================================
+lmelp - Le Masque et la Plume
+^Ab
+==================================
+Starting Streamlit web interface...
+</code></pre>
+<h2 id="analyse-du-probleme">Analyse du Problème<a class="headerlink" href="#analyse-du-probleme" title="Permanent link">&para;</a></h2>
+<h3 id="probleme-1-caracteres-bizarres">Problème 1 : Caractères bizarres<a class="headerlink" href="#probleme-1-caracteres-bizarres" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Le caractère <code>^A</code> (ASCII 0x01) est un caractère de contrôle terminal</li>
+<li>Causé par la bannière multi-lignes répétitive dans <code>entrypoint.sh</code></li>
+<li>Les lignes avec beaucoup de <code>=</code> créent du bruit visuel</li>
+</ul>
+<h3 id="probleme-2-absence-de-logs-http">Problème 2 : Absence de logs HTTP<a class="headerlink" href="#probleme-2-absence-de-logs-http" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Streamlit ne supporte PAS nativement le logging des requêtes HTTP</strong></li>
+<li>Contrairement à nginx/apache qui loggent chaque requête (GET, POST, status, IP, etc.)</li>
+<li>Les options de logging Streamlit concernent les logs internes de l'application, pas les requêtes HTTP</li>
+<li>Pour avoir de vrais logs HTTP, il faudrait un reverse proxy nginx (hors scope de cette issue)</li>
+</ul>
+<h2 id="solution-implementee">Solution Implémentée<a class="headerlink" href="#solution-implementee" title="Permanent link">&para;</a></h2>
+<h3 id="1-simplification-du-banner-de-demarrage">1. Simplification du Banner de Démarrage<a class="headerlink" href="#1-simplification-du-banner-de-demarrage" title="Permanent link">&para;</a></h3>
+<p><strong>Fichier modifié:</strong> <code>docker/build/entrypoint.sh</code></p>
+<pre><code class="language-bash"># AVANT
+echo &quot;==================================&quot;
+echo &quot;lmelp - Le Masque et la Plume&quot;
+echo &quot;Mode: $MODE&quot;
+echo &quot;==================================&quot;
+
+# APRÈS
+echo &quot;[lmelp] Starting in $MODE mode...&quot;
+</code></pre>
+<p><strong>Bénéfices:</strong>
+- Banner court et informatif
+- Élimine les caractères de contrôle
+- Format cohérent avec les standards de logging</p>
+<h3 id="2-configuration-streamlit-pour-logs-propres">2. Configuration Streamlit pour Logs Propres<a class="headerlink" href="#2-configuration-streamlit-pour-logs-propres" title="Permanent link">&para;</a></h3>
+<p><strong>Nouveau fichier:</strong> <code>.streamlit/config.toml</code></p>
+<pre><code class="language-toml">[server]
+port = 8501
+address = &quot;0.0.0.0&quot;
+headless = true
+enableCORS = true
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false
+
+[logger]
+level = &quot;info&quot;
+messageFormat = &quot;%(asctime)s - %(levelname)s - %(message)s&quot;
+
+[theme]
+base = &quot;light&quot;
+primaryColor = &quot;#FF4B4B&quot;
+</code></pre>
+<p><strong>Points clés:</strong>
+- <code>enableCORS = true</code> requis si <code>enableXsrfProtection = true</code>
+- Suppression de <code>enableClientLogs</code> (option invalide dans versions récentes)
+- Format de log avec timestamp pour meilleure traçabilité</p>
+<h3 id="3-ajout-de-loption-logger-dans-entrypoint">3. Ajout de l'Option Logger dans Entrypoint<a class="headerlink" href="#3-ajout-de-loption-logger-dans-entrypoint" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash">exec streamlit run ui/lmelp.py \
+    --server.port=8501 \
+    --server.address=0.0.0.0 \
+    --server.headless=true \
+    --logger.level=info  # ← Ajouté
+</code></pre>
+<h3 id="4-copie-de-la-configuration-dans-docker">4. Copie de la Configuration dans Docker<a class="headerlink" href="#4-copie-de-la-configuration-dans-docker" title="Permanent link">&para;</a></h3>
+<p><strong>Fichier modifié:</strong> <code>docker/build/Dockerfile</code></p>
+<pre><code class="language-dockerfile"># Copy application code
+COPY nbs/ /app/nbs/
+COPY ui/ /app/ui/
+COPY scripts/ /app/scripts/
+COPY .streamlit/ /app/.streamlit/  # ← Ajouté
+</code></pre>
+<h2 id="tests-ajoutes">Tests Ajoutés<a class="headerlink" href="#tests-ajoutes" title="Permanent link">&para;</a></h2>
+<p><strong>Nouveau fichier:</strong> <code>tests/integration/test_streamlit_config.py</code></p>
+<p><strong>8 tests ajoutés:</strong>
+1. <code>test_streamlit_config_file_exists</code> - Vérifie présence du fichier
+2. <code>test_streamlit_config_contains_logging_settings</code> - Valide les sections logger, server, browser
+3. <code>test_streamlit_config_message_format</code> - Vérifie format avec timestamp/level/message
+4. <code>test_entrypoint_exists</code> - Vérifie présence du script
+5. <code>test_entrypoint_simplified_banner</code> - Valide le nouveau banner
+6. <code>test_entrypoint_logger_level_option</code> - Vérifie l'option --logger.level=info
+7. <code>test_dockerfile_exists</code> - Vérifie présence du Dockerfile
+8. <code>test_dockerfile_copies_streamlit_config</code> - Valide la copie de .streamlit/</p>
+<p><strong>Résultats:</strong>
+- ✅ 8/8 tests passent
+- ✅ Suite complète : 296/296 tests passent
+- ✅ Black formatting OK
+- ✅ Mypy typecheck OK</p>
+<h2 id="resultats-apres-correction">Résultats Après Correction<a class="headerlink" href="#resultats-apres-correction" title="Permanent link">&para;</a></h2>
+<h3 id="logs-de-demarrage-propres">Logs de démarrage propres<a class="headerlink" href="#logs-de-demarrage-propres" title="Permanent link">&para;</a></h3>
+<pre><code>[lmelp] Starting in web mode...
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://0.0.0.0:8501
+</code></pre>
+<h3 id="ce-qui-sera-visible-dans-portainer">Ce qui sera visible dans Portainer<a class="headerlink" href="#ce-qui-sera-visible-dans-portainer" title="Permanent link">&para;</a></h3>
+<p>✅ Logs de démarrage propres (sans <code>^A</code> + <code>b</code>)
+✅ Logs d'erreurs applicatives Streamlit
+✅ Logs de santé du healthcheck Docker
+✅ Logs applicatifs (print, logging Python)</p>
+<h3 id="ce-qui-ne-sera-pas-visible">Ce qui NE sera PAS visible<a class="headerlink" href="#ce-qui-ne-sera-pas-visible" title="Permanent link">&para;</a></h3>
+<p>❌ Logs de requêtes HTTP individuelles (GET /, POST /api/..., status codes)</p>
+<p><strong>Raison:</strong> Limitation native de Streamlit - nécessiterait un reverse proxy nginx pour avoir ces logs</p>
+<h2 id="fichiers-modifies">Fichiers Modifiés<a class="headerlink" href="#fichiers-modifies" title="Permanent link">&para;</a></h2>
+<ol>
+<li><code>.streamlit/config.toml</code> (nouveau)</li>
+<li><code>docker/build/entrypoint.sh</code></li>
+<li><code>docker/build/Dockerfile</code></li>
+<li><code>tests/integration/test_streamlit_config.py</code> (nouveau)</li>
+</ol>
+<h2 id="apprentissages-cles">Apprentissages Clés<a class="headerlink" href="#apprentissages-cles" title="Permanent link">&para;</a></h2>
+<h3 id="limitation-streamlit">Limitation Streamlit<a class="headerlink" href="#limitation-streamlit" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Streamlit n'est pas un serveur web classique</strong> - il ne loggue pas les requêtes HTTP</li>
+<li>Les options de logging Streamlit concernent uniquement les logs internes de l'application</li>
+<li>Pour du monitoring HTTP détaillé, il faut une couche supplémentaire (nginx, middleware custom)</li>
+</ul>
+<h3 id="configuration-cors">Configuration CORS<a class="headerlink" href="#configuration-cors" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>enableCORS</code> doit être <code>true</code> si <code>enableXsrfProtection</code> est <code>true</code></li>
+<li>Streamlit force cette contrainte pour la sécurité (protection CSRF via cookies)</li>
+</ul>
+<h3 id="options-de-configuration-streamlit">Options de Configuration Streamlit<a class="headerlink" href="#options-de-configuration-streamlit" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>logger.enableClientLogs</code> n'existe plus dans les versions récentes</li>
+<li>Toujours vérifier la documentation de la version utilisée</li>
+</ul>
+<h3 id="docker-entrypoint-best-practices">Docker Entrypoint Best Practices<a class="headerlink" href="#docker-entrypoint-best-practices" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Bannières courtes et informatives</li>
+<li>Format <code>[service] Action...</code> est standard</li>
+<li>Éviter les caractères de contrôle qui peuvent être mal interprétés par les viewers de logs</li>
+</ul>
+<h2 id="recommandations-futures">Recommandations Futures<a class="headerlink" href="#recommandations-futures" title="Permanent link">&para;</a></h2>
+<h3 id="pour-de-vrais-logs-http">Pour de vrais logs HTTP<a class="headerlink" href="#pour-de-vrais-logs-http" title="Permanent link">&para;</a></h3>
+<p>Si besoin absolu de logs HTTP style nginx, créer une nouvelle issue pour :
+- Ajouter nginx comme reverse proxy devant Streamlit
+- Configurer nginx pour logger les requêtes (format combined)
+- Modifier docker-compose pour inclure nginx</p>
+<h3 id="monitoring-alternatif">Monitoring Alternatif<a class="headerlink" href="#monitoring-alternatif" title="Permanent link">&para;</a></h3>
+<p>Alternatives à considérer :
+- Utiliser le healthcheck Docker (<code>/_stcore/health</code>) pour monitoring uptime
+- Logger les actions utilisateur dans l'application Streamlit elle-même
+- Utiliser un APM (Application Performance Monitoring) comme Datadog, New Relic</p>
+<h2 id="commandes-de-validation">Commandes de Validation<a class="headerlink" href="#commandes-de-validation" title="Permanent link">&para;</a></h2>
+<pre><code class="language-bash"># Tester localement
+./ui/lmelp_ui.sh
+
+# Tester l'entrypoint Docker
+bash docker/build/entrypoint.sh
+
+# Lancer les tests
+PYTHONPATH=/workspaces/lmelp/src uv run pytest tests/integration/test_streamlit_config.py -v
+
+# Build et test Docker
+docker build -t lmelp:test -f docker/build/Dockerfile .
+docker run -p 8501:8501 -e DB_HOST=172.17.0.1 lmelp:test
+</code></pre>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>✅ <strong>Problème 1 résolu</strong> : Banner propre, pas de caractères bizarres
+⚠️ <strong>Problème 2 partiellement résolu</strong> : Logs Streamlit propres, mais pas de logs HTTP (limitation native)</p>
+<p>L'issue #83 est considérée comme résolue pour le scope initial (banner et logs visibles). Les logs HTTP détaillés nécessiteraient une architecture différente (reverse proxy) et devraient faire l'objet d'une issue séparée si requis.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

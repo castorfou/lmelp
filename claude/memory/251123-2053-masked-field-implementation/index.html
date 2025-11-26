@@ -1,0 +1,1586 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Implémentation du champ masked pour filtrer les épisodes - Documentation des APIs du repo lmelp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#implementation-du-champ-masked-pour-filtrer-les-episodes" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-header__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation des APIs du repo lmelp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Implémentation du champ masked pour filtrer les épisodes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Documentation des APIs du repo lmelp" class="md-nav__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation des APIs du repo lmelp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../whisper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module whisper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module rss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_episode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_episode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_auteur/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_auteur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mongo_livre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_livre
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other kind of docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other kind of docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    manage doc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    write markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_vscode_hints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    some vs_code hints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_google/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    about Google services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_data_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_uv_devcontainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    uv devcontainer venv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_import_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    import strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../readme_unit_test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unit tests guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    development workflow (Docker + Portainer)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#contexte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contexte
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#problematique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problématique
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution-implementee-approche-tdd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution implémentée (approche TDD)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Solution implémentée (approche TDD)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-ajout-du-champ-masked-au-modele-episode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Ajout du champ masked au modèle Episode
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Ajout du champ masked au modèle Episode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dans-episode__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dans Episode.__init__:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dans-episodekeep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dans Episode.keep():
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dans-episodeto_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dans Episode.to_dict():
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-filtrage-automatique-dans-episodesget_entries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Filtrage automatique dans Episodes.get_entries()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-correction-du-dashboard-avec-len_total_entries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Correction du dashboard avec len_total_entries()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests-tdd-red-green" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests (TDD - Red → Green)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tests (TDD - Red → Green)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tests-crees-5-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests créés (5 tests):
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resultats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résultats:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-de-developpement-collaboratif" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow de développement collaboratif
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflow de développement collaboratif">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#methode-iterative-notebook-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Méthode itérative notebook ↔ Python:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#impact-sur-les-pages-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact sur les pages UI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Impact sur les pages UI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pages-automatiquement-corrigees-sans-modification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pages automatiquement corrigées (sans modification):
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commandes-utilisees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commandes utilisées
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apprentissages-cles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apprentissages clés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Apprentissages clés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-programmation-litteraire-avec-nbdev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Programmation littéraire avec nbdev
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-filtrage-mongodb-avec-backward-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Filtrage MongoDB avec backward compatibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-combinaison-de-requetes-mongodb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Combinaison de requêtes MongoDB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-tdd-avec-mocks-pymongo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. TDD avec mocks PyMongo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fichiers-modifies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fichiers modifiés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fichiers modifiés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code source:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pages-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pages UI:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metriques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Métriques
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#points-dattention-pour-le-futur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Points d'attention pour le futur
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Points d&#39;attention pour le futur">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-migration-de-donnees-non-necessaire-ici" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Migration de données (non nécessaire ici)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-pages-dadministration-futures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Pages d'administration futures
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-scripts-de-traitement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Scripts de traitement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prochaines-etapes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prochaines étapes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Références
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="implementation-du-champ-masked-pour-filtrer-les-episodes">Implémentation du champ <code>masked</code> pour filtrer les épisodes<a class="headerlink" href="#implementation-du-champ-masked-pour-filtrer-les-episodes" title="Permanent link">&para;</a></h1>
+<p><strong>Date</strong>: 23 novembre 2025, 20:53
+<strong>Issue</strong>: #73 - Utiliser le champ masked des episodes
+<strong>Branche</strong>: <code>73-utiliser-le-champ-masked-des-episodes</code></p>
+<h2 id="contexte">Contexte<a class="headerlink" href="#contexte" title="Permanent link">&para;</a></h2>
+<p>Le back-office lmelp (https://github.com/castorfou/back-office-lmelp/issues/107) a implémenté un champ <code>masked</code> pour permettre de masquer certains épisodes (comme les Goncourt ou les épisodes mal détectés) sans les supprimer de MongoDB. Ce développement synchronise le front-office pour utiliser ce champ et filtrer automatiquement les épisodes masqués dans toutes les pages UI.</p>
+<h2 id="problematique">Problématique<a class="headerlink" href="#problematique" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Le champ <code>masked</code> n'existait pas dans le modèle <code>Episode</code> du front-office</li>
+<li>Toutes les pages UI affichaient tous les épisodes, y compris ceux marqués comme <code>masked=true</code> dans MongoDB</li>
+<li>Le compteur du dashboard affichait le nombre total d'épisodes incluant les masqués</li>
+</ul>
+<h2 id="solution-implementee-approche-tdd">Solution implémentée (approche TDD)<a class="headerlink" href="#solution-implementee-approche-tdd" title="Permanent link">&para;</a></h2>
+<h3 id="1-ajout-du-champ-masked-au-modele-episode">1. Ajout du champ <code>masked</code> au modèle Episode<a class="headerlink" href="#1-ajout-du-champ-masked-au-modele-episode" title="Permanent link">&para;</a></h3>
+<p><strong>Fichier modifié</strong>: <code>nbs/py mongo helper episodes.ipynb</code> → génère <code>nbs/mongo_episode.py</code></p>
+<h4 id="dans-episode__init__">Dans <code>Episode.__init__</code>:<a class="headerlink" href="#dans-episode__init__" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python">if self.exists():
+    episode = self.collection.find_one({&quot;titre&quot;: self.titre, &quot;date&quot;: self.date})
+    # ... autres champs ...
+    self.masked: bool = episode.get(&quot;masked&quot;, False)  # ✅ Nouveau
+else:
+    # ... autres champs ...
+    self.masked = False  # ✅ Nouveau
+</code></pre>
+<h4 id="dans-episodekeep">Dans <code>Episode.keep()</code>:<a class="headerlink" href="#dans-episodekeep" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python">self.collection.insert_one({
+    &quot;titre&quot;: self.titre,
+    &quot;date&quot;: self.date,
+    # ... autres champs ...
+    &quot;masked&quot;: self.masked,  # ✅ Nouveau
+})
+</code></pre>
+<h4 id="dans-episodeto_dict">Dans <code>Episode.to_dict()</code>:<a class="headerlink" href="#dans-episodeto_dict" title="Permanent link">&para;</a></h4>
+<pre><code class="language-python">def to_dict(self) -&gt; Dict[str, Union[str, datetime, int, None, bool]]:  # ✅ bool ajouté
+    return {
+        &quot;date&quot;: self.date,
+        # ... autres champs ...
+        &quot;masked&quot;: self.masked,  # ✅ Nouveau
+    }
+</code></pre>
+<h3 id="2-filtrage-automatique-dans-episodesget_entries">2. Filtrage automatique dans <code>Episodes.get_entries()</code><a class="headerlink" href="#2-filtrage-automatique-dans-episodesget_entries" title="Permanent link">&para;</a></h3>
+<p><strong>Logique de filtrage MongoDB</strong>:</p>
+<pre><code class="language-python">def get_entries(self, request: Any = &quot;&quot;, limit: int = -1, include_masked: bool = False):
+    &quot;&quot;&quot;Filtre par défaut les épisodes masqués.&quot;&quot;&quot;
+    if not include_masked:
+        # Filtre: masked != true OU masked n'existe pas (anciens épisodes)
+        masked_filter = {
+            &quot;$or&quot;: [
+                {&quot;masked&quot;: {&quot;$ne&quot;: True}},
+                {&quot;masked&quot;: {&quot;$exists&quot;: False}}
+            ]
+        }
+
+        if request and request != &quot;&quot;:
+            # Combiner avec une requête existante
+            final_request = {&quot;$and&quot;: [request, masked_filter]}
+        else:
+            final_request = masked_filter
+    else:
+        # include_masked=True : pas de filtre
+        final_request = request if request != &quot;&quot; else {}
+
+    # Exécuter la requête MongoDB
+    results = self.collection.find(final_request, {&quot;_id&quot;: 1}).sort({&quot;date&quot;: -1})
+    # ...
+</code></pre>
+<p><strong>Avantages</strong>:
+- ✅ Filtrage par défaut transparent pour toutes les pages UI
+- ✅ Backward compatible (épisodes sans champ <code>masked</code> sont visibles)
+- ✅ Option <code>include_masked=True</code> pour les pages d'administration
+- ✅ Compatible avec les requêtes existantes (combinaison via <code>$and</code>)</p>
+<h3 id="3-correction-du-dashboard-avec-len_total_entries">3. Correction du dashboard avec <code>len_total_entries()</code><a class="headerlink" href="#3-correction-du-dashboard-avec-len_total_entries" title="Permanent link">&para;</a></h3>
+<p><strong>Avant</strong>:</p>
+<pre><code class="language-python">def len_total_entries(self) -&gt; int:
+    return self.collection.estimated_document_count()  # ❌ Compte TOUT
+</code></pre>
+<p><strong>Après</strong>:</p>
+<pre><code class="language-python">def len_total_entries(self, include_masked: bool = False) -&gt; int:
+    &quot;&quot;&quot;Compte les épisodes en respectant le filtre masked.&quot;&quot;&quot;
+    if not include_masked:
+        masked_filter = {
+            &quot;$or&quot;: [
+                {&quot;masked&quot;: {&quot;$ne&quot;: True}},
+                {&quot;masked&quot;: {&quot;$exists&quot;: False}}
+            ]
+        }
+        return self.collection.count_documents(masked_filter)  # ✅ Filtre appliqué
+    else:
+        return self.collection.estimated_document_count()
+</code></pre>
+<h2 id="tests-tdd-red-green">Tests (TDD - Red → Green)<a class="headerlink" href="#tests-tdd-red-green" title="Permanent link">&para;</a></h2>
+<p><strong>Fichier</strong>: <code>tests/unit/test_mongo_episode.py</code></p>
+<h3 id="tests-crees-5-tests">Tests créés (5 tests):<a class="headerlink" href="#tests-crees-5-tests" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>test_episode_has_masked_field</strong>: Vérifie que le champ existe</li>
+<li><strong>test_episode_masked_default_value</strong>: Vérifie la valeur par défaut <code>False</code></li>
+<li><strong>test_episode_to_dict_includes_masked</strong>: Vérifie l'export dans <code>to_dict()</code></li>
+<li><strong>test_episodes_get_entries_filters_masked_by_default</strong>: Vérifie le filtrage automatique</li>
+<li><strong>test_episodes_get_entries_with_include_masked_true</strong>: Vérifie l'option <code>include_masked=True</code></li>
+</ol>
+<h3 id="resultats">Résultats:<a class="headerlink" href="#resultats" title="Permanent link">&para;</a></h3>
+<ul>
+<li>✅ <strong>248 tests passent</strong> (dont 5 nouveaux)</li>
+<li>✅ Aucun test cassé</li>
+<li>✅ Couverture maintenue</li>
+</ul>
+<h2 id="workflow-de-developpement-collaboratif">Workflow de développement collaboratif<a class="headerlink" href="#workflow-de-developpement-collaboratif" title="Permanent link">&para;</a></h2>
+<h3 id="methode-iterative-notebook-python">Méthode itérative notebook ↔ Python:<a class="headerlink" href="#methode-iterative-notebook-python" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Claude modifie</strong> <code>nbs/mongo_episode.py</code> (fichier généré)</li>
+<li><strong>Utilisateur applique</strong> les modifications dans le notebook <code>nbs/py mongo helper episodes.ipynb</code></li>
+<li><strong>Utilisateur exécute</strong> <code>nbdev_export</code> pour régénérer le <code>.py</code></li>
+<li><strong>Claude vérifie</strong> que la régénération est correcte</li>
+<li><strong>Répéter</strong> jusqu'à implémentation complète</li>
+</ol>
+<p><strong>Avantage</strong>: Permet de travailler sur la logique sans se perdre dans la structure JSON du notebook.</p>
+<h2 id="impact-sur-les-pages-ui">Impact sur les pages UI<a class="headerlink" href="#impact-sur-les-pages-ui" title="Permanent link">&para;</a></h2>
+<h3 id="pages-automatiquement-corrigees-sans-modification">Pages automatiquement corrigées (sans modification):<a class="headerlink" href="#pages-automatiquement-corrigees-sans-modification" title="Permanent link">&para;</a></h3>
+<ul>
+<li>✅ <strong>ui/pages/1_episodes.py</strong>: Affiche uniquement les épisodes non masqués (221 au lieu de 236)</li>
+<li>✅ <strong>ui/pages/4_avis_critiques.py</strong>: Liste uniquement les épisodes non masqués pour générer des résumés</li>
+<li>✅ <strong>Dashboard principal</strong>: Compteur correct du nombre d'épisodes</li>
+</ul>
+<p><strong>Raison</strong>: Toutes ces pages utilisent <code>Episodes.get_entries()</code> qui filtre maintenant par défaut.</p>
+<h2 id="commandes-utilisees">Commandes utilisées<a class="headerlink" href="#commandes-utilisees" title="Permanent link">&para;</a></h2>
+<pre><code class="language-bash"># Créer et checkout la branche feature depuis l'issue
+gh issue develop 73 --checkout
+
+# Lancer les tests spécifiques
+PYTHONPATH=/workspaces/lmelp/src uv run pytest tests/unit/test_mongo_episode.py::TestMaskedField -v
+
+# Lancer tous les tests unitaires
+PYTHONPATH=/workspaces/lmelp/src uv run pytest tests/unit/ -x -q
+
+# Exporter le notebook vers Python (fait par l'utilisateur)
+nbdev_export
+</code></pre>
+<h2 id="apprentissages-cles">Apprentissages clés<a class="headerlink" href="#apprentissages-cles" title="Permanent link">&para;</a></h2>
+<h3 id="1-programmation-litteraire-avec-nbdev">1. Programmation littéraire avec nbdev<a class="headerlink" href="#1-programmation-litteraire-avec-nbdev" title="Permanent link">&para;</a></h3>
+<ul>
+<li>⚠️ <strong>Ne jamais modifier directement</strong> les fichiers <code>.py</code> dans <code>nbs/</code></li>
+<li>✅ <strong>Toujours modifier</strong> le notebook <code>.ipynb</code> source</li>
+<li>✅ Utiliser <code>nbdev_export</code> pour générer les modules Python</li>
+<li>💡 <strong>Astuce</strong>: Modifier temporairement le <code>.py</code> pour valider la logique, puis reporter dans le notebook</li>
+</ul>
+<h3 id="2-filtrage-mongodb-avec-backward-compatibility">2. Filtrage MongoDB avec backward compatibility<a class="headerlink" href="#2-filtrage-mongodb-avec-backward-compatibility" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python"># Pattern pour filtrer un champ booléen avec rétrocompatibilité
+{
+    &quot;$or&quot;: [
+        {&quot;field&quot;: {&quot;$ne&quot;: True}},      # field existe et n'est pas True
+        {&quot;field&quot;: {&quot;$exists&quot;: False}}  # field n'existe pas (anciens docs)
+    ]
+}
+</code></pre>
+<h3 id="3-combinaison-de-requetes-mongodb">3. Combinaison de requêtes MongoDB<a class="headerlink" href="#3-combinaison-de-requetes-mongodb" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python"># Combiner un filtre avec une requête existante
+if existing_request:
+    final_request = {&quot;$and&quot;: [existing_request, new_filter]}
+else:
+    final_request = new_filter
+</code></pre>
+<h3 id="4-tdd-avec-mocks-pymongo">4. TDD avec mocks PyMongo<a class="headerlink" href="#4-tdd-avec-mocks-pymongo" title="Permanent link">&para;</a></h3>
+<p><strong>Piège identifié</strong>: Quand un épisode "existe" selon le mock, <code>.get("masked", False)</code> retourne un <code>MagicMock</code> au lieu de <code>False</code>.</p>
+<p><strong>Solution</strong>: Forcer le mock à retourner <code>None</code> pour <code>find_one()</code>:</p>
+<pre><code class="language-python">mock_collection.find_one.return_value = None  # Force &quot;n'existe pas&quot;
+</code></pre>
+<h2 id="fichiers-modifies">Fichiers modifiés<a class="headerlink" href="#fichiers-modifies" title="Permanent link">&para;</a></h2>
+<h3 id="code-source">Code source:<a class="headerlink" href="#code-source" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>nbs/py mongo helper episodes.ipynb</code> (notebook source)</li>
+<li><code>nbs/mongo_episode.py</code> (généré automatiquement)</li>
+</ul>
+<h3 id="tests">Tests:<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>tests/unit/test_mongo_episode.py</code> (+5 tests, classe <code>TestMaskedField</code>)</li>
+</ul>
+<h3 id="pages-ui">Pages UI:<a class="headerlink" href="#pages-ui" title="Permanent link">&para;</a></h3>
+<ul>
+<li>❌ Aucune modification nécessaire (filtrage transparent via <code>get_entries()</code>)</li>
+</ul>
+<h2 id="metriques">Métriques<a class="headerlink" href="#metriques" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Lignes ajoutées dans mongo_episode.py</strong>: ~40 lignes</li>
+<li><strong>Lignes de tests ajoutées</strong>: ~110 lignes</li>
+<li><strong>Tests</strong>: 5 nouveaux, 248 total passent</li>
+<li><strong>Temps de développement</strong>: ~1h30 (TDD + itérations collaboratives)</li>
+<li><strong>Complexité</strong>: Faible (ajout de champ + filtrage simple)</li>
+</ul>
+<h2 id="points-dattention-pour-le-futur">Points d'attention pour le futur<a class="headerlink" href="#points-dattention-pour-le-futur" title="Permanent link">&para;</a></h2>
+<h3 id="1-migration-de-donnees-non-necessaire-ici">1. Migration de données (non nécessaire ici)<a class="headerlink" href="#1-migration-de-donnees-non-necessaire-ici" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Les anciens épisodes sans champ <code>masked</code> sont traités comme <code>masked=False</code> grâce au filtre <code>{"$exists": False}</code></li>
+<li>Aucune migration MongoDB requise</li>
+</ul>
+<h3 id="2-pages-dadministration-futures">2. Pages d'administration futures<a class="headerlink" href="#2-pages-dadministration-futures" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Si besoin d'afficher les épisodes masqués, utiliser <code>get_entries(include_masked=True)</code></li>
+<li>Exemple: page de gestion des épisodes masqués</li>
+</ul>
+<h3 id="3-scripts-de-traitement">3. Scripts de traitement<a class="headerlink" href="#3-scripts-de-traitement" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Les scripts dans <code>scripts/</code> continuent de fonctionner sans modification</li>
+<li>Vérifier si certains scripts doivent traiter les épisodes masqués</li>
+</ul>
+<h2 id="prochaines-etapes">Prochaines étapes<a class="headerlink" href="#prochaines-etapes" title="Permanent link">&para;</a></h2>
+<ol>
+<li>✅ Tests passent</li>
+<li>✅ UI fonctionnelle</li>
+<li>⏳ Commit et push</li>
+<li>⏳ Vérification CI/CD</li>
+<li>⏳ Création de la PR</li>
+<li>⏳ Documentation (CLAUDE.md, README.md si nécessaire)</li>
+</ol>
+<h2 id="references">Références<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Issue back-office: https://github.com/castorfou/back-office-lmelp/issues/107</li>
+<li>Issue front-office: #73</li>
+<li>Branche: <code>73-utiliser-le-champ-masked-des-episodes</code></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

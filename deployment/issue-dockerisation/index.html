@@ -1,0 +1,2716 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Dockerisation et déploiement multi-environnement - Documentation des APIs du repo lmelp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dockerisation-et-deploiement-multi-environnement" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Documentation des APIs du repo lmelp" class="md-header__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation des APIs du repo lmelp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Dockerisation et déploiement multi-environnement
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Documentation des APIs du repo lmelp" class="md-nav__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation des APIs du repo lmelp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../whisper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module whisper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module rss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mongo_episode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_episode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mongo_auteur/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_auteur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mongo_livre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_livre
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other kind of docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other kind of docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    manage doc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    write markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_vscode_hints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    some vs_code hints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_google/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    about Google services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_data_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_uv_devcontainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    uv devcontainer venv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_import_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    import strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../readme_unit_test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unit tests guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    development workflow (Docker + Portainer)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectif" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objectif
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-cible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture cible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture cible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conteneurs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conteneurs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reseau" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Réseau
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volumes-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Volumes Docker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pipeline-cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline CI/CD
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#application-streamlit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application Streamlit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tags-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags Docker
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-1-preparation-du-dockerfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 : Préparation du Dockerfile
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 1 : Préparation du Dockerfile">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#taches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tâches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tâches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creer-dockerdockerfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer docker/Dockerfile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creer-dockerdocker-composeyml-pour-pc-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer docker/docker-compose.yml (pour PC local)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creer-dockerdocker-composenasyml-pour-nas-synology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer docker/docker-compose.nas.yml (pour NAS Synology)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creer-dockerenvtemplate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer docker/.env.template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creer-dockerignore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer .dockerignore
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creer-dockerentrypointsh-optionnel-pour-scripts-batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer docker/entrypoint.sh (optionnel, pour scripts batch)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-2-cicd-github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 : CI/CD GitHub Actions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 2 : CI/CD GitHub Actions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#taches_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tâches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tâches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creer-githubworkflowsdocker-publishyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer .github/workflows/docker-publish.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurer-github-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Configurer GitHub secrets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tester-build-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Tester build local
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-3-configuration-nas-synology-portainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 : Configuration NAS Synology (Portainer)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 3 : Configuration NAS Synology (Portainer)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#taches_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tâches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tâches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verifiercreer-reseau-docker-partage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Vérifier/créer réseau Docker partagé
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creer-stack-portainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer stack Portainer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurer-variables-denvironnement-dans-portainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Configurer variables d'environnement dans Portainer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurer-webhook-portainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Configurer webhook Portainer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurer-limites-de-ressources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Configurer limites de ressources
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-4-configuration-pc-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4 : Configuration PC local
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 4 : Configuration PC local">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#taches_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tâches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tâches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creer-fichier-env-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer fichier .env local
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lancer-avec-docker-compose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Lancer avec Docker Compose
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scripts-de-gestion-creation-de-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Scripts de gestion (création de helpers)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-5-reverse-proxy-synology-nas-uniquement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5 : Reverse Proxy Synology (NAS uniquement)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 5 : Reverse Proxy Synology (NAS uniquement)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#taches_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tâches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tâches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurer-application-portal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Configurer Application Portal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurer-certificat-ssl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Configurer certificat SSL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tester-acces-externe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Tester accès externe
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-6-scripts-batch-en-conteneur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 6 : Scripts batch en conteneur
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 6 : Scripts batch en conteneur">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#taches_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tâches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tâches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creer-service-docker-pour-scripts-batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer service Docker pour scripts batch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creer-taches-planifiees-cron-sur-nas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer tâches planifiées (cron sur NAS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-7-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 7 : Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 7 : Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#taches_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tâches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tâches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creer-docsdeploymentdocker-setupmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer docs/deployment/docker-setup.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creer-docsdeploymentlocal-deploymentmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer docs/deployment/local-deployment.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creer-docsdeploymentnas-deploymentmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer docs/deployment/nas-deployment.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creer-docsdeploymentupdate-guidemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer docs/deployment/update-guide.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creer-docsdeploymenttroubleshootingmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Créer docs/deployment/troubleshooting.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mettre-a-jour-readmemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Mettre à jour README.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploiement-nas-synology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🖥️ Déploiement NAS Synology
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#images-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📦 Images Docker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mise-a-jour" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔄 Mise à jour
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔄 Mise à jour">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-docker-compose-local-complet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Test docker-compose local complet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-deploiement-nas-portainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Test déploiement NAS Portainer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-webhook-auto-deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Test webhook auto-deploy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Test rollback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-scripts-batch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Test scripts batch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-performance-et-ressources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Test performance et ressources
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#specifications-techniques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spécifications techniques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spécifications techniques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ressources-nas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ressources NAS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limites-de-ressources-conteneurs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limites de ressources conteneurs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#healthchecks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Healthchecks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#taille-estimee-des-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Taille estimée des images
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structure-finale-du-projet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure finale du projet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes-importantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notes importantes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#criteres-de-succes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Critères de succès
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Références
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prochaines-etapes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prochaines étapes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="dockerisation-et-deploiement-multi-environnement">Dockerisation et déploiement multi-environnement<a class="headerlink" href="#dockerisation-et-deploiement-multi-environnement" title="Permanent link">&para;</a></h1>
+<h2 id="objectif">Objectif<a class="headerlink" href="#objectif" title="Permanent link">&para;</a></h2>
+<p>Packager l'application <strong>lmelp</strong> (Le Masque et la Plume) sous forme de conteneur Docker et permettre son déploiement aussi bien sur NAS Synology DS 923+ qu'en local sur PC avec gestion automatisée des mises à jour.</p>
+<h2 id="architecture-cible">Architecture cible<a class="headerlink" href="#architecture-cible" title="Permanent link">&para;</a></h2>
+<h3 id="conteneurs">Conteneurs<a class="headerlink" href="#conteneurs" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Application Streamlit</strong> : Interface web + scripts de traitement (port 8501)</li>
+<li><strong>MongoDB</strong> :</li>
+<li>Sur NAS : Utilisation du conteneur existant <code>mongo</code> (pas de nouveau conteneur)</li>
+<li>Sur PC : Conteneur MongoDB local ou service MongoDB installé</li>
+</ul>
+<h3 id="reseau">Réseau<a class="headerlink" href="#reseau" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Connexion au réseau bridge Docker existant (NAS) ou réseau dédié (PC)</li>
+<li>Application se connecte à MongoDB via <code>mongodb://mongo:27017/masque_et_la_plume</code> (NAS) ou <code>mongodb://localhost:27017/masque_et_la_plume</code> (PC)</li>
+<li>Reverse proxy via Application Portal Synology : <code>lmelp.ascot63.synology.me</code> (NAS uniquement)</li>
+</ul>
+<h3 id="volumes-docker">Volumes Docker<a class="headerlink" href="#volumes-docker" title="Permanent link">&para;</a></h3>
+<pre><code>lmelp-audios/     → /app/audios      # Fichiers audio téléchargés (plusieurs Go)
+lmelp-db-backup/  → /app/db          # Sauvegardes MongoDB
+lmelp-logs/       → /app/logs        # Logs applicatifs (optionnel)
+</code></pre>
+<h3 id="pipeline-cicd">Pipeline CI/CD<a class="headerlink" href="#pipeline-cicd" title="Permanent link">&para;</a></h3>
+<pre><code>Git push/tag → GitHub Actions → Build image → ghcr.io →
+  ├── Webhook Portainer → Déploiement NAS
+  └── Pull manuel → Déploiement PC local
+</code></pre>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<h3 id="application-streamlit">Application Streamlit<a class="headerlink" href="#application-streamlit" title="Permanent link">&para;</a></h3>
+<p><strong>Variables d'environnement requises :</strong></p>
+<pre><code class="language-bash"># Base de données
+DB_HOST=mongo                              # ou localhost pour PC
+DB_NAME=masque_et_la_plume
+DB_LOGS=true
+
+# Flux RSS
+RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml
+
+# APIs LLM (au moins une requise)
+AZURE_API_KEY=sk-...
+AZURE_ENDPOINT=https://....openai.azure.com/
+OPENAI_API_KEY=sk-...
+GEMINI_API_KEY=...
+
+# Google Services (optionnel)
+GOOGLE_PROJECT_ID=...
+GOOGLE_CUSTOM_SEARCH_API_KEY=...
+SEARCH_ENGINE_ID=...
+
+# Chemins
+AUDIO_BASE_PATH=/app/audios
+</code></pre>
+<h3 id="tags-docker">Tags Docker<a class="headerlink" href="#tags-docker" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>latest</code> : Dernière version stable (auto-déployée via webhook sur NAS)</li>
+<li><code>v1.0.0</code>, <code>v1.1.0</code>, etc. : Versions spécifiques</li>
+<li>Repository : <code>ghcr.io/castorfou/lmelp</code></li>
+</ul>
+<h2 id="phase-1-preparation-du-dockerfile">Phase 1 : Préparation du Dockerfile<a class="headerlink" href="#phase-1-preparation-du-dockerfile" title="Permanent link">&para;</a></h2>
+<h3 id="taches">Tâches<a class="headerlink" href="#taches" title="Permanent link">&para;</a></h3>
+<h4 id="creer-dockerdockerfile">✅ Créer <code>docker/Dockerfile</code><a class="headerlink" href="#creer-dockerdockerfile" title="Permanent link">&para;</a></h4>
+<pre><code class="language-dockerfile"># Multi-stage build optimisé pour taille et performance
+FROM python:3.11-slim as base
+
+# Stage 1: Build dependencies
+FROM base as builder
+WORKDIR /build
+RUN pip install uv
+COPY .devcontainer/requirements.txt .
+RUN uv pip install --system -r requirements.txt
+
+# Stage 2: Runtime
+FROM base as runtime
+WORKDIR /app
+
+# Copier Python + deps depuis builder
+COPY --from=builder /usr/local /usr/local
+
+# Copier code source
+COPY nbs/ /app/nbs/
+COPY ui/ /app/ui/
+COPY scripts/ /app/scripts/
+
+# Créer répertoires pour volumes
+RUN mkdir -p /app/audios /app/db /app/logs
+
+# Exposer port Streamlit
+EXPOSE 8501
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:8501/_stcore/health || exit 1
+
+# Point d'entrée
+CMD [&quot;uv&quot;, &quot;run&quot;, &quot;streamlit&quot;, &quot;run&quot;, &quot;ui/lmelp.py&quot;, &quot;--server.port=8501&quot;, &quot;--server.address=0.0.0.0&quot;]
+</code></pre>
+<p><strong>Caractéristiques :</strong>
+- Multi-stage build pour optimiser la taille
+- Utilise <code>uv</code> pour gestion rapide des dépendances
+- Image de base Python 3.11 slim
+- Healthcheck intégré pour monitoring
+- Port 8501 exposé
+- Support des volumes pour données persistantes</p>
+<h4 id="creer-dockerdocker-composeyml-pour-pc-local">✅ Créer <code>docker/docker-compose.yml</code> (pour PC local)<a class="headerlink" href="#creer-dockerdocker-composeyml-pour-pc-local" title="Permanent link">&para;</a></h4>
+<pre><code class="language-yaml">version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: lmelp-mongodb
+    restart: unless-stopped
+    ports:
+      - &quot;27017:27017&quot;
+    volumes:
+      - lmelp-mongodb-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=masque_et_la_plume
+    networks:
+      - lmelp-network
+
+  app:
+    image: ghcr.io/castorfou/lmelp:latest
+    container_name: lmelp-app
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    ports:
+      - &quot;8501:8501&quot;
+    volumes:
+      - lmelp-audios:/app/audios
+      - lmelp-db-backup:/app/db
+      - lmelp-logs:/app/logs
+    environment:
+      # Base de données
+      - DB_HOST=mongodb
+      - DB_NAME=masque_et_la_plume
+      - DB_LOGS=true
+      # Flux RSS
+      - RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml
+      # APIs (à configurer via .env)
+      - AZURE_API_KEY=${AZURE_API_KEY}
+      - AZURE_ENDPOINT=${AZURE_ENDPOINT}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # Chemins
+      - AUDIO_BASE_PATH=/app/audios
+    networks:
+      - lmelp-network
+    healthcheck:
+      test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:8501/_stcore/health&quot;]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  lmelp-mongodb-data:
+  lmelp-audios:
+  lmelp-db-backup:
+  lmelp-logs:
+
+networks:
+  lmelp-network:
+    driver: bridge
+</code></pre>
+<h4 id="creer-dockerdocker-composenasyml-pour-nas-synology">✅ Créer <code>docker/docker-compose.nas.yml</code> (pour NAS Synology)<a class="headerlink" href="#creer-dockerdocker-composenasyml-pour-nas-synology" title="Permanent link">&para;</a></h4>
+<pre><code class="language-yaml">version: '3.8'
+
+services:
+  app:
+    image: ghcr.io/castorfou/lmelp:latest
+    container_name: lmelp-app
+    restart: unless-stopped
+    ports:
+      - &quot;8501:8501&quot;
+    volumes:
+      - lmelp-audios:/app/audios
+      - lmelp-db-backup:/app/db
+      - lmelp-logs:/app/logs
+    environment:
+      # Base de données (utilise MongoDB existant)
+      - DB_HOST=mongo
+      - DB_NAME=masque_et_la_plume
+      - DB_LOGS=true
+      # Flux RSS
+      - RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml
+      # APIs (à configurer dans Portainer)
+      - AZURE_API_KEY=${AZURE_API_KEY}
+      - AZURE_ENDPOINT=${AZURE_ENDPOINT}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # Chemins
+      - AUDIO_BASE_PATH=/app/audios
+    networks:
+      - bridge  # Réseau existant avec conteneur mongo
+    healthcheck:
+      test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:8501/_stcore/health&quot;]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  lmelp-audios:
+  lmelp-db-backup:
+  lmelp-logs:
+
+networks:
+  bridge:
+    external: true  # Utilise réseau existant
+</code></pre>
+<h4 id="creer-dockerenvtemplate">✅ Créer <code>docker/.env.template</code><a class="headerlink" href="#creer-dockerenvtemplate" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash"># Copier ce fichier vers .env et remplir les valeurs
+
+# APIs LLM (au moins une requise)
+AZURE_API_KEY=
+AZURE_ENDPOINT=
+OPENAI_API_KEY=
+GEMINI_API_KEY=
+
+# Google Services (optionnel)
+GOOGLE_PROJECT_ID=
+GOOGLE_CUSTOM_SEARCH_API_KEY=
+SEARCH_ENGINE_ID=
+</code></pre>
+<h4 id="creer-dockerignore">✅ Créer <code>.dockerignore</code><a class="headerlink" href="#creer-dockerignore" title="Permanent link">&para;</a></h4>
+<pre><code># Git
+.git/
+.github/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# Tests
+tests/
+htmlcov/
+.coverage
+.pytest_cache/
+
+# Documentation
+docs/
+site/
+*.md
+!CLAUDE.md
+
+# Development
+.devcontainer/
+.vscode/
+*.ipynb_checkpoints/
+
+# Data (ne pas inclure dans l'image)
+audios/
+db/
+*.db
+*.sqlite
+
+# Notebooks (déjà convertis en .py)
+nbs/*.ipynb
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.*
+!.env.template
+</code></pre>
+<h4 id="creer-dockerentrypointsh-optionnel-pour-scripts-batch">✅ Créer <code>docker/entrypoint.sh</code> (optionnel, pour scripts batch)<a class="headerlink" href="#creer-dockerentrypointsh-optionnel-pour-scripts-batch" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash">#!/bin/bash
+set -e
+
+# Mode d'exécution : web (Streamlit) ou batch (scripts)
+MODE=${LMELP_MODE:-web}
+
+if [ &quot;$MODE&quot; = &quot;web&quot; ]; then
+    echo &quot;Starting Streamlit web interface...&quot;
+    exec uv run streamlit run ui/lmelp.py --server.port=8501 --server.address=0.0.0.0
+elif [ &quot;$MODE&quot; = &quot;batch-update&quot; ]; then
+    echo &quot;Running RSS update script...&quot;
+    exec python scripts/update_emissions.py
+elif [ &quot;$MODE&quot; = &quot;batch-transcribe&quot; ]; then
+    echo &quot;Running transcription script...&quot;
+    exec python scripts/get_all_transcriptions.py
+elif [ &quot;$MODE&quot; = &quot;batch-authors&quot; ]; then
+    echo &quot;Running author extraction script...&quot;
+    exec python scripts/store_all_auteurs_from_all_episodes.py
+else
+    echo &quot;Unknown mode: $MODE&quot;
+    echo &quot;Available modes: web, batch-update, batch-transcribe, batch-authors&quot;
+    exit 1
+fi
+</code></pre>
+<h2 id="phase-2-cicd-github-actions">Phase 2 : CI/CD GitHub Actions<a class="headerlink" href="#phase-2-cicd-github-actions" title="Permanent link">&para;</a></h2>
+<h3 id="taches_1">Tâches<a class="headerlink" href="#taches_1" title="Permanent link">&para;</a></h3>
+<h4 id="creer-githubworkflowsdocker-publishyml">✅ Créer <code>.github/workflows/docker-publish.yml</code><a class="headerlink" href="#creer-githubworkflowsdocker-publishyml" title="Permanent link">&para;</a></h4>
+<pre><code class="language-yaml">name: Build and Publish Docker Image
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Trigger Portainer Webhook (NAS deployment)
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+        run: |
+          curl -X POST ${{ secrets.PORTAINER_WEBHOOK_URL }}
+        continue-on-error: true
+</code></pre>
+<h4 id="configurer-github-secrets">✅ Configurer GitHub secrets<a class="headerlink" href="#configurer-github-secrets" title="Permanent link">&para;</a></h4>
+<p>Aller dans <code>Settings &gt; Secrets and variables &gt; Actions</code> et ajouter :</p>
+<ul>
+<li><code>PORTAINER_WEBHOOK_URL</code> : URL du webhook Portainer pour déploiement automatique sur NAS</li>
+</ul>
+<p><strong>Note :</strong> <code>GITHUB_TOKEN</code> est automatiquement fourni par GitHub Actions.</p>
+<h4 id="tester-build-local">✅ Tester build local<a class="headerlink" href="#tester-build-local" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash"># Build de l'image
+docker build -f docker/Dockerfile -t lmelp:test .
+
+# Test de l'image
+docker run --rm -p 8501:8501 \
+  -e DB_HOST=localhost \
+  -e GEMINI_API_KEY=your_key \
+  lmelp:test
+
+# Accéder à http://localhost:8501
+</code></pre>
+<h2 id="phase-3-configuration-nas-synology-portainer">Phase 3 : Configuration NAS Synology (Portainer)<a class="headerlink" href="#phase-3-configuration-nas-synology-portainer" title="Permanent link">&para;</a></h2>
+<h3 id="taches_2">Tâches<a class="headerlink" href="#taches_2" title="Permanent link">&para;</a></h3>
+<h4 id="verifiercreer-reseau-docker-partage">✅ Vérifier/créer réseau Docker partagé<a class="headerlink" href="#verifiercreer-reseau-docker-partage" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash"># SSH sur le NAS
+ssh admin@nas-synology
+
+# Vérifier que le conteneur mongo est sur le réseau bridge
+docker network inspect bridge
+
+# Si nécessaire, connecter mongo au réseau
+docker network connect bridge mongo
+</code></pre>
+<h4 id="creer-stack-portainer">✅ Créer stack Portainer<a class="headerlink" href="#creer-stack-portainer" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Ouvrir Portainer web UI</li>
+<li>Aller dans <code>Stacks &gt; Add stack</code></li>
+<li><strong>Name:</strong> <code>lmelp</code></li>
+<li><strong>Build method:</strong> Repository (ou Web editor avec docker-compose.nas.yml)</li>
+<li><strong>Repository URL:</strong> <code>https://github.com/castorfou/lmelp</code></li>
+<li><strong>Repository reference:</strong> <code>main</code></li>
+<li><strong>Compose path:</strong> <code>docker/docker-compose.nas.yml</code></li>
+</ol>
+<h4 id="configurer-variables-denvironnement-dans-portainer">✅ Configurer variables d'environnement dans Portainer<a class="headerlink" href="#configurer-variables-denvironnement-dans-portainer" title="Permanent link">&para;</a></h4>
+<p>Dans l'onglet <strong>Environment variables</strong> de la stack :</p>
+<pre><code>AZURE_API_KEY=sk-...
+AZURE_ENDPOINT=https://....openai.azure.com/
+GEMINI_API_KEY=...
+OPENAI_API_KEY=...
+GOOGLE_PROJECT_ID=...
+GOOGLE_CUSTOM_SEARCH_API_KEY=...
+SEARCH_ENGINE_ID=...
+</code></pre>
+<h4 id="configurer-webhook-portainer">✅ Configurer webhook Portainer<a class="headerlink" href="#configurer-webhook-portainer" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Dans la stack <code>lmelp</code>, aller dans <strong>Webhooks</strong></li>
+<li>Cliquer sur <strong>Add webhook</strong></li>
+<li>Copier l'URL générée (format : <code>https://portainer.nas/api/webhooks/xxx</code>)</li>
+<li>Ajouter cette URL dans GitHub Secrets comme <code>PORTAINER_WEBHOOK_URL</code></li>
+</ol>
+<h4 id="configurer-limites-de-ressources">✅ Configurer limites de ressources<a class="headerlink" href="#configurer-limites-de-ressources" title="Permanent link">&para;</a></h4>
+<p>Dans Portainer, éditer le service <code>lmelp-app</code> :
+- <strong>Memory limit:</strong> 4 GB (Whisper + Transformers = lourd)
+- <strong>CPU limit:</strong> 2 cores
+- <strong>Restart policy:</strong> Unless stopped</p>
+<h2 id="phase-4-configuration-pc-local">Phase 4 : Configuration PC local<a class="headerlink" href="#phase-4-configuration-pc-local" title="Permanent link">&para;</a></h2>
+<h3 id="taches_3">Tâches<a class="headerlink" href="#taches_3" title="Permanent link">&para;</a></h3>
+<h4 id="creer-fichier-env-local">✅ Créer fichier <code>.env</code> local<a class="headerlink" href="#creer-fichier-env-local" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash">cd lmelp/docker/
+cp .env.template .env
+# Éditer .env avec vos clés API
+</code></pre>
+<h4 id="lancer-avec-docker-compose">✅ Lancer avec Docker Compose<a class="headerlink" href="#lancer-avec-docker-compose" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash"># Première fois : pull de l'image
+docker compose -f docker/docker-compose.yml pull
+
+# Lancer les services
+docker compose -f docker/docker-compose.yml up -d
+
+# Voir les logs
+docker compose -f docker/docker-compose.yml logs -f
+
+# Accéder à l'application
+open http://localhost:8501
+</code></pre>
+<h4 id="scripts-de-gestion-creation-de-helpers">✅ Scripts de gestion (création de helpers)<a class="headerlink" href="#scripts-de-gestion-creation-de-helpers" title="Permanent link">&para;</a></h4>
+<p>Créer <code>docker/scripts/start.sh</code> :</p>
+<pre><code class="language-bash">#!/bin/bash
+docker compose -f docker/docker-compose.yml up -d
+</code></pre>
+<p>Créer <code>docker/scripts/stop.sh</code> :</p>
+<pre><code class="language-bash">#!/bin/bash
+docker compose -f docker/docker-compose.yml down
+</code></pre>
+<p>Créer <code>docker/scripts/update.sh</code> :</p>
+<pre><code class="language-bash">#!/bin/bash
+docker compose -f docker/docker-compose.yml pull
+docker compose -f docker/docker-compose.yml up -d
+</code></pre>
+<p>Créer <code>docker/scripts/logs.sh</code> :</p>
+<pre><code class="language-bash">#!/bin/bash
+docker compose -f docker/docker-compose.yml logs -f
+</code></pre>
+<p>Créer <code>docker/scripts/backup-db.sh</code> :</p>
+<pre><code class="language-bash">#!/bin/bash
+# Backup MongoDB depuis le conteneur
+docker exec lmelp-mongodb mongodump \
+  --db masque_et_la_plume \
+  --out /data/db/backup/$(date +%Y%m%d_%H%M%S)
+</code></pre>
+<h2 id="phase-5-reverse-proxy-synology-nas-uniquement">Phase 5 : Reverse Proxy Synology (NAS uniquement)<a class="headerlink" href="#phase-5-reverse-proxy-synology-nas-uniquement" title="Permanent link">&para;</a></h2>
+<h3 id="taches_4">Tâches<a class="headerlink" href="#taches_4" title="Permanent link">&para;</a></h3>
+<h4 id="configurer-application-portal">✅ Configurer Application Portal<a class="headerlink" href="#configurer-application-portal" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Ouvrir <strong>Control Panel &gt; Login Portal &gt; Advanced &gt; Reverse Proxy</strong></li>
+<li>Cliquer <strong>Create</strong></li>
+<li><strong>Configuration :</strong></li>
+<li><strong>Reverse Proxy Name:</strong> lmelp</li>
+<li><strong>Source:</strong><ul>
+<li>Protocol: HTTPS</li>
+<li>Hostname: lmelp.ascot63.synology.me</li>
+<li>Port: 443</li>
+<li>Enable HSTS: ✓</li>
+</ul>
+</li>
+<li><strong>Destination:</strong><ul>
+<li>Protocol: HTTP</li>
+<li>Hostname: localhost</li>
+<li>Port: 8501</li>
+</ul>
+</li>
+<li><strong>Custom Headers :</strong>
+     <code>WebSocket: true</code></li>
+</ol>
+<h4 id="configurer-certificat-ssl">✅ Configurer certificat SSL<a class="headerlink" href="#configurer-certificat-ssl" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Aller dans <strong>Control Panel &gt; Security &gt; Certificate</strong></li>
+<li>Utiliser un certificat existant ou créer un nouveau Let's Encrypt</li>
+<li>Assigner le certificat à lmelp.ascot63.synology.me</li>
+</ol>
+<h4 id="tester-acces-externe">✅ Tester accès externe<a class="headerlink" href="#tester-acces-externe" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash"># Test depuis Internet
+curl -I https://lmelp.ascot63.synology.me
+
+# Vérifier dans navigateur
+open https://lmelp.ascot63.synology.me
+</code></pre>
+<h2 id="phase-6-scripts-batch-en-conteneur">Phase 6 : Scripts batch en conteneur<a class="headerlink" href="#phase-6-scripts-batch-en-conteneur" title="Permanent link">&para;</a></h2>
+<h3 id="taches_5">Tâches<a class="headerlink" href="#taches_5" title="Permanent link">&para;</a></h3>
+<h4 id="creer-service-docker-pour-scripts-batch">✅ Créer service Docker pour scripts batch<a class="headerlink" href="#creer-service-docker-pour-scripts-batch" title="Permanent link">&para;</a></h4>
+<p>Optionnel : Ajouter dans <code>docker-compose.yml</code> un service pour les tâches planifiées :</p>
+<pre><code class="language-yaml">  batch-worker:
+    image: ghcr.io/castorfou/lmelp:latest
+    container_name: lmelp-batch
+    restart: &quot;no&quot;  # Lancer manuellement ou via cron
+    depends_on:
+      - mongodb
+    volumes:
+      - lmelp-audios:/app/audios
+      - lmelp-db-backup:/app/db
+    environment:
+      # Même config que app
+      - DB_HOST=mongodb
+      - LMELP_MODE=batch-update  # ou batch-transcribe, batch-authors
+    networks:
+      - lmelp-network
+</code></pre>
+<h4 id="creer-taches-planifiees-cron-sur-nas">✅ Créer tâches planifiées (cron sur NAS)<a class="headerlink" href="#creer-taches-planifiees-cron-sur-nas" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash"># SSH sur NAS
+sudo crontab -e
+
+# Ajouter :
+# Mise à jour RSS quotidienne à 6h
+0 6 * * * docker run --rm --network bridge \
+  -e DB_HOST=mongo -e LMELP_MODE=batch-update \
+  ghcr.io/castorfou/lmelp:latest
+
+# Transcription hebdomadaire dimanche 2h
+0 2 * * 0 docker run --rm --network bridge \
+  -v lmelp-audios:/app/audios \
+  -e DB_HOST=mongo -e LMELP_MODE=batch-transcribe \
+  ghcr.io/castorfou/lmelp:latest
+</code></pre>
+<h2 id="phase-7-documentation">Phase 7 : Documentation<a class="headerlink" href="#phase-7-documentation" title="Permanent link">&para;</a></h2>
+<h3 id="taches_6">Tâches<a class="headerlink" href="#taches_6" title="Permanent link">&para;</a></h3>
+<h4 id="creer-docsdeploymentdocker-setupmd">✅ Créer <code>docs/deployment/docker-setup.md</code><a class="headerlink" href="#creer-docsdeploymentdocker-setupmd" title="Permanent link">&para;</a></h4>
+<p>Documentation complète de l'architecture Docker :
+- Schéma d'architecture
+- Prérequis système
+- Ressources requises
+- Réseau Docker</p>
+<h4 id="creer-docsdeploymentlocal-deploymentmd">✅ Créer <code>docs/deployment/local-deployment.md</code><a class="headerlink" href="#creer-docsdeploymentlocal-deploymentmd" title="Permanent link">&para;</a></h4>
+<p>Guide de déploiement sur PC local :
+- Installation Docker Desktop
+- Configuration .env
+- Commandes docker-compose
+- Accès à l'application</p>
+<h4 id="creer-docsdeploymentnas-deploymentmd">✅ Créer <code>docs/deployment/nas-deployment.md</code><a class="headerlink" href="#creer-docsdeploymentnas-deploymentmd" title="Permanent link">&para;</a></h4>
+<p>Guide de déploiement sur NAS Synology :
+- Configuration Portainer
+- Variables d'environnement
+- Webhook configuration
+- Reverse proxy Application Portal
+- Troubleshooting spécifique NAS</p>
+<h4 id="creer-docsdeploymentupdate-guidemd">✅ Créer <code>docs/deployment/update-guide.md</code><a class="headerlink" href="#creer-docsdeploymentupdate-guidemd" title="Permanent link">&para;</a></h4>
+<p>Guide de mise à jour :
+- Mise à jour automatique (webhook)
+- Mise à jour manuelle locale
+- Mise à jour vers version spécifique
+- Rollback vers version précédente
+- Gestion des migrations de données</p>
+<h4 id="creer-docsdeploymenttroubleshootingmd">✅ Créer <code>docs/deployment/troubleshooting.md</code><a class="headerlink" href="#creer-docsdeploymenttroubleshootingmd" title="Permanent link">&para;</a></h4>
+<p>Guide de dépannage :
+- Problèmes courants (connexion MongoDB, APIs, transcription)
+- Consultation des logs
+- Vérification santé des conteneurs
+- Tests de connectivité
+- Nettoyage et maintenance</p>
+<h4 id="mettre-a-jour-readmemd">✅ Mettre à jour <code>README.md</code><a class="headerlink" href="#mettre-a-jour-readmemd" title="Permanent link">&para;</a></h4>
+<p>Ajouter section complète sur le déploiement Docker :</p>
+<pre><code class="language-markdown">## Déploiement Docker
+
+### 🐳 Déploiement local (PC)
+
+voir [Guide de déploiement local](docs/deployment/local-deployment.md)
+
+```bash
+cd docker/
+cp .env.template .env
+# Éditer .env avec vos clés API
+docker compose up -d
+</code></pre>
+<p>Accéder à http://localhost:8501</p>
+<h3 id="deploiement-nas-synology">🖥️ Déploiement NAS Synology<a class="headerlink" href="#deploiement-nas-synology" title="Permanent link">&para;</a></h3>
+<p>voir <a href="docs/deployment/nas-deployment.md">Guide de déploiement NAS</a></p>
+<p>Déploiement automatique via Portainer + GitHub Actions webhook.</p>
+<h3 id="images-docker">📦 Images Docker<a class="headerlink" href="#images-docker" title="Permanent link">&para;</a></h3>
+<p>Images disponibles sur GitHub Container Registry :
+- <code>ghcr.io/castorfou/lmelp:latest</code> - Dernière version stable
+- <code>ghcr.io/castorfou/lmelp:v1.0.0</code> - Versions spécifiques</p>
+<h3 id="mise-a-jour">🔄 Mise à jour<a class="headerlink" href="#mise-a-jour" title="Permanent link">&para;</a></h3>
+<p>voir <a href="docs/deployment/update-guide.md">Guide de mise à jour</a></p>
+<pre><code>
+#### ✅ Créer `docs/deployment/batch-processing.md`
+
+Documentation des scripts batch en conteneur :
+- Utilisation du mode batch
+- Scripts disponibles
+- Configuration cron
+- Logs et monitoring
+
+## Phase 8 : Tests et validation
+
+### Tâches
+
+#### ✅ Test build local des images
+
+```bash
+# Build
+docker build -f docker/Dockerfile -t lmelp:test .
+
+# Vérifier taille
+docker images lmelp:test
+
+# Vérifier layers
+docker history lmelp:test
+
+# Test démarrage
+docker run --rm -p 8501:8501 \
+  -e DB_HOST=localhost \
+  -e GEMINI_API_KEY=test \
+  lmelp:test
+</code></pre>
+<p><strong>Critères de succès :</strong>
+- Taille image &lt; 3 GB (avec transformers + torch)
+- Démarrage &lt; 30 secondes
+- Healthcheck OK après démarrage</p>
+<h4 id="test-docker-compose-local-complet">✅ Test docker-compose local complet<a class="headerlink" href="#test-docker-compose-local-complet" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash"># Démarrer tous les services
+docker compose -f docker/docker-compose.yml up -d
+
+# Vérifier statut
+docker compose -f docker/docker-compose.yml ps
+
+# Vérifier logs
+docker compose -f docker/docker-compose.yml logs app
+
+# Vérifier MongoDB
+docker exec -it lmelp-mongodb mongosh --eval &quot;db.adminCommand('ping')&quot;
+
+# Test interface web
+curl http://localhost:8501
+
+# Test API MongoDB depuis app
+docker exec -it lmelp-app python -c &quot;
+from nbs.mongo import get_mongodb_client
+client = get_mongodb_client()
+print(client.server_info())
+&quot;
+
+# Arrêter
+docker compose -f docker/docker-compose.yml down
+</code></pre>
+<p><strong>Critères de succès :</strong>
+- Tous les services démarrent sans erreur
+- Application Streamlit accessible
+- Connexion MongoDB fonctionnelle
+- Volumes persistants créés</p>
+<h4 id="test-deploiement-nas-portainer">✅ Test déploiement NAS Portainer<a class="headerlink" href="#test-deploiement-nas-portainer" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Déployer stack via Portainer</li>
+<li>Vérifier logs dans Portainer UI</li>
+<li>Vérifier connexion au MongoDB existant :
+   <code>bash
+   docker exec -it lmelp-app python -c "
+   from nbs.mongo import get_mongodb_client
+   client = get_mongodb_client()
+   print(client.list_database_names())
+   "</code></li>
+<li>Tester interface web via reverse proxy : https://lmelp.ascot63.synology.me</li>
+</ol>
+<p><strong>Critères de succès :</strong>
+- Stack déployée sans erreur
+- Connexion à MongoDB externe OK
+- Interface accessible via domaine Synology
+- HTTPS fonctionnel avec certificat valide</p>
+<h4 id="test-webhook-auto-deploy">✅ Test webhook auto-deploy<a class="headerlink" href="#test-webhook-auto-deploy" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash"># Push sur main
+git push origin main
+
+# Vérifier GitHub Actions
+# https://github.com/castorfou/lmelp/actions
+
+# Vérifier logs Portainer pour auto-deploy
+# Vérifier que nouvelle version est déployée
+docker exec -it lmelp-app python -c &quot;import sys; print(sys.version)&quot;
+</code></pre>
+<p><strong>Critères de succès :</strong>
+- Build GitHub Actions réussie
+- Image publiée sur ghcr.io
+- Webhook déclenché automatiquement
+- Stack Portainer mise à jour
+- Application redémarrée avec nouvelle version</p>
+<h4 id="test-rollback">✅ Test rollback<a class="headerlink" href="#test-rollback" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash"># Méthode 1 : Via Portainer
+# 1. Éditer stack
+# 2. Changer image vers version précédente (ex: v1.0.0)
+# 3. Update stack
+
+# Méthode 2 : En local
+docker compose -f docker/docker-compose.yml down
+docker pull ghcr.io/castorfou/lmelp:v1.0.0
+# Éditer docker-compose.yml : image: ghcr.io/castorfou/lmelp:v1.0.0
+docker compose -f docker/docker-compose.yml up -d
+
+# Vérifier que l'application fonctionne avec ancienne version
+</code></pre>
+<p><strong>Critères de succès :</strong>
+- Rollback vers version précédente sans perte de données
+- Application fonctionnelle
+- Volumes préservés</p>
+<h4 id="test-scripts-batch">✅ Test scripts batch<a class="headerlink" href="#test-scripts-batch" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash"># Test mise à jour RSS
+docker run --rm --network lmelp-network \
+  -e DB_HOST=mongodb \
+  -e LMELP_MODE=batch-update \
+  -e RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml \
+  ghcr.io/castorfou/lmelp:latest
+
+# Vérifier dans MongoDB que les épisodes sont ajoutés
+docker exec -it lmelp-mongodb mongosh masque_et_la_plume \
+  --eval &quot;db.episodes.countDocuments()&quot;
+
+# Test transcription (avec épisode de test)
+docker run --rm --network lmelp-network \
+  -v lmelp-audios:/app/audios \
+  -e DB_HOST=mongodb \
+  -e LMELP_MODE=batch-transcribe \
+  -e GEMINI_API_KEY=$GEMINI_API_KEY \
+  ghcr.io/castorfou/lmelp:latest
+</code></pre>
+<p><strong>Critères de succès :</strong>
+- Scripts s'exécutent sans erreur
+- Données ajoutées/modifiées dans MongoDB
+- Fichiers audio persistés dans volume
+- Logs clairs et informatifs</p>
+<h4 id="test-performance-et-ressources">✅ Test performance et ressources<a class="headerlink" href="#test-performance-et-ressources" title="Permanent link">&para;</a></h4>
+<pre><code class="language-bash"># Surveiller ressources pendant utilisation
+docker stats lmelp-app
+
+# Test charge : ouvrir plusieurs pages Streamlit
+# Vérifier utilisation CPU/RAM
+
+# Test transcription : surveiller pendant transcription d'un épisode
+docker stats lmelp-app
+</code></pre>
+<p><strong>Critères de succès :</strong>
+- RAM &lt; 4 GB pendant utilisation normale
+- RAM &lt; 8 GB pendant transcription Whisper
+- CPU &lt; 100% en moyenne
+- Pas de memory leak après plusieurs heures</p>
+<h2 id="specifications-techniques">Spécifications techniques<a class="headerlink" href="#specifications-techniques" title="Permanent link">&para;</a></h2>
+<h3 id="ressources-nas">Ressources NAS<a class="headerlink" href="#ressources-nas" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>RAM :</strong> 40 Go disponibles</li>
+<li><strong>Stockage :</strong> 20 To disponibles</li>
+<li><strong>Modèle :</strong> Synology DS 923+</li>
+<li><strong>Réseau :</strong> Accessible depuis Internet</li>
+</ul>
+<h3 id="limites-de-ressources-conteneurs">Limites de ressources conteneurs<a class="headerlink" href="#limites-de-ressources-conteneurs" title="Permanent link">&para;</a></h3>
+<pre><code class="language-yaml">deploy:
+  resources:
+    limits:
+      cpus: '2'
+      memory: 4G
+    reservations:
+      cpus: '1'
+      memory: 2G
+</code></pre>
+<p><strong>Justification :</strong>
+- Whisper + Transformers = modèles lourds en RAM
+- Transcription = intensif CPU
+- 4 GB permet de charger les modèles ML confortablement</p>
+<h3 id="healthchecks">Healthchecks<a class="headerlink" href="#healthchecks" title="Permanent link">&para;</a></h3>
+<pre><code class="language-yaml">healthcheck:
+  test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:8501/_stcore/health&quot;]
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 40s  # Temps de chargement des modèles ML
+</code></pre>
+<h3 id="taille-estimee-des-images">Taille estimée des images<a class="headerlink" href="#taille-estimee-des-images" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Image finale :</strong> ~2.5-3 GB (avec torch, transformers)</li>
+<li><strong>Volumes :</strong></li>
+<li><code>lmelp-audios</code> : 50-100 GB (audio MP3 des épisodes)</li>
+<li><code>lmelp-db-backup</code> : 1-5 GB (dumps MongoDB)</li>
+<li><code>lmelp-logs</code> : &lt; 100 MB</li>
+</ul>
+<h2 id="structure-finale-du-projet">Structure finale du projet<a class="headerlink" href="#structure-finale-du-projet" title="Permanent link">&para;</a></h2>
+<pre><code>lmelp/
+├── docker/
+│   ├── Dockerfile
+│   ├── docker-compose.yml         # PC local
+│   ├── docker-compose.nas.yml     # NAS Synology
+│   ├── .env.template
+│   ├── entrypoint.sh
+│   └── scripts/
+│       ├── start.sh
+│       ├── stop.sh
+│       ├── update.sh
+│       ├── logs.sh
+│       └── backup-db.sh
+├── .github/
+│   └── workflows/
+│       └── docker-publish.yml
+├── .dockerignore
+└── docs/
+    └── deployment/
+        ├── docker-setup.md
+        ├── local-deployment.md
+        ├── nas-deployment.md
+        ├── update-guide.md
+        ├── troubleshooting.md
+        └── batch-processing.md
+</code></pre>
+<h2 id="notes-importantes">Notes importantes<a class="headerlink" href="#notes-importantes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>⚠️ <strong>Pas de conteneur MongoDB sur NAS</strong> : Utiliser le conteneur <code>mongo</code> existant</li>
+<li>⚠️ <strong>MongoDB sur PC</strong> : Inclus dans docker-compose.yml local</li>
+<li>⚠️ <strong>Réseau Docker</strong> :</li>
+<li>NAS : Connecter au réseau du conteneur mongo existant</li>
+<li>PC : Réseau dédié <code>lmelp-network</code></li>
+<li>⚠️ <strong>Volumes</strong> : Persister les fichiers audio (plusieurs Go)</li>
+<li>⚠️ <strong>Secrets</strong> : Toutes les API keys via variables d'environnement (Portainer sur NAS, .env sur PC)</li>
+<li>⚠️ <strong>Modèles ML</strong> : Téléchargés au premier lancement (Whisper, Transformers) → temps de démarrage initial long</li>
+<li>⚠️ <strong>Transcription</strong> : Opération <strong>TRÈS</strong> coûteuse en ressources (RAM + CPU/GPU)</li>
+<li>⚠️ <strong>Webhook</strong> : Actif uniquement sur NAS pour auto-deploy, PC fait pull manuel</li>
+</ul>
+<h2 id="criteres-de-succes">Critères de succès<a class="headerlink" href="#criteres-de-succes" title="Permanent link">&para;</a></h2>
+<p>✅ Image Docker buildée et publiée sur ghcr.io
+✅ Application déployée et accessible sur :
+  - PC local : http://localhost:8501
+  - NAS : https://lmelp.ascot63.synology.me
+✅ Connexion MongoDB fonctionnelle (externe sur NAS, locale sur PC)
+✅ Volumes persistants pour audios et backups
+✅ Webhook GitHub → Portainer fonctionnel (déploiement automatique NAS)
+✅ Scripts batch exécutables en conteneur
+✅ Possibilité de rollback vers version précédente
+✅ Documentation complète du déploiement et de la maintenance
+✅ Tests de performance passants (RAM &lt; 4 GB utilisation normale)
+✅ Healthchecks fonctionnels</p>
+<h2 id="references">Références<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../../mongo/">Configuration MongoDB existante</a></li>
+<li><a href="https://docs.portainer.io/">Documentation Portainer</a></li>
+<li><a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry">GitHub Container Registry</a></li>
+<li><a href="https://kb.synology.com/en-global/DSM/help/DSM/AdminCenter/application_appportal_config">Synology Application Portal</a></li>
+<li><a href="https://docs.docker.com/compose/compose-file/">Docker Compose File Reference</a></li>
+<li><a href="https://docs.streamlit.io/knowledge-base/tutorials/deploy/docker">Streamlit Docker Deployment</a></li>
+</ul>
+<h2 id="prochaines-etapes">Prochaines étapes<a class="headerlink" href="#prochaines-etapes" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Commencer par Phase 1 : Création des Dockerfiles</li>
+<li>Tester build local et fonctionnement de base</li>
+<li>Setup CI/CD GitHub Actions</li>
+<li>Déploiement test sur PC local</li>
+<li>Déploiement production sur NAS avec webhook</li>
+<li>Documentation et validation finale</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1955 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../readme_unit_test/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>development workflow (Docker + Portainer) - Documentation des APIs du repo lmelp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#workflow-de-developpement-avec-docker-et-portainer" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Documentation des APIs du repo lmelp" class="md-header__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation des APIs du repo lmelp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              development workflow (Docker + Portainer)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Documentation des APIs du repo lmelp" class="md-nav__button md-logo" aria-label="Documentation des APIs du repo lmelp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation des APIs du repo lmelp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../llm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module llm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../whisper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module whisper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module rss
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongo_episode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_episode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongo_auteur/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_auteur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongo_livre/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module mongo_livre
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other kind of docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other kind of docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_doc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    manage doc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_markdown/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    write markdown
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_vscode_hints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    some vs_code hints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_google/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    about Google services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_data_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_github/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_uv_devcontainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    uv devcontainer venv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_import_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    import strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../readme_unit_test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unit tests guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    development workflow (Docker + Portainer)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    development workflow (Docker + Portainer)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vue-densemble" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vue d'ensemble
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-etape-par-etape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow étape par étape
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflow étape par étape">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-demarrer-un-nouveau-developpement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Démarrer un nouveau développement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-developper-dans-devcontainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Développer dans devcontainer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-developper-et-tester" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Développer et tester
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-merger-dans-main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Merger dans main
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-mise-a-jour-automatique-de-la-production-locale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Mise à jour automatique de la production locale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-nettoyer-la-branche-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Nettoyer la branche feature
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#avantages-de-ce-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Avantages de ce workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Avantages de ce workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#separation-devprod-claire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Séparation dev/prod claire
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pas-de-conflits-de-ressources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pas de conflits de ressources
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-update-zero-intervention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-update zéro intervention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#donnees-partagees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Données partagées
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-portainer-auto-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Portainer auto-update
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Portainer auto-update">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#via-watchtower-integre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Via Watchtower intégré
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-webhook-portainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Via webhook Portainer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#port-8501-deja-utilise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Port 8501 déjà utilisé
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mongodb-connection-refused-en-dev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MongoDB connection refused en dev
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#portainer-nauto-update-pas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Portainer n'auto-update pas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-docker-pas-a-jour-apres-le-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image Docker pas à jour après le build
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cas-dusage-avances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cas d'usage avancés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cas d&#39;usage avancés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#developper-sur-plusieurs-branches-en-parallele" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Développer sur plusieurs branches en parallèle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tester-limage-docker-localement-avant-le-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tester l'image Docker localement avant le merge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reproduire-le-workflow-sur-nas-synology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reproduire le workflow sur NAS Synology
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ressources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ressources
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resume-du-cycle-complet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résumé du cycle complet
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vue-densemble" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vue d'ensemble
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-etape-par-etape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow étape par étape
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflow étape par étape">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-demarrer-un-nouveau-developpement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Démarrer un nouveau développement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-developper-dans-devcontainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Développer dans devcontainer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-developper-et-tester" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Développer et tester
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-merger-dans-main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Merger dans main
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-mise-a-jour-automatique-de-la-production-locale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Mise à jour automatique de la production locale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-nettoyer-la-branche-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Nettoyer la branche feature
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#avantages-de-ce-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Avantages de ce workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Avantages de ce workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#separation-devprod-claire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Séparation dev/prod claire
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pas-de-conflits-de-ressources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pas de conflits de ressources
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-update-zero-intervention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-update zéro intervention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#donnees-partagees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Données partagées
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-portainer-auto-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Portainer auto-update
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Portainer auto-update">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#via-watchtower-integre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Via Watchtower intégré
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-webhook-portainer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Via webhook Portainer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#port-8501-deja-utilise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Port 8501 déjà utilisé
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mongodb-connection-refused-en-dev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MongoDB connection refused en dev
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#portainer-nauto-update-pas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Portainer n'auto-update pas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-docker-pas-a-jour-apres-le-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image Docker pas à jour après le build
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cas-dusage-avances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cas d'usage avancés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cas d&#39;usage avancés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#developper-sur-plusieurs-branches-en-parallele" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Développer sur plusieurs branches en parallèle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tester-limage-docker-localement-avant-le-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tester l'image Docker localement avant le merge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reproduire-le-workflow-sur-nas-synology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reproduire le workflow sur NAS Synology
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ressources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ressources
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resume-du-cycle-complet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Résumé du cycle complet
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="workflow-de-developpement-avec-docker-et-portainer">Workflow de développement avec Docker et Portainer<a class="headerlink" href="#workflow-de-developpement-avec-docker-et-portainer" title="Permanent link">&para;</a></h1>
+<p>Ce guide décrit le workflow recommandé pour développer lmelp tout en utilisant Portainer pour la production locale.</p>
+<h2 id="vue-densemble">Vue d'ensemble<a class="headerlink" href="#vue-densemble" title="Permanent link">&para;</a></h2>
+<p>Le workflow sépare clairement deux environnements :</p>
+<ul>
+<li><strong>Développement</strong> : devcontainer (VS Code) sur une branche feature</li>
+<li><strong>Production locale</strong> : Stack Portainer (auto-update) sur la branche main</li>
+</ul>
+<p>Cette séparation évite les conflits de ports et permet une mise à jour automatique de la version "production" locale.</p>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                        MongoDB (hôte)                        │
+│                    localhost:27017                           │
+│              masque_et_la_plume database                     │
+└─────────────┬─────────────────────────────┬─────────────────┘
+              │                             │
+    ┌─────────▼─────────┐         ┌────────▼─────────┐
+    │   DÉVELOPPEMENT   │         │   PRODUCTION      │
+    │                   │         │     LOCALE        │
+    │  Devcontainer     │         │                   │
+    │  (branche feature)│         │  Stack Portainer  │
+    │                   │         │  (branche main)   │
+    │  Port 8501        │         │  Port 8501        │
+    │  DB: localhost    │         │  DB: 172.17.0.1   │
+    └───────────────────┘         └───────────────────┘
+         Actif pendant              Actif le reste
+         le développement           du temps
+</code></pre>
+<h2 id="workflow-etape-par-etape">Workflow étape par étape<a class="headerlink" href="#workflow-etape-par-etape" title="Permanent link">&para;</a></h2>
+<h3 id="1-demarrer-un-nouveau-developpement">1. Démarrer un nouveau développement<a class="headerlink" href="#1-demarrer-un-nouveau-developpement" title="Permanent link">&para;</a></h3>
+<p><strong>Sur une nouvelle branche feature :</strong></p>
+<pre><code class="language-bash"># Créer la branche feature
+git checkout -b feature/ma-nouvelle-fonctionnalite
+
+# Dans Portainer Web UI : Arrêter la stack lmelp
+# Stacks → lmelp → Stop this stack
+</code></pre>
+<p><strong>Pourquoi arrêter Portainer ?</strong>
+- Libère le port 8501 pour Streamlit en dev
+- Évite les accès concurrents à MongoDB (bien que MongoDB les supporte)
+- Environnement propre pour le développement</p>
+<h3 id="2-developper-dans-devcontainer">2. Développer dans devcontainer<a class="headerlink" href="#2-developper-dans-devcontainer" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># Ouvrir VS Code dans le repo
+code .
+
+# VS Code détecte automatiquement le devcontainer
+# Accept &quot;Reopen in Container&quot;
+</code></pre>
+<p><strong>Dans le devcontainer :</strong></p>
+<ul>
+<li>L'application se connecte à MongoDB sur l'hôte (localhost)</li>
+<li>Streamlit sur port 8501</li>
+<li>Hot-reload automatique des modifications Python</li>
+<li>Accès à tous les outils de dev (pytest, nbdev, etc.)</li>
+</ul>
+<p><strong>Lancer l'interface :</strong></p>
+<pre><code class="language-bash"># Dans le terminal devcontainer
+./ui/lmelp_ui.sh
+
+# Ou via VS Code Tasks
+# Ctrl+Shift+P → &quot;Tasks: Run Task&quot; → &quot;run streamlit&quot;
+</code></pre>
+<p><strong>Accès : http://localhost:8501</strong></p>
+<h3 id="3-developper-et-tester">3. Développer et tester<a class="headerlink" href="#3-developper-et-tester" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># Modifier le code (notebooks ou Python)
+# Les changements sont automatiquement reflétés
+
+# Exporter les notebooks si modifiés
+nbdev_export
+
+# Lancer les tests
+pytest
+
+# Formatter le code
+black nbs/ ui/
+
+# Commit réguliers
+git add .
+git commit -m &quot;Add: nouvelle fonctionnalité&quot;
+git push origin feature/ma-nouvelle-fonctionnalite
+</code></pre>
+<h3 id="4-merger-dans-main">4. Merger dans main<a class="headerlink" href="#4-merger-dans-main" title="Permanent link">&para;</a></h3>
+<p><strong>Via Pull Request (recommandé) :</strong></p>
+<ol>
+<li>Créer une PR sur GitHub</li>
+<li>Review du code</li>
+<li>Merger dans main</li>
+</ol>
+<p><strong>Ou directement (si seul développeur) :</strong></p>
+<pre><code class="language-bash">git checkout main
+git pull origin main
+git merge feature/ma-nouvelle-fonctionnalite
+git push origin main
+</code></pre>
+<h3 id="5-mise-a-jour-automatique-de-la-production-locale">5. Mise à jour automatique de la production locale<a class="headerlink" href="#5-mise-a-jour-automatique-de-la-production-locale" title="Permanent link">&para;</a></h3>
+<p><strong>Le workflow CI/CD se déclenche automatiquement :</strong></p>
+<pre><code>Push sur main
+     ↓
+GitHub Actions build Docker image
+     ↓
+Image publiée sur ghcr.io/castorfou/lmelp:latest
+     ↓
+Portainer auto-update détecte la nouvelle image
+     ↓
+Pull et redéploiement automatique
+     ↓
+Production locale à jour ! ✅
+</code></pre>
+<p><strong>Durée totale : ~20-30 minutes</strong>
+- Build Docker : ~19 minutes (GitHub Actions)
+- Détection Portainer : 0-6 heures (selon config Watchtower)
+- Pull et redéploiement : ~2 minutes</p>
+<p><strong>Redémarrer la stack Portainer :</strong></p>
+<pre><code class="language-bash"># Dans Portainer Web UI
+# Stacks → lmelp → Start this stack
+
+# Ou forcer l'update immédiatement
+# Stacks → lmelp → Pull and redeploy
+</code></pre>
+<p><strong>Accès production locale : http://localhost:8501</strong></p>
+<h3 id="6-nettoyer-la-branche-feature">6. Nettoyer la branche feature<a class="headerlink" href="#6-nettoyer-la-branche-feature" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># Supprimer la branche locale
+git branch -d feature/ma-nouvelle-fonctionnalite
+
+# Supprimer la branche distante
+git push origin --delete feature/ma-nouvelle-fonctionnalite
+</code></pre>
+<h2 id="avantages-de-ce-workflow">Avantages de ce workflow<a class="headerlink" href="#avantages-de-ce-workflow" title="Permanent link">&para;</a></h2>
+<h3 id="separation-devprod-claire">Séparation dev/prod claire<a class="headerlink" href="#separation-devprod-claire" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Dev</strong> : Expérimentation libre, breakpoints, debug</li>
+<li><strong>Prod locale</strong> : Version stable, testée, documentée</li>
+</ul>
+<h3 id="pas-de-conflits-de-ressources">Pas de conflits de ressources<a class="headerlink" href="#pas-de-conflits-de-ressources" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Port 8501 utilisé par un seul service à la fois</li>
+<li>MongoDB accessible des deux environnements (séquentiellement)</li>
+</ul>
+<h3 id="auto-update-zero-intervention">Auto-update zéro intervention<a class="headerlink" href="#auto-update-zero-intervention" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Push sur main → Image buildée → Portainer update</li>
+<li>Aucune commande manuelle à lancer</li>
+<li>Reproductible sur NAS Synology</li>
+</ul>
+<h3 id="donnees-partagees">Données partagées<a class="headerlink" href="#donnees-partagees" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Même base MongoDB pour dev et prod locale</li>
+<li>Pas besoin de restaurer des backups entre les deux</li>
+<li>Continuité des données de test</li>
+</ul>
+<h2 id="configuration-portainer-auto-update">Configuration Portainer auto-update<a class="headerlink" href="#configuration-portainer-auto-update" title="Permanent link">&para;</a></h2>
+<h3 id="via-watchtower-integre">Via Watchtower intégré<a class="headerlink" href="#via-watchtower-integre" title="Permanent link">&para;</a></h3>
+<p>Si Portainer a Watchtower configuré globalement, aucune config nécessaire.</p>
+<p><strong>Vérifier la configuration :</strong></p>
+<pre><code class="language-bash"># Voir si Watchtower tourne
+docker ps | grep watchtower
+
+# Voir les logs Watchtower
+docker logs -f &lt;watchtower-container-id&gt;
+</code></pre>
+<h3 id="via-webhook-portainer">Via webhook Portainer<a class="headerlink" href="#via-webhook-portainer" title="Permanent link">&para;</a></h3>
+<p><strong>Pour des updates instantanées (optionnel) :</strong></p>
+<ol>
+<li>Dans Portainer : <strong>Stacks</strong> → <strong>lmelp</strong> → <strong>Webhooks</strong> → <strong>Create webhook</strong></li>
+<li>Copier l'URL du webhook</li>
+<li>Dans GitHub : <strong>Settings</strong> → <strong>Secrets</strong> → <strong>Actions</strong> → <strong>New secret</strong></li>
+<li>Name: <code>PORTAINER_WEBHOOK_URL</code></li>
+<li>Value: URL copiée</li>
+<li>Le workflow GitHub Actions triggera automatiquement le webhook</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="port-8501-deja-utilise">Port 8501 déjà utilisé<a class="headerlink" href="#port-8501-deja-utilise" title="Permanent link">&para;</a></h3>
+<p><strong>Symptôme :</strong> Impossible de lancer Streamlit en dev</p>
+<p><strong>Cause :</strong> La stack Portainer est toujours active</p>
+<p><strong>Solution :</strong></p>
+<pre><code class="language-bash"># Vérifier quel processus utilise le port
+sudo lsof -i :8501
+
+# Arrêter la stack Portainer
+# Via Web UI : Stacks → lmelp → Stop
+</code></pre>
+<h3 id="mongodb-connection-refused-en-dev">MongoDB connection refused en dev<a class="headerlink" href="#mongodb-connection-refused-en-dev" title="Permanent link">&para;</a></h3>
+<p><strong>Symptôme :</strong> <code>pymongo.errors.ServerSelectionTimeoutError</code></p>
+<p><strong>Cause :</strong> MongoDB non démarré sur l'hôte</p>
+<p><strong>Solution :</strong></p>
+<pre><code class="language-bash"># Vérifier MongoDB
+sudo systemctl status mongod
+
+# Démarrer MongoDB
+sudo systemctl start mongod
+</code></pre>
+<h3 id="portainer-nauto-update-pas">Portainer n'auto-update pas<a class="headerlink" href="#portainer-nauto-update-pas" title="Permanent link">&para;</a></h3>
+<p><strong>Symptôme :</strong> Nouvelle version pushée mais Portainer reste sur l'ancienne</p>
+<p><strong>Causes possibles :</strong></p>
+<ol>
+<li><strong>Watchtower non configuré</strong> : Configurer Watchtower ou utiliser webhook</li>
+<li><strong>Délai de polling</strong> : Watchtower vérifie toutes les 6h par défaut</li>
+<li><strong>Image tag incorrect</strong> : Vérifier que le compose utilise <code>:latest</code></li>
+</ol>
+<p><strong>Solutions :</strong></p>
+<pre><code class="language-bash"># Forcer l'update manuellement
+# Portainer → Stacks → lmelp → Pull and redeploy
+
+# Ou vérifier les logs Watchtower
+docker logs watchtower | grep lmelp
+</code></pre>
+<h3 id="image-docker-pas-a-jour-apres-le-build">Image Docker pas à jour après le build<a class="headerlink" href="#image-docker-pas-a-jour-apres-le-build" title="Permanent link">&para;</a></h3>
+<p><strong>Symptôme :</strong> GitHub Actions build OK mais image pas mise à jour</p>
+<p><strong>Cause :</strong> GitHub Actions en cours ou échoué</p>
+<p><strong>Solution :</strong></p>
+<pre><code class="language-bash"># Vérifier le statut du build
+# https://github.com/castorfou/lmelp/actions/workflows/docker-publish.yml
+
+# Attendre la fin du build (~19 minutes)
+# Vérifier l'image publiée
+# https://github.com/castorfou/lmelp/pkgs/container/lmelp
+</code></pre>
+<h2 id="cas-dusage-avances">Cas d'usage avancés<a class="headerlink" href="#cas-dusage-avances" title="Permanent link">&para;</a></h2>
+<h3 id="developper-sur-plusieurs-branches-en-parallele">Développer sur plusieurs branches en parallèle<a class="headerlink" href="#developper-sur-plusieurs-branches-en-parallele" title="Permanent link">&para;</a></h3>
+<p><strong>Problème :</strong> Besoin de tester deux features simultanément</p>
+<p><strong>Solution :</strong> Utiliser différents ports</p>
+<pre><code class="language-bash"># Feature 1 : port 8501
+streamlit run ui/lmelp.py --server.port 8501
+
+# Feature 2 : port 8502 (autre terminal)
+streamlit run ui/lmelp.py --server.port 8502
+</code></pre>
+<h3 id="tester-limage-docker-localement-avant-le-merge">Tester l'image Docker localement avant le merge<a class="headerlink" href="#tester-limage-docker-localement-avant-le-merge" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash"># Builder l'image localement
+cd /path/to/lmelp
+docker build -f docker/Dockerfile -t lmelp:test .
+
+# Arrêter Portainer
+# Dans Portainer Web UI : Stop stack lmelp
+
+# Lancer l'image de test
+docker run --rm -p 8501:8501 \
+  -e DB_HOST=172.17.0.1 \
+  -e DB_NAME=masque_et_la_plume \
+  --env-file .env \
+  lmelp:test
+
+# Accès : http://localhost:8501
+</code></pre>
+<h3 id="reproduire-le-workflow-sur-nas-synology">Reproduire le workflow sur NAS Synology<a class="headerlink" href="#reproduire-le-workflow-sur-nas-synology" title="Permanent link">&para;</a></h3>
+<p><strong>Identique au PC, avec ces différences :</strong></p>
+<pre><code class="language-bash"># DB_HOST différent dans .env Portainer
+DB_HOST=mongo  # Nom du conteneur MongoDB sur le NAS
+
+# Pas de devcontainer sur le NAS (développement sur PC uniquement)
+
+# Même auto-update via Portainer
+</code></pre>
+<h2 id="ressources">Ressources<a class="headerlink" href="#ressources" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../docker/README.md">Guide Docker complet</a></li>
+<li><a href="../deployment/README.md">Déploiement Portainer</a></li>
+<li><a href="../deployment/github-actions-setup/">CI/CD GitHub Actions</a></li>
+<li><a href="../CLAUDE.md">CLAUDE.md - Vue d'ensemble projet</a></li>
+</ul>
+<h2 id="resume-du-cycle-complet">Résumé du cycle complet<a class="headerlink" href="#resume-du-cycle-complet" title="Permanent link">&para;</a></h2>
+<pre><code>1. Stop Portainer
+2. Dev dans devcontainer (branche feature)
+3. Test, commit, push
+4. Merge vers main (PR ou direct)
+5. CI/CD build image (auto)
+6. Portainer pull image (auto)
+7. Start Portainer → Prod locale à jour ✅
+8. Répéter pour la prochaine feature
+</code></pre>
+<p><strong>Durée du cycle :</strong> 20-30 minutes (principalement build Docker)</p>
+<p><strong>Intervention manuelle :</strong> Stop/Start Portainer uniquement</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
