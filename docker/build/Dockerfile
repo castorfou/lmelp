@@ -57,6 +57,7 @@ RUN python /tmp/patch_streamlit_favicon.py && \
 COPY nbs/ /app/nbs/
 COPY ui/ /app/ui/
 COPY scripts/ /app/scripts/
+COPY .streamlit/ /app/.streamlit/
 
 # Create directories for volumes
 RUN mkdir -p /app/audios /app/db /app/logs

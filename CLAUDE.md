@@ -56,6 +56,9 @@
 │   ├── date_utils.py             # Formatage dates
 │   └── *.ipynb                   # Notebooks sources (30+ fichiers)
 │
+├── .streamlit/                   # Configuration Streamlit
+│   └── config.toml               # Logging, CORS, thème
+│
 ├── ui/                           # Interface web Streamlit
 │   ├── lmelp.py                  # Page principale
 │   └── pages/                    # Application multi-pages

@@ -1,0 +1,33 @@
+# Streamlit Configuration for lmelp
+# Cette configuration active les logs HTTP pour un meilleur monitoring dans Portainer
+
+[server]
+# Port et adresse (sera surchargé par les options CLI dans entrypoint.sh)
+port = 8501
+address = "0.0.0.0"
+headless = true
+
+# Configuration CORS et sécurité
+# enableCORS doit être true si enableXsrfProtection est true
+enableCORS = true
+enableXsrfProtection = true
+
+# Désactiver les statistiques d'usage
+[browser]
+gatherUsageStats = false
+
+# Configuration du logging
+[logger]
+# Niveau de log : debug, info, warning, error, critical
+level = "info"
+
+# Format des messages de log
+# %(asctime)s = timestamp
+# %(levelname)s = niveau (INFO, WARNING, etc.)
+# %(message)s = message
+messageFormat = "%(asctime)s - %(levelname)s - %(message)s"
+
+# Theme (optionnel - pour une meilleure expérience utilisateur)
+[theme]
+base = "light"
+primaryColor = "#FF4B4B"
