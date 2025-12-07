@@ -16,9 +16,10 @@ __all__ = [
     "get_WEB_filename",
 ]
 
-# %% py config.ipynb 1
-from dotenv import load_dotenv, find_dotenv
 import os
+
+# %% py config.ipynb 1
+from dotenv import find_dotenv, load_dotenv
 
 
 def load_env() -> None:
@@ -109,6 +110,7 @@ def get_azure_openai_keys() -> tuple[str, str, str]:
 
 # %% py config.ipynb 8
 from git import Repo
+from git.exc import InvalidGitRepositoryError
 
 
 def get_git_root(path: str) -> str:
@@ -120,8 +122,11 @@ def get_git_root(path: str) -> str:
     Returns:
         str: The root directory of the Git repository.
     """
-    git_repo = Repo(path, search_parent_directories=True)
-    return git_repo.git.rev_parse("--show-toplevel")
+    try:
+        git_repo = Repo(path, search_parent_directories=True)
+        return git_repo.git.rev_parse("--show-toplevel")
+    except InvalidGitRepositoryError:
+        return path
 
 
 # %% py config.ipynb 10
@@ -158,7 +163,7 @@ def get_audio_path(audio_path: str = AUDIO_PATH, year: str = "2024") -> str:
 
 # %% py config.ipynb 13
 import os
-from typing import Tuple, Optional
+from typing import Optional, Tuple
 
 
 def get_DB_VARS() -> Tuple[Optional[str], Optional[str], Optional[str]]:
