@@ -319,6 +319,24 @@ class TestConfigGitRoot:
         # ASSERT
         assert result == "/fake/git/root"
 
+    def test_get_git_root_no_git_repo(self, monkeypatch):
+        """Test get_git_root returns path when no git repo found (Docker case)"""
+        # ARRANGE
+        from git.exc import InvalidGitRepositoryError
+
+        def mock_repo_raise(*args, **kwargs):
+            raise InvalidGitRepositoryError("No git repo")
+
+        monkeypatch.setattr("nbs.config.Repo", mock_repo_raise)
+
+        test_path = "/app/test"
+
+        # ACT
+        result = get_git_root(test_path)
+
+        # ASSERT
+        assert result == test_path
+
 
 # Déplaçons ce test dans la bonne classe
 class TestConfigAudioPathExtended:
