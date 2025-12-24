@@ -874,14 +874,25 @@ def generate_critique_summary(transcription, episode_date=None):
     prompt = f"""
 Tu es un expert en critique littéraire qui analyse la transcription de l'émission "Le Masque et la Plume" sur France Inter.
 
-IMPORTANT: Si cette transcription ne contient PAS de discussions sur des livres, réponds simplement:
+⚠️ ATTENTION IMPORTANTE:
+L'émission commence souvent par une section "courrier de la semaine" où l'animateur lit des réactions d'auditeurs sur des livres d'émissions PRÉCÉDENTES.
+CES LIVRES DU COURRIER NE FONT PAS PARTIE DU PROGRAMME DE CETTE ÉMISSION.
+Tu dois IGNORER complètement cette section du courrier.
+
+Les livres du programme principal sont introduits APRÈS le courrier, généralement après des phrases comme:
+- "Et on commence avec..."
+- "Pour commencer ce soir..."
+- "Parlons maintenant de..."
+- "Le premier livre de ce soir..."
+
+IMPORTANT: Si après avoir ignoré le courrier de la semaine, cette transcription ne contient PAS de discussions sur des livres, réponds simplement:
 "Aucun livre discuté dans cet épisode. Cette émission semble porter sur d'autres sujets (cinéma, théâtre, musique)."
 
 Voici la transcription:
 {transcription}
 
 CONSIGNE PRINCIPALE:
-Identifie TOUS les livres discutés et crée 2 tableaux détaillés et complets:
+Identifie TOUS les livres discutés AU PROGRAMME DE CETTE ÉMISSION (pas ceux du courrier) et crée 2 tableaux détaillés et complets:
 
 1. **LIVRES DU PROGRAMME PRINCIPAL**: Tous les livres qui font l'objet d'une discussion approfondie entre plusieurs critiques
 2. **COUPS DE CŒUR PERSONNELS**: UNIQUEMENT les livres mentionnés rapidement par un critique comme recommandation personnelle (différents du programme principal)
@@ -920,12 +931,14 @@ COULEURS HTML OBLIGATOIRES pour la Note moyenne:
 
 INSTRUCTIONS DÉTAILLÉES POUR EXTRAIRE TOUS LES AVIS:
 1. Identifie TOUS les critiques qui parlent de chaque livre: Jérôme Garcin, Elisabeth Philippe, Frédéric Beigbeder, Michel Crépu, Arnaud Viviant, Judith Perrignon, Xavier Leherpeur, Patricia Martin, etc.
-2. Pour chaque critique, capture son NOM COMPLET (Prénom + Nom) 
+2. Pour chaque critique, capture son NOM COMPLET (Prénom + Nom)
 3. Cite leurs avis EXACTS avec leurs mots-clés d'appréciation
 4. Attribue une note individuelle basée sur leur vocabulaire (entre 1 et 10)
 5. Calcule la moyenne arithmétique précise (ex: 7.3, 8.7)
 6. Identifie les "coups de cœur" (critiques très enthousiastes, note ≥9)
 7. **CLASSE OBLIGATOIREMENT PAR NOTE DÉCROISSANTE** (meilleure note d'abord)
+
+⚠️ RAPPEL: Ignore complètement les livres mentionnés dans le "courrier de la semaine" au début de l'émission.
 
 ---
 
@@ -960,9 +973,13 @@ EXIGENCES QUALITÉ:
 
 ⚠️ FORMAT DE RÉPONSE: Retourne UNIQUEMENT les 2 tableaux markdown avec leurs titres. N'ajoute AUCUNE explication, phrase introductive, ou commentaire sur la méthode de génération. Commence directement par "## 1. LIVRES DISCUTÉS AU PROGRAMME" et termine par le dernier tableau.
 
-RAPPEL FINAL: NE RETOURNE AUCUN TEXTE EXPLICATIF AVANT OU APRÈS LES TABLEAUX. AUCUNE PHRASE COMME "voici l'analyse" ou "en résumé". COMMENCE IMMÉDIATEMENT PAR LE PREMIER TITRE DE TABLEAU.
+RAPPEL FINAL:
+- IGNORE les livres du courrier de la semaine
+- NE RETOURNE AUCUN TEXTE EXPLICATIF AVANT OU APRÈS LES TABLEAUX
+- AUCUNE PHRASE COMME "voici l'analyse" ou "en résumé"
+- COMMENCE IMMÉDIATEMENT PAR LE PREMIER TITRE DE TABLEAU
 
-Sois EXHAUSTIF et PRÉCIS. Capture TOUS les livres, TOUS les critiques, et TOUS les avis individuels."""
+Sois EXHAUSTIF et PRÉCIS. Capture TOUS les livres DU PROGRAMME, TOUS les critiques, et TOUS les avis individuels."""
 
     try:
         # Utiliser Azure OpenAI avec timeout configuré dans llm.py (300 secondes)
