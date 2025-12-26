@@ -989,7 +989,7 @@ Sois EXHAUSTIF et PRÉCIS. Capture TOUS les livres DU PROGRAMME, TOUS les critiq
         # Configurer les paramètres pour obtenir une réponse plus longue et détaillée
         response = model.complete(
             prompt,
-            max_tokens=4000,  # Augmenter significativement la limite pour des résumés détaillés
+            max_tokens=8000,  # Augmenté à 8000 pour gérer les épisodes longs avec beaucoup de livres (fix #92)
             temperature=0.1,  # Réduire la créativité pour plus de cohérence
         )
 
