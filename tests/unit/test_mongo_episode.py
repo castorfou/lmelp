@@ -9,16 +9,17 @@ Ce module teste les fonctionnalités de gestion des épisodes incluant :
 - Constantes et formats de date
 """
 
-import pytest
-from unittest.mock import MagicMock, patch, call
-import sys
 import json
-from datetime import datetime
-from typing import List, Dict, Optional, Tuple
-from bson import ObjectId
 
 # Configuration des variables d'environnement pour éviter les erreurs
 import os
+import sys
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple
+from unittest.mock import MagicMock, call, patch
+
+import pytest
+from bson import ObjectId
 
 os.environ.setdefault("AUDIO_PATH", "/tmp/test_audio")
 
