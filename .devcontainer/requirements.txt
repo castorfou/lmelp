@@ -2,6 +2,8 @@ ipykernel
 transformers 
 virtualenv
 # datasets[audio] 
+pydub
+soundfile
 # dbus-python
 accelerate
 ipywidgets

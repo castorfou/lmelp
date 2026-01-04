@@ -6,6 +6,7 @@ __all__ = [
     "list_mp3_files",
     "list_audio_files",
     "extract_whisper",
+    "extract_whisper_long",
     "store_whisper_in_db",
 ]
 
@@ -15,45 +16,64 @@ AUDIO_PATH = "audios"
 # %% 09 whisper mp3.ipynb 4
 from mongo_episode import get_audio_path
 import os, glob
-from typing import List
+from typing import List, Optional
 
 
-def list_mp3_files(audio_path=AUDIO_PATH) -> List[str]:
+def list_mp3_files(
+    audio_path=AUDIO_PATH, sort_by_size: Optional[str] = None
+) -> List[str]:
     """
     Liste tous les fichiers MP3 dans le répertoire spécifié.
-
     Args:
         audio_path (str): Le chemin du répertoire contenant les fichiers audio. Par défaut, utilise la constante AUDIO_PATH.
-
+        sort_by_size (Optional[str]): 'asc' pour trier par taille croissante, 'desc' pour décroissante, None pour aucun tri.
     Returns:
-        list: Une liste des chemins de fichiers MP3 trouvés.
+        list: Une liste des chemins de fichiers MP3 trouvés, triés si demandé.
     """
     fullpath = get_audio_path(audio_path, year="")
-    return glob.glob(os.path.join(fullpath, "**/*.mp3"), recursive=True)
+    files = glob.glob(os.path.join(fullpath, "**/*.mp3"), recursive=True)
+
+    if sort_by_size:
+        order = sort_by_size.lower()
+        if order not in ("asc", "desc"):
+            raise ValueError("sort_by_size must be 'asc', 'desc' or None")
+        files.sort(key=lambda p: os.path.getsize(p), reverse=(order == "desc"))
+
+    return files
 
 
-def list_audio_files(audio_path=AUDIO_PATH) -> List[str]:
+def list_audio_files(
+    audio_path=AUDIO_PATH, sort_by_size: Optional[str] = None
+) -> List[str]:
     """
     Liste tous les fichiers audio (MP3 et M4A) dans le répertoire spécifié.
 
     Args:
         audio_path (str): Le chemin du répertoire contenant les fichiers audio. Par défaut, utilise la constante AUDIO_PATH.
+        sort_by_size (Optional[str]): 'asc' pour trier par taille croissante, 'desc' pour décroissante, None pour aucun tri.
 
     Returns:
-        list: Une liste des chemins de fichiers audio (MP3 et M4A) trouvés.
+        list: Une liste des chemins de fichiers audio (MP3 et M4A) trouvés, triés si demandé.
     """
     fullpath = get_audio_path(audio_path, year="")
 
     mp3_files = glob.glob(os.path.join(fullpath, "**/*.mp3"), recursive=True)
     m4a_files = glob.glob(os.path.join(fullpath, "**/*.m4a"), recursive=True)
 
-    return mp3_files + m4a_files
+    files = mp3_files + m4a_files
+
+    if sort_by_size:
+        order = sort_by_size.lower()
+        if order not in ("asc", "desc"):
+            raise ValueError("sort_by_size must be 'asc', 'desc' or None")
+        files.sort(key=lambda p: os.path.getsize(p), reverse=(order == "desc"))
+
+    return files
 
 
 # %% 09 whisper mp3.ipynb 8
 import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
-from datasets import load_dataset
 
 
 def extract_whisper(audio_filename: str) -> str:
@@ -79,7 +99,7 @@ def extract_whisper(audio_filename: str) -> str:
     processor = AutoProcessor.from_pretrained(model_id)
 
     generate_kwargs = {
-        "language": "french",
+        "language": "fr",
     }
 
     pipe = pipeline(
@@ -94,20 +114,95 @@ def extract_whisper(audio_filename: str) -> str:
         generate_kwargs=generate_kwargs,
     )
 
-    dataset = load_dataset(
-        "distil-whisper/librispeech_long", "clean", split="validation"
-    )
-    sample = dataset[0]["audio"]
-
     result = pipe(
         audio_filename,
         return_timestamps=True,
+        ignore_warning=True,
     )
 
     return result["text"]
 
 
 # %% 09 whisper mp3.ipynb 11
+from pydub import AudioSegment
+import tempfile
+import os
+import soundfile as sf
+import torch
+
+
+def extract_whisper_long(
+    audio_filename: str, chunk_s: int = 30, overlap_s: int = 1
+) -> str:
+    """
+    Splits long audio into overlapping chunks, preprocesses each chunk with the processor
+    (using return_attention_mask) and runs model.generate for each chunk, then returns concatenated text.
+
+    Important: ensure audio chunks are sampled at the feature extractor's expected rate (16kHz).
+    This implementation exports each chunk to WAV at 16000 Hz to avoid the sampling-rate ValueError.
+    """
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+    model_id = "openai/whisper-large-v3-turbo"
+
+    model = AutoModelForSpeechSeq2Seq.from_pretrained(
+        model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
+    )
+    model.to(device)
+    processor = AutoProcessor.from_pretrained(model_id)
+
+    generate_kwargs = {"language": "fr"}
+
+    seg = AudioSegment.from_file(audio_filename)
+    dur_ms = len(seg)
+    step_ms = (chunk_s - overlap_s) * 1000
+    chunk_ms = chunk_s * 1000
+    texts = []
+
+    for start in range(0, max(1, dur_ms), int(step_ms)):
+        end = start + chunk_ms
+        piece = seg[start:end]
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+            tmp_path = tmp.name
+            # Export the chunk as WAV forced to 16 kHz to match WhisperFeatureExtractor expectations
+            # requires ffmpeg (used by pydub) available in the container.
+            piece.export(tmp_path, format="wav", parameters=["-ar", "16000"])
+        try:
+            # read chunk as numpy array (float) + sr
+            speech, sr = sf.read(tmp_path)
+            if sr != processor.feature_extractor.sampling_rate:
+                raise RuntimeError(
+                    f"Unexpected sampling rate {sr}, expected {processor.feature_extractor.sampling_rate}"
+                )
+
+            # processor -> return_tensors="pt" and return_attention_mask to follow deprecation guidance
+            inputs = processor(
+                speech,
+                sampling_rate=sr,
+                return_tensors="pt",
+                return_attention_mask=True,
+            )
+            # support both possible keys
+            feat = inputs.get("input_features", inputs.get("input_values"))
+            if feat is None:
+                raise RuntimeError("Processor did not return input features")
+            feat = feat.to(device).to(dtype=torch_dtype)
+
+            # run generate on model
+            generated = model.generate(feat, **generate_kwargs)
+            decoded = processor.tokenizer.batch_decode(
+                generated, skip_special_tokens=True
+            )
+            texts.append(decoded[0].strip() if decoded else "")
+        finally:
+            os.remove(tmp_path)
+        if end >= dur_ms:
+            break
+
+    return " ".join(t for t in texts if t)
+
+
+# %% 09 whisper mp3.ipynb 15
 from bson import ObjectId
 import pymongo
 
