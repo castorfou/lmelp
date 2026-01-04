@@ -319,6 +319,47 @@ class TestExtractWhisper:
         mock_model.to.assert_called_once_with("cuda:0")
         assert result == "Test transcription CUDA"
 
+    @patch("datasets.load_dataset")
+    def test_extract_whisper_french_language_parameter(
+        self, mock_load_dataset, whisper_module, mock_whisper_dependencies
+    ):
+        """Test que extract_whisper utilise le paramètre de langue français correct (fr)"""
+        # Configuration des mocks
+        mock_torch = mock_whisper_dependencies["torch"]
+        mock_torch.cuda.is_available.return_value = False
+
+        mock_transformers = mock_whisper_dependencies["transformers"]
+        mock_model = MagicMock()
+        mock_processor = MagicMock()
+        mock_transformers.AutoModelForSpeechSeq2Seq.from_pretrained.return_value = (
+            mock_model
+        )
+        mock_transformers.AutoProcessor.from_pretrained.return_value = mock_processor
+
+        # Mock du pipeline
+        mock_pipe = MagicMock()
+        mock_pipe.return_value = {"text": "Transcription en français"}
+        mock_transformers.pipeline.return_value = mock_pipe
+
+        mock_dataset = MagicMock()
+        mock_dataset[0] = {"audio": "mock_audio_data"}
+        mock_load_dataset.return_value = mock_dataset
+
+        # Appel de la fonction
+        result = whisper_module.extract_whisper("/test/audio_french.mp3")
+
+        # Vérifications - le pipeline doit être appelé avec generate_kwargs contenant language="fr"
+        # (et non "french" qui cause des conflits avec forced_decoder_ids)
+        mock_transformers.pipeline.assert_called_once()
+        call_kwargs = mock_transformers.pipeline.call_args[1]
+
+        # Vérifier que generate_kwargs est présent et contient language="fr"
+        assert "generate_kwargs" in call_kwargs
+        assert "language" in call_kwargs["generate_kwargs"]
+        assert call_kwargs["generate_kwargs"]["language"] == "fr"
+
+        assert result == "Transcription en français"
+
 
 class TestStoreWhisperInDb:
     """Tests pour la fonction store_whisper_in_db"""
