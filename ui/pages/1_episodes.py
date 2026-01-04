@@ -1,5 +1,6 @@
 import streamlit as st
 import sys
+import os
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -9,6 +10,7 @@ add_to_sys_path()
 
 from mongo_episode import Episodes, Episode
 import pandas as pd
+from bson import ObjectId
 
 import locale
 import plotly.express as px
@@ -23,11 +25,17 @@ def get_episodes():
     episodes = Episodes()
     episodes.get_entries()
     all_episodes = [Episode.from_oid(oid) for oid in episodes.oid_episodes]
-    episodes_df = pd.DataFrame([episode.to_dict() for episode in all_episodes])
-    # episodes_df["date"] = episodes_df["date"].dt.strftime("%Y/%m/%d")
+    # Créer le DataFrame avec les données des épisodes
+    episodes_data = []
+    for i, episode in enumerate(all_episodes):
+        data = episode.to_dict()
+        data["_id"] = str(episodes.oid_episodes[i])  # Ajouter l'OID
+        episodes_data.append(data)
+
+    episodes_df = pd.DataFrame(episodes_data)
     episodes_df["duree (min)"] = (episodes_df["duree"] / 60).round(1)
     episodes_df.drop(
-        columns=["url_telechargement", "audio_rel_filename", "type", "duree"],
+        columns=["url_telechargement", "type", "duree"],
         inplace=True,
     )
     return episodes_df
@@ -68,15 +76,70 @@ def afficher_un_episode(episodes_df):
     selected = st.selectbox("Sélectionnez un épisode", episodes_df["selecteur"])
 
     # Filtrer le DataFrame pour trouver la ligne correspondant à la date sélectionnée
-    episode = episodes_df[episodes_df["selecteur"] == selected]
+    episode_row = episodes_df[episodes_df["selecteur"] == selected]
 
-    if not episode.empty:
-        episode = episode.iloc[0]
-        st.write(f"### {episode['titre']}")
-        st.write(f"**Date**: {episode['date']}")
-        st.write(f"**Durée**: {episode['duree (min)']} minutes")
-        st.write(f"**Description**: {episode['description']}")
-        st.write(f"**Transcription**: {episode['transcription']}")
+    if not episode_row.empty:
+        episode_data = episode_row.iloc[0]
+        st.write(f"### {episode_data['titre']}")
+        st.write(f"**Date**: {episode_data['date']}")
+        st.write(f"**Durée**: {episode_data['duree (min)']} minutes")
+        st.write(f"**Description**: {episode_data['description']}")
+
+        # Afficher la transcription si elle existe
+        if pd.notna(episode_data["transcription"]) and episode_data["transcription"]:
+            # Bouton pour relancer la transcription (AVANT la transcription)
+            if st.button(
+                "🔄 Relancer la transcription",
+                key="relaunch_transcription",
+                type="primary",
+            ):
+                with st.spinner("Suppression de la transcription et du cache..."):
+                    # Récupérer l'objet Episode complet
+                    episode = Episode.from_oid(ObjectId(episode_data["_id"]))
+
+                    # Supprimer la transcription de la DB
+                    episode.collection.update_one(
+                        {"_id": episode.get_oid()},
+                        {"$unset": {"transcription": "", "whisper": ""}},
+                    )
+
+                    # Supprimer le fichier cache si existe
+                    from mongo_episode import get_audio_path, AUDIO_PATH
+
+                    mp3_fullfilename = (
+                        get_audio_path(AUDIO_PATH, year="") + episode.audio_rel_filename
+                    )
+                    cache_transcription_filename = (
+                        f"{os.path.splitext(mp3_fullfilename)[0]}.txt"
+                    )
+                    if os.path.exists(cache_transcription_filename):
+                        os.remove(cache_transcription_filename)
+                        st.success(f"Cache supprimé: {cache_transcription_filename}")
+
+                with st.spinner(
+                    "Transcription en cours... Cela peut prendre plusieurs minutes."
+                ):
+                    # Relancer la transcription
+                    episode.transcription = None  # Réinitialiser l'attribut
+                    episode.set_transcription(verbose=True)
+                    st.success("✅ Transcription terminée avec succès!")
+                    st.rerun()
+
+            # Afficher la transcription dans un expander pour ne pas prendre trop de place
+            with st.expander("📝 Voir la transcription", expanded=False):
+                st.write(episode_data["transcription"])
+        else:
+            st.warning("⚠️ Aucune transcription disponible pour cet épisode")
+
+            # Bouton pour lancer la transcription
+            if st.button("▶️ Lancer la transcription", key="launch_transcription"):
+                with st.spinner(
+                    "Transcription en cours... Cela peut prendre plusieurs minutes."
+                ):
+                    episode = Episode.from_oid(ObjectId(episode_data["_id"]))
+                    episode.set_transcription(verbose=True)
+                    st.success("✅ Transcription terminée avec succès!")
+                    st.rerun()
     else:
         st.write("Aucun épisode trouvé pour cette date.")
 
