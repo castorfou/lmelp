@@ -24,11 +24,19 @@ dir_name=$(dirname "$mp3_file")
 output_txt="${dir_name}/${base_name}"
 
 # Exécution de la commande Docker
+
+
+# Images
+# We have two Docker images available for this project:
+#     ghcr.io/ggml-org/whisper.cpp:main: This image includes the main executable file as well as curl and ffmpeg. (platforms: linux/amd64, linux/arm64)
+#     ghcr.io/ggml-org/whisper.cpp:main-cuda: Same as main but compiled with CUDA support. (platforms: linux/amd64)
+#     ghcr.io/ggml-org/whisper.cpp:main-musa: Same as main but compiled with MUSA support. (platforms: linux/amd64)
+
 docker run --rm \
   -v "$(pwd)/models:/models" \
   -v "$(pwd)/audios:/audios" \
   --entrypoint /bin/sh \
-  ghcr.io/ggerganov/whisper.cpp:main \
+  ghcr.io/ggml-org/whisper.cpp:main-cuda \
   -c "/app/build/bin/whisper-cli --model /models/ggml-large-v3.bin --file /audios/$(basename "$mp3_file") --language fr --output-txt --output-file /audios/$(basename "$output_txt")" > logs.txt 2>&1
 
 # Message de confirmation
