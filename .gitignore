@@ -18,3 +18,6 @@ htmlcov/
 .venv/PR-description.md
 
 site/
+
+# Logs Whisper.cpp
+logs/*.log
