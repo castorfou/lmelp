@@ -1,4 +1,5 @@
 audios/
+models/
 .ipynb_checkpoints/
 __pycache__/
 .env
