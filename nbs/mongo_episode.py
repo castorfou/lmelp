@@ -7,7 +7,9 @@ __all__ = [
     "RSS_DUREE_MINI_MINUTES",
     "RSS_DATE_FORMAT",
     "WEB_DATE_FORMAT",
+    "WhisperCppError",
     "prevent_sleep",
+    "extract_whisper_cpp",
     "extract_whisper",
     "extract_whisper_long",
     "Episode",
@@ -23,6 +25,10 @@ from pydub import AudioSegment
 import tempfile
 import os
 import soundfile as sf
+import subprocess
+import shutil
+import urllib.request
+from pathlib import Path
 
 # from datasets import load_dataset
 
@@ -35,7 +41,81 @@ except ImportError:
     DBUS_AVAILABLE = False
 
 from functools import wraps
-from typing import Callable, Any
+from typing import Callable, Any, Optional, Tuple
+
+
+class WhisperCppError(RuntimeError):
+    """Erreur levée lorsque l'exécution de whisper.cpp échoue."""
+
+
+def _detect_repo_root() -> Path:
+    """Retourne le dossier racine du projet (meilleur effort)."""
+    if "__file__" in globals():
+        start = Path(__file__).resolve().parent
+    else:
+        start = Path.cwd()
+    for candidate in [start] + list(start.parents):
+        script_candidate = candidate / "scripts" / "whisper.cpp" / "whisper.sh"
+        if script_candidate.exists():
+            return candidate
+    return start
+
+
+def _get_whisper_cpp_script() -> Path:
+    """Retourne le chemin du script whisper.cpp (avec possibilité de surcharge via variable d'environnement)."""
+    override = os.environ.get("WHISPER_CPP_SCRIPT")
+    if override:
+        return Path(override).expanduser()
+    return _detect_repo_root() / "scripts" / "whisper.cpp" / "whisper.sh"
+
+
+def _get_models_dir() -> Path:
+    """Détermine le dossier des modèles whisper.cpp (env MODELS_DIR ou <repo>/models)."""
+    override = os.environ.get("MODELS_DIR")
+    if override:
+        return Path(override).expanduser()
+    return _detect_repo_root() / "models"
+
+
+def _get_model_filename() -> str:
+    """Nom du fichier modèle (env WHISPER_MODEL_FILENAME ou ggml-large-v3.bin)."""
+    return os.environ.get("WHISPER_MODEL_FILENAME", "ggml-large-v3.bin")
+
+
+def _get_model_url(model_filename: str) -> str:
+    """Construit l'URL de téléchargement du modèle."""
+    default_url = f"https://huggingface.co/ggerganov/whisper.cpp/resolve/main/{model_filename}?download=1"
+    return os.environ.get("WHISPER_MODEL_URL", default_url)
+
+
+def _ensure_whisper_model() -> Path:
+    """Télécharge le modèle whisper.cpp si nécessaire et retourne son chemin."""
+    models_dir = _get_models_dir()
+    models_dir.mkdir(parents=True, exist_ok=True)
+    model_filename = _get_model_filename()
+    model_path = models_dir / model_filename
+    if model_path.exists():
+        return model_path
+
+    model_url = _get_model_url(model_filename)
+    print(f"Téléchargement du modèle Whisper.cpp depuis {model_url} ...")
+    with tempfile.NamedTemporaryFile(dir=models_dir, delete=False) as tmp:
+        tmp_path = Path(tmp.name)
+
+    try:
+        with urllib.request.urlopen(model_url) as response, open(
+            tmp_path, "wb"
+        ) as dest:
+            shutil.copyfileobj(response, dest)
+        tmp_path.replace(model_path)
+    except Exception as exc:  # pragma: no cover - dépend d'Internet
+        if tmp_path.exists():
+            tmp_path.unlink()
+        raise WhisperCppError(
+            f"Impossible de télécharger le modèle Whisper.cpp ({model_url}): {exc}"
+        ) from exc
+
+    return model_path
 
 
 def prevent_sleep(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -99,6 +179,92 @@ def prevent_sleep(func: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
+def _ensure_user_writable(path: Path) -> None:
+    """Force le fichier généré par Docker à être modifiable par l'utilisateur courant."""
+    if os.access(path, os.W_OK):
+        return
+    try:
+        path.chmod(0o664)
+    except PermissionError:
+        pass
+    if os.access(path, os.W_OK):
+        return
+    sudo_bin = shutil.which("sudo")
+    if sudo_bin:
+        uid, gid = os.getuid(), os.getgid()
+        subprocess.run([sudo_bin, "chown", f"{uid}:{gid}", str(path)], check=False)
+        subprocess.run([sudo_bin, "chmod", "664", str(path)], check=False)
+
+
+def extract_whisper_cpp(
+    mp3_filename: str, *, timeout_s: Optional[int] = None
+) -> Tuple[str, Optional[str]]:
+    """Exécute whisper.cpp via Docker et retourne la transcription ainsi que le fichier log."""
+    audio_path = Path(mp3_filename).expanduser()
+    if not audio_path.exists():
+        raise FileNotFoundError(f"Fichier audio introuvable: {audio_path}")
+
+    model_path = _ensure_whisper_model()
+
+    script_path = _get_whisper_cpp_script()
+    if not script_path.exists():
+        raise WhisperCppError(
+            (
+                f"Script whisper.cpp introuvable: {script_path}."
+                " Définissez WHISPER_CPP_SCRIPT si nécessaire."
+            )
+        )
+
+    if shutil.which("docker") is None:
+        raise WhisperCppError("Docker n'est pas disponible sur cette machine.")
+
+    command = ["bash", str(script_path), str(audio_path)]
+
+    env = os.environ.copy()
+    env.setdefault("MODELS_DIR", str(model_path.parent))
+    env.setdefault("WHISPER_MODEL_FILENAME", model_path.name)
+
+    try:
+        completed = subprocess.run(
+            command,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=timeout_s,
+            env=env,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise WhisperCppError("whisper.cpp a dépassé le délai autorisé") from exc
+    except subprocess.CalledProcessError as exc:
+        combined_output = "\n".join(
+            segment.strip()
+            for segment in (exc.stdout or "", exc.stderr or "")
+            if segment and segment.strip()
+        )
+        raise WhisperCppError(
+            f"whisper.cpp a échoué (code {exc.returncode}). {combined_output}"
+        ) from exc
+
+    log_path: Optional[str] = None
+    for line in completed.stdout.splitlines():
+        if line.startswith("LOG_FILE="):
+            log_path = line.split("=", 1)[1].strip()
+            break
+
+    transcript_path = audio_path.with_suffix(".txt")
+    if not transcript_path.exists():
+        raise WhisperCppError(
+            f"La transcription attendue '{transcript_path}' n'a pas été générée."
+        )
+
+    _ensure_user_writable(transcript_path)
+
+    with open(transcript_path, "r") as file:
+        transcript_text = file.read()
+
+    return transcript_text, log_path
+
+
 # @prevent_sleep
 def extract_whisper(mp3_filename: str) -> str:
     """
@@ -123,7 +289,7 @@ def extract_whisper(mp3_filename: str) -> str:
     model_id: str = "openai/whisper-large-v3-turbo"
 
     model = AutoModelForSpeechSeq2Seq.from_pretrained(
-        model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
+        model_id, dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
     )
     model.to(device)
 
@@ -134,7 +300,7 @@ def extract_whisper(mp3_filename: str) -> str:
         model=model,
         tokenizer=processor.tokenizer,
         feature_extractor=processor.feature_extractor,
-        torch_dtype=torch_dtype,
+        dtype=torch_dtype,
         device=device,
     )
 
@@ -168,7 +334,7 @@ def extract_whisper_long(
     model_id = "openai/whisper-large-v3-turbo"
 
     model = AutoModelForSpeechSeq2Seq.from_pretrained(
-        model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
+        model_id, dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
     )
     model.to(device)
     processor = AutoProcessor.from_pretrained(model_id)
@@ -503,14 +669,7 @@ class Episode:
                 print(f"Le fichier {full_filename} existe déjà. Ignoré.")
 
     def set_transcription(self, verbose: bool = False, keep_cache: bool = True) -> None:
-        """Extrait et sauvegarde la transcription de l'audio en utilisant un modèle Whisper.
-
-        Utilise le cache si disponible ou extrait la transcription de l'audio.
-
-        Args:
-            verbose (bool, optional): Si True, affiche des messages d'information. Défaut False.
-            keep_cache (bool, optional): Si True, sauvegarde la transcription dans un fichier cache. Défaut True.
-        """
+        """Extrait l'audio en privilégiant whisper.cpp puis en basculant sur Hugging Face si nécessaire."""
         if self.transcription is not None:
             if verbose:
                 print("Transcription existe deja")
@@ -528,7 +687,28 @@ class Episode:
             )
             return
 
-        self.transcription = extract_whisper_long(mp3_fullfilename)
+        transcription_text: Optional[str] = None
+        log_path: Optional[str] = None
+
+        try:
+            transcription_text, log_path = extract_whisper_cpp(mp3_fullfilename)
+            if verbose:
+                message = "Transcription whisper.cpp terminée."
+                if log_path:
+                    message += f" Log: {log_path}"
+                print(message)
+        except WhisperCppError as exc:
+            if verbose:
+                print(
+                    f"whisper.cpp indisponible ({exc}). Lancement du fallback Hugging Face."
+                )
+
+        if transcription_text is None:
+            if verbose:
+                print("Transcription via extract_whisper en cours...")
+            transcription_text = extract_whisper(mp3_fullfilename)
+
+        self.transcription = transcription_text
         if keep_cache:
             with open(cache_transcription_filename, "w") as f:
                 f.write(self.transcription)
@@ -731,7 +911,7 @@ class RSS_episode(Episode):
         return result["labels"][0]
 
 
-# %% py mongo helper episodes.ipynb 26
+# %% py mongo helper episodes.ipynb 25
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -880,7 +1060,7 @@ class WEB_episode(Episode):
         return 0
 
 
-# %% py mongo helper episodes.ipynb 32
+# %% py mongo helper episodes.ipynb 31
 from typing import Any, Iterator
 
 
