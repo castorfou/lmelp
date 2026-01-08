@@ -1,4 +1,5 @@
 audios/
+models/
 .ipynb_checkpoints/
 __pycache__/
 .env
@@ -18,3 +19,6 @@ htmlcov/
 .venv/PR-description.md
 
 site/
+
+# Logs Whisper.cpp
+logs/*.log
