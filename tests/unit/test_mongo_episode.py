@@ -790,3 +790,55 @@ class TestMaskedField:
             assert (
                 len(episodes.oid_episodes) == 3
             ), "Should return all episodes including masked ones"
+
+
+@patch("nbs.mongo_episode.get_DB_VARS", return_value=("localhost", "test_db", "logs"))
+class TestRSSEpisodeFromFeedEntry:
+    """Tests pour RSS_episode.from_feed_entry avec différents formats audio"""
+
+    def _make_feed_entry(self, audio_type, audio_href):
+        """Helper pour créer un feed entry mock."""
+        entry = MagicMock()
+        entry.published = "Sun, 29 Mar 2026 10:12:30 +0200"
+        entry.title = "Test Episode"
+        entry.summary = "durée : 00:46:46 - Test summary"
+        entry.links = [
+            MagicMock(type="text/html", href="https://www.radiofrance.fr/page"),
+            MagicMock(type=audio_type, href=audio_href),
+        ]
+        entry.itunes_duration = "00:46:46"
+        return entry
+
+    def test_from_feed_entry_mp3_format(self, mock_get_db_vars):
+        """from_feed_entry() accepte les liens audio/mpeg (ancien format)"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with patch(
+            "nbs.mongo_episode.get_collection", return_value=mock_collection
+        ), patch("nbs.mongo_episode.locale"):
+            from nbs.mongo_episode import RSS_episode
+
+            entry = self._make_feed_entry(
+                "audio/mpeg", "https://proxycast.rf.fr/episode.mp3"
+            )
+            result = RSS_episode.from_feed_entry(entry)
+
+            assert result.url_telechargement == "https://proxycast.rf.fr/episode.mp3"
+
+    def test_from_feed_entry_m4a_format(self, mock_get_db_vars):
+        """from_feed_entry() accepte les liens audio/x-m4a (nouveau format RSS Radio France)"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with patch(
+            "nbs.mongo_episode.get_collection", return_value=mock_collection
+        ), patch("nbs.mongo_episode.locale"):
+            from nbs.mongo_episode import RSS_episode
+
+            entry = self._make_feed_entry(
+                "audio/x-m4a", "https://proxycast.rf.fr/episode.m4a"
+            )
+            result = RSS_episode.from_feed_entry(entry)
+
+            assert result.url_telechargement == "https://proxycast.rf.fr/episode.m4a"

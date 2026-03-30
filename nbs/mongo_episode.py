@@ -6,6 +6,7 @@ __all__ = [
     "LOG_DATE_FORMAT",
     "RSS_DUREE_MINI_MINUTES",
     "RSS_DATE_FORMAT",
+    "AUDIO_TYPES",
     "WEB_DATE_FORMAT",
     "WhisperCppError",
     "prevent_sleep",
@@ -810,6 +811,8 @@ RSS_DATE_FORMAT: str = (
     "%a, %d %b %Y %H:%M:%S %z"  # Exemple: "Sun, 29 Dec 2024 10:59:39 +0100"
 )
 
+AUDIO_TYPES = {"audio/mpeg", "audio/x-m4a", "audio/mp4", "audio/aac"}
+
 
 class RSS_episode(Episode):
     def __init__(self, date: str, titre: str) -> None:
@@ -843,7 +846,7 @@ class RSS_episode(Episode):
         inst.description = feed_entry.summary
 
         for link in feed_entry.links:
-            if link.type == "audio/mpeg":
+            if link.type in AUDIO_TYPES:
                 inst.url_telechargement = link.href
                 break
 
