@@ -19,7 +19,8 @@ beautifulsoup4
 requests 
 plotly 
 streamlit 
-streamlit-extras 
+streamlit-extras
+streamlit-card 
 thefuzz
 google-generativeai 
 pandas

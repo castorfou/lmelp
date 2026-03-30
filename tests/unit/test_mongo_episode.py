@@ -454,6 +454,98 @@ class TestEpisodeStaticMethods:
 
 
 @patch("nbs.mongo_episode.get_DB_VARS", return_value=("localhost", "test_db", "logs"))
+class TestEpisodeSetTranscription:
+    """Tests pour la méthode set_transcription de Episode"""
+
+    def test_set_transcription_already_exists(
+        self, mock_get_db_vars, sample_episode_data
+    ):
+        """set_transcription() retourne immédiatement si transcription existe déjà"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = {
+            **sample_episode_data,
+            "transcription": "transcription existante",
+            "audio_rel_filename": "2024/episode.mp3",
+        }
+
+        with patch("nbs.mongo_episode.get_collection", return_value=mock_collection):
+            from nbs.mongo_episode import Episode
+
+            episode = Episode(
+                date=sample_episode_data["date"], titre=sample_episode_data["titre"]
+            )
+            episode.download_audio = MagicMock()
+
+            episode.set_transcription(verbose=True)
+
+            # download_audio ne doit pas être appelé
+            episode.download_audio.assert_not_called()
+
+    def test_set_transcription_audio_rel_filename_none_triggers_download(
+        self, mock_get_db_vars, sample_episode_data
+    ):
+        """set_transcription() appelle download_audio() si audio_rel_filename est None"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None  # episode n'existe pas en DB
+
+        from nbs.mongo_episode import WhisperCppError
+
+        with patch(
+            "nbs.mongo_episode.get_collection", return_value=mock_collection
+        ), patch(
+            "nbs.mongo_episode.get_audio_path", return_value="/tmp/test_audio/"
+        ), patch(
+            "nbs.mongo_episode.os.path.exists", return_value=False
+        ), patch(
+            "nbs.mongo_episode.extract_whisper_cpp",
+            side_effect=WhisperCppError("no whisper.cpp"),
+        ), patch(
+            "nbs.mongo_episode.extract_whisper", return_value="transcription text"
+        ):
+            from nbs.mongo_episode import Episode
+
+            episode = Episode(
+                date=sample_episode_data["date"], titre=sample_episode_data["titre"]
+            )
+            # audio_rel_filename est None (pas de téléchargement préalable)
+            assert episode.audio_rel_filename is None
+
+            # Simuler que download_audio() définit audio_rel_filename
+            def mock_download(verbose=False):
+                episode.audio_rel_filename = "2024/episode.mp3"
+
+            episode.download_audio = MagicMock(side_effect=mock_download)
+
+            episode.set_transcription(verbose=True, keep_cache=False)
+
+            # download_audio doit avoir été appelé
+            episode.download_audio.assert_called_once()
+
+    def test_set_transcription_audio_rel_filename_none_no_url_returns_gracefully(
+        self, mock_get_db_vars, sample_episode_data
+    ):
+        """set_transcription() retourne sans erreur si audio_rel_filename reste None après download"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with patch("nbs.mongo_episode.get_collection", return_value=mock_collection):
+            from nbs.mongo_episode import Episode
+
+            episode = Episode(
+                date=sample_episode_data["date"], titre=sample_episode_data["titre"]
+            )
+            assert episode.audio_rel_filename is None
+
+            # download_audio() ne définit pas audio_rel_filename (pas d'URL)
+            episode.download_audio = MagicMock()  # ne change pas audio_rel_filename
+
+            # Ne doit pas lever de TypeError
+            episode.set_transcription(verbose=True)
+
+            episode.download_audio.assert_called_once()
+
+
+@patch("nbs.mongo_episode.get_DB_VARS", return_value=("localhost", "test_db", "logs"))
 class TestEpisodeCRUDOperations:
     """Tests pour les opérations CRUD de Episode"""
 
