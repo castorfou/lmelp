@@ -454,6 +454,98 @@ class TestEpisodeStaticMethods:
 
 
 @patch("nbs.mongo_episode.get_DB_VARS", return_value=("localhost", "test_db", "logs"))
+class TestEpisodeSetTranscription:
+    """Tests pour la méthode set_transcription de Episode"""
+
+    def test_set_transcription_already_exists(
+        self, mock_get_db_vars, sample_episode_data
+    ):
+        """set_transcription() retourne immédiatement si transcription existe déjà"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = {
+            **sample_episode_data,
+            "transcription": "transcription existante",
+            "audio_rel_filename": "2024/episode.mp3",
+        }
+
+        with patch("nbs.mongo_episode.get_collection", return_value=mock_collection):
+            from nbs.mongo_episode import Episode
+
+            episode = Episode(
+                date=sample_episode_data["date"], titre=sample_episode_data["titre"]
+            )
+            episode.download_audio = MagicMock()
+
+            episode.set_transcription(verbose=True)
+
+            # download_audio ne doit pas être appelé
+            episode.download_audio.assert_not_called()
+
+    def test_set_transcription_audio_rel_filename_none_triggers_download(
+        self, mock_get_db_vars, sample_episode_data
+    ):
+        """set_transcription() appelle download_audio() si audio_rel_filename est None"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None  # episode n'existe pas en DB
+
+        from nbs.mongo_episode import WhisperCppError
+
+        with patch(
+            "nbs.mongo_episode.get_collection", return_value=mock_collection
+        ), patch(
+            "nbs.mongo_episode.get_audio_path", return_value="/tmp/test_audio/"
+        ), patch(
+            "nbs.mongo_episode.os.path.exists", return_value=False
+        ), patch(
+            "nbs.mongo_episode.extract_whisper_cpp",
+            side_effect=WhisperCppError("no whisper.cpp"),
+        ), patch(
+            "nbs.mongo_episode.extract_whisper", return_value="transcription text"
+        ):
+            from nbs.mongo_episode import Episode
+
+            episode = Episode(
+                date=sample_episode_data["date"], titre=sample_episode_data["titre"]
+            )
+            # audio_rel_filename est None (pas de téléchargement préalable)
+            assert episode.audio_rel_filename is None
+
+            # Simuler que download_audio() définit audio_rel_filename
+            def mock_download(verbose=False):
+                episode.audio_rel_filename = "2024/episode.mp3"
+
+            episode.download_audio = MagicMock(side_effect=mock_download)
+
+            episode.set_transcription(verbose=True, keep_cache=False)
+
+            # download_audio doit avoir été appelé
+            episode.download_audio.assert_called_once()
+
+    def test_set_transcription_audio_rel_filename_none_no_url_returns_gracefully(
+        self, mock_get_db_vars, sample_episode_data
+    ):
+        """set_transcription() retourne sans erreur si audio_rel_filename reste None après download"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with patch("nbs.mongo_episode.get_collection", return_value=mock_collection):
+            from nbs.mongo_episode import Episode
+
+            episode = Episode(
+                date=sample_episode_data["date"], titre=sample_episode_data["titre"]
+            )
+            assert episode.audio_rel_filename is None
+
+            # download_audio() ne définit pas audio_rel_filename (pas d'URL)
+            episode.download_audio = MagicMock()  # ne change pas audio_rel_filename
+
+            # Ne doit pas lever de TypeError
+            episode.set_transcription(verbose=True)
+
+            episode.download_audio.assert_called_once()
+
+
+@patch("nbs.mongo_episode.get_DB_VARS", return_value=("localhost", "test_db", "logs"))
 class TestEpisodeCRUDOperations:
     """Tests pour les opérations CRUD de Episode"""
 
@@ -698,3 +790,55 @@ class TestMaskedField:
             assert (
                 len(episodes.oid_episodes) == 3
             ), "Should return all episodes including masked ones"
+
+
+@patch("nbs.mongo_episode.get_DB_VARS", return_value=("localhost", "test_db", "logs"))
+class TestRSSEpisodeFromFeedEntry:
+    """Tests pour RSS_episode.from_feed_entry avec différents formats audio"""
+
+    def _make_feed_entry(self, audio_type, audio_href):
+        """Helper pour créer un feed entry mock."""
+        entry = MagicMock()
+        entry.published = "Sun, 29 Mar 2026 10:12:30 +0200"
+        entry.title = "Test Episode"
+        entry.summary = "durée : 00:46:46 - Test summary"
+        entry.links = [
+            MagicMock(type="text/html", href="https://www.radiofrance.fr/page"),
+            MagicMock(type=audio_type, href=audio_href),
+        ]
+        entry.itunes_duration = "00:46:46"
+        return entry
+
+    def test_from_feed_entry_mp3_format(self, mock_get_db_vars):
+        """from_feed_entry() accepte les liens audio/mpeg (ancien format)"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with patch(
+            "nbs.mongo_episode.get_collection", return_value=mock_collection
+        ), patch("nbs.mongo_episode.locale"):
+            from nbs.mongo_episode import RSS_episode
+
+            entry = self._make_feed_entry(
+                "audio/mpeg", "https://proxycast.rf.fr/episode.mp3"
+            )
+            result = RSS_episode.from_feed_entry(entry)
+
+            assert result.url_telechargement == "https://proxycast.rf.fr/episode.mp3"
+
+    def test_from_feed_entry_m4a_format(self, mock_get_db_vars):
+        """from_feed_entry() accepte les liens audio/x-m4a (nouveau format RSS Radio France)"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with patch(
+            "nbs.mongo_episode.get_collection", return_value=mock_collection
+        ), patch("nbs.mongo_episode.locale"):
+            from nbs.mongo_episode import RSS_episode
+
+            entry = self._make_feed_entry(
+                "audio/x-m4a", "https://proxycast.rf.fr/episode.m4a"
+            )
+            result = RSS_episode.from_feed_entry(entry)
+
+            assert result.url_telechargement == "https://proxycast.rf.fr/episode.m4a"

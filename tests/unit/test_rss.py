@@ -249,6 +249,34 @@ class TestExtraireUrlsRss:
         # Assert
         assert result == []
 
+    @patch("rss.feedparser.parse")
+    @patch("rss.get_RSS_URL")
+    @patch("rss.extraire_dureesummary")
+    def test_extraire_urls_rss_m4a_format(self, mock_duree, mock_get_url, mock_parse):
+        """Test extraire_urls_rss accepte les liens audio/x-m4a (nouveau format RSS Radio France)"""
+        from rss import extraire_urls_rss
+
+        mock_get_url.return_value = "https://test.rss.url"
+        mock_duree.return_value = 2800  # 46 minutes
+
+        mock_entry = MagicMock()
+        mock_entry.summary = "Episode - durée : 00:46:46"
+        mock_entry.links = [
+            MagicMock(type="text/html", href="https://www.radiofrance.fr/..."),
+            MagicMock(
+                type="audio/x-m4a", href="https://proxycast.radiofrance.fr/episode.m4a"
+            ),
+        ]
+
+        mock_feed = MagicMock()
+        mock_feed.entries = [mock_entry]
+        mock_parse.return_value = mock_feed
+
+        result = extraire_urls_rss(duree_mini_minutes=15)
+
+        assert len(result) == 1
+        assert "https://proxycast.radiofrance.fr/episode.m4a" in result
+
 
 class TestPodcastInit:
     """Tests pour l'initialisation de la classe Podcast"""
