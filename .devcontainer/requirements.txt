@@ -46,3 +46,4 @@ mkdocs-material
 mkdocstrings[python]
 mkdocs-include-markdown-plugin
 rich
+cruft
