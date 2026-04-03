@@ -71,4 +71,28 @@ Le container hérite ainsi automatiquement de l'authentification GitHub du host.
 
 **Prérequis :** être authentifié sur le host (`gh auth login`) avant le rebuild.
 
-## État après rebuild (à compléter)
+## État après rebuild
+
+### Diagnostic (2026-04-03)
+
+Le montage `~/.config/gh` fonctionne bien (bind sur `/dev/nvme0n1p2`, même partition).
+Le `hosts.yml` est bien synchronisé host ↔ container.
+
+Mais le token stocké dans `hosts.yml` était invalide (OAuth token révoqué ou expiré côté GitHub).
+
+**Fix immédiat :** relancer `gh auth login --git-protocol https --web` dans le terminal du container.
+Comme c'est un bind mount, le nouveau token est automatiquement partagé avec le host.
+
+### Fix 3 — postStartCommand avec vérification gh auth
+
+Le `postStartCommand` est maintenant un script `.devcontainer/scripts/post_start.sh` qui :
+- Affiche le message de bienvenue
+- Vérifie `gh auth status` et affiche clairement le statut
+- Si non authentifié, indique la commande à lancer
+
+```diff
+-    "postStartCommand": "echo '🚀 lmelp - Environnement prêt!'"
++    "postStartCommand": "bash .devcontainer/scripts/post_start.sh"
+```
+
+**Prérequis :** avoir un token GitHub valide (via `gh auth login` sur le host ou dans le container).
