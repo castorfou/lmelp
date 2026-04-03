@@ -9,7 +9,7 @@ set -e
 exec > >(tee /tmp/postCreate_full.log) 2>&1
 
 PYTHON_VERSION="3.11"
-trace() { echo "[TRACE] $*"; }
+echo '# trace() { echo "[TRACE] $*"; }'
 
 echo "🚀 Configuration de l'environnement lmelp"
 echo "=================================================================="
@@ -31,12 +31,12 @@ update_system() {
     echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian stable main" \
         | sudo tee /etc/apt/sources.list.d/yarn.list > /dev/null
 
-    trace " apt-get update..."
+    # trace " apt-get update..."
     sudo apt-get update -qq
-    trace " apt-get update terminé"
+    # trace " apt-get update terminé"
 
     # Options dpkg pour éviter les prompts de configuration
-    trace " apt-get upgrade..."
+    # trace " apt-get upgrade..."
     sudo apt-get -y -qq -o Dpkg::Options::="--force-confdef" \
         -o Dpkg::Options::="--force-confnew" \
         -o Dpkg::Options::="--force-unsafe-io" \
@@ -44,23 +44,23 @@ update_system() {
         echo "⚠️  'apt upgrade' a échoué ; continuer sans interrompre le postCreateCommand"
         return 0
     }
-    trace " apt-get upgrade terminé"
+    # trace " apt-get upgrade terminé"
 
     echo "Système mis à jour"
 }
 
 # Install locales françaises et ffmpeg
 install_locales() {
-    trace " apt install locales..."
+    # trace " apt install locales..."
     sudo apt install -y -qq -o Dpkg::Use-Pty=0 locales
-    trace " apt install locales terminé"
+    # trace " apt install locales terminé"
     sudo sed -i 's/^# *\(fr_FR.UTF-8\)/\1/' /etc/locale.gen
-    trace " dpkg-reconfigure locales..."
+    # trace " dpkg-reconfigure locales..."
     sudo dpkg-reconfigure locales -f noninteractive
-    trace " dpkg-reconfigure locales terminé"
-    trace " apt install ffmpeg..."
+    # trace " dpkg-reconfigure locales terminé"
+    # trace " apt install ffmpeg..."
     sudo apt install -y -qq -o Dpkg::Use-Pty=0 ffmpeg
-    trace " apt install ffmpeg terminé"
+    # trace " apt install ffmpeg terminé"
 }
 
 # outil pour ajouter une ligne dans .zshrc si elle n'existe pas déjà
@@ -105,7 +105,7 @@ create_python_environment() {
     source "$VENV_HOME/bin/activate"
     echo "Installation des dépendances..."
     # Utiliser --active pour cibler l'environnement virtuel activé (hors du dossier projet)
-    uv sync --active --all-extras --no-progress
+    uv sync --active --all-extras
 
     echo "Environnement Python configuré"
 
@@ -164,8 +164,8 @@ setup_git() {
             git config user.name "Default User"
         fi
 
-        git add .
-        git commit -m "Initial commit"
+        # git add .
+        # git commit -m "Initial commit"
         echo "✅ Dépôt Git initialisé et premier commit effectué"
     else
         echo "Dépôt Git déjà existant"
@@ -282,9 +282,9 @@ config_zsh() {
     cd ~
     rm -rf .oh-my-zsh
 
-    trace " apt install fonts-powerline..."
+    # trace " apt install fonts-powerline..."
     sudo apt install -y -o Dpkg::Use-Pty=0 fonts-powerline
-    trace " apt install fonts-powerline terminé"
+    # trace " apt install fonts-powerline terminé"
 
     # get last version at https://github.com/deluan/zsh-in-docker
     sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.1/zsh-in-docker.sh)" -- \
