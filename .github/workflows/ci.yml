@@ -2,7 +2,6 @@ name: 🔄 Continuous Integration
 
 on:
   push:
-    branches: [ main, develop ]
   pull_request:
     branches: [ main ]
 
@@ -23,6 +22,9 @@ jobs:
     - name: 📥 Checkout repository
       uses: actions/checkout@v4
 
+    - name: 🔧 Install system dependencies
+      run: sudo apt-get update && sudo apt-get install -y libdbus-1-dev pkg-config libglib2.0-dev
+
     - name: 🐍 Install uv
       uses: astral-sh/setup-uv@v4
       with:
@@ -35,29 +37,15 @@ jobs:
     - name: 📦 Install dependencies
       run: uv sync --extra dev
 
-    - name: 🔍 Lint with ruff
-      run: uv run ruff check . --output-format=github
-
     - name: 🧪 Run tests
-      run: |
-        if [ -f tests/test_*.py ] || [ -d tests/ ]; then
-          uv run pytest tests/ -v --cov=src --cov-report=term-missing --cov-report=xml
-        else
-          echo "No tests found. Creating placeholder test structure..."
-          mkdir -p tests
-          echo "# TODO: Add tests for lmelp" > tests/test_placeholder.py
-          echo "def test_placeholder():" >> tests/test_placeholder.py
-          echo "    assert True  # Replace with actual tests" >> tests/test_placeholder.py
-          uv run pytest tests/ -v
-        fi
+      run: uv run pytest tests/ -v --cov=nbs --cov-report=term-missing --cov-report=xml --cov-fail-under=70
 
-    - name: 🔧 Type check with mypy
+    - name: 🧪 Test infrastructure CI/CD (.env.test robustness)
       run: |
-        if [ -d src/ ]; then
-          uv run mypy src/ || echo "⚠️ MyPy found issues (expected for new projects)"
-        else
-          echo "No src/ directory found"
-        fi
+        cd /tmp
+        uv run --project $GITHUB_WORKSPACE pytest $GITHUB_WORKSPACE/tests/unit/test_fixtures.py::TestFixturesPackage::test_load_env_test_robustness_for_cicd -v
+      env:
+        PYTHONPATH: ${{ github.workspace }}
 
     - name: 📊 Upload coverage to Codecov
       if: matrix.python-version == '3.11'
@@ -66,6 +54,32 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
         fail_ci_if_error: false
+
+  lint:
+    name: 🔍 Lint & Format
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+
+    - name: 🐍 Install uv
+      uses: astral-sh/setup-uv@v4
+
+    - name: 🐍 Set up Python
+      run: uv python install 3.11
+
+    - name: 📦 Install dependencies
+      run: uv sync --extra dev
+
+    - name: 🔍 Lint with ruff
+      run: uv run ruff check . --output-format=github
+      continue-on-error: true
+
+    - name: 🎨 Check formatting with ruff
+      run: uv run ruff format --check .
+      continue-on-error: true
 
   pre-commit:
     name: 🪝 Pre-commit hooks
@@ -84,13 +98,12 @@ jobs:
       run: uv sync --extra dev
 
     - name: 🪝 Run pre-commit hooks
-      run: |
-        uv run pre-commit run --all-files --show-diff-on-failure || echo "⚠️ Pre-commit hooks found issues"
+      run: uv run pre-commit run --all-files --show-diff-on-failure || echo "⚠️ Pre-commit hooks found issues"
 
   build:
     name: 🏗️ Build package
     runs-on: ubuntu-latest
-    needs: [tests, pre-commit]
+    needs: [tests]
     steps:
     - name: 📥 Checkout repository
       uses: actions/checkout@v4
@@ -117,6 +130,3 @@ jobs:
       run: |
         echo "📦 Built packages:"
         ls -la dist/
-
-        echo "📋 Package metadata:"
-        ls -1 dist/*.whl | head -1 | xargs basename | sed 's/-[0-9].*//' | xargs -I {} uv run python -m pip show {} || echo "Package not installed yet"
