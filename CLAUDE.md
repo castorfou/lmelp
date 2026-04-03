@@ -241,10 +241,13 @@ Le projet utilise **devcontainer** pour un environnement cohérent:
 - Toutes les dépendances installées
 - Port 8501 auto-forwarded pour Streamlit
 
+Et est egalement base sur le template `PyFoundry`
+
 ```bash
 # Ouvrir dans devcontainer (VS Code)
 # Ou installer manuellement:
-pip install -r .devcontainer/requirements.txt
+source /home/vscode/.venv/bin/activate
+uv sync --active --all-extras
 ```
 
 ## Workflow de développement
