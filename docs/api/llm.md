@@ -1,5 +1,5 @@
-# Module rss
+# Module llm
 
-::: rss
+::: nbs.llm
     rendering:
       show_root_full_path: false

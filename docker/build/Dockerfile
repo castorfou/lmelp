@@ -26,18 +26,16 @@ FROM base AS builder
 WORKDIR /build
 
 # Install uv for fast dependency management
-RUN pip install --no-cache-dir uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Copy requirements
-COPY .devcontainer/requirements.txt .
+# Copy project metadata for dependency resolution
+COPY pyproject.toml .
+COPY uv.lock .
 
-# Install dependencies with uv
-# Note: Some packages (dbus-python) may fail in Docker - that's expected and handled
-RUN uv pip install --system -r requirements.txt || \
-    (grep -v "dbus-python" requirements.txt > requirements-docker.txt && \
-     uv pip install --system -r requirements-docker.txt) && \
-    # Clean up uv cache to save space
-    rm -rf /root/.cache/uv /tmp/*
+# Install dependencies with uv into system python
+RUN uv export --frozen --no-dev --no-emit-project --format requirements-txt -o requirements.txt && \
+    uv pip install --system -r requirements.txt && \
+    rm -rf /root/.cache/uv requirements.txt /tmp/*
 
 # Stage 3: Runtime image
 FROM base AS runtime

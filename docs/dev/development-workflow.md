@@ -333,10 +333,9 @@ DB_HOST=mongo  # Nom du conteneur MongoDB sur le NAS
 
 ## Ressources
 
-- [Guide Docker complet](../docker/README.md)
-- [Déploiement Portainer](../deployment/README.md)
-- [CI/CD GitHub Actions](deployment/github-actions-setup.md)
-- [CLAUDE.md - Vue d'ensemble projet](../CLAUDE.md)
+- Guide Docker complet - `docker/README.md`
+- Déploiement Portainer - `docker/deployment/README.md`
+- CLAUDE.md - Vue d'ensemble projet - `CLAUDE.md`
 
 ## Résumé du cycle complet
 

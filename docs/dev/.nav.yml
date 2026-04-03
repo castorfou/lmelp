@@ -1,3 +1,8 @@
 nav:
   - Contenu: README.md
   - Héritage PyFoundry: pyfoundry.md
+  - Dev workflow: development-workflow.md
+  - Data model LMELP: readme_data_model.md
+  - Documentation LMELP: readme_doc.md
+  - Docker local: docker-local-usage.md
+  - Strategies Import: readme_import_strategy.md

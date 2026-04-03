@@ -8,6 +8,7 @@ use_directory_urls: true
 # Exclude internal directories from documentation
 exclude_docs: |
   claude/
+  old_doc/
 
 
 theme:
@@ -71,6 +72,14 @@ plugins:
       enable_creation_date: true
       type: timeago
       fallback_to_build_date: true
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            show_root_heading: true
+            show_source: true
+            docstring_style: google
 
 extra_javascript:
   - javascripts/toc-collapse.js

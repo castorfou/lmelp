@@ -1,6 +1,6 @@
 # Module whisper
 
-::: whisper
+::: nbs.whisper
     rendering:
       show_root_full_path: false
 

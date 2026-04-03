@@ -1,5 +1,5 @@
-# Module web
+# Module rss
 
-::: web
+::: nbs.rss
     rendering:
       show_root_full_path: false
