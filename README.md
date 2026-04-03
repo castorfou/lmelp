@@ -1,4 +1,4 @@
-# lmelp
+## LMELP
 
 
 Projet **personnel** basé sur l'émission radiophonique du **Masque et la Plume** de France Inter.
@@ -9,6 +9,8 @@ Par Rebecca Manzoni.](https://www.radiofrance.fr/franceinter/podcasts/le-masque-
 **lmelp**: Ce projet intègre une **base de donnees** pour stocker les transcriptions des épisodes, les auteurs, oeuvres, éditeurs discutés lors des émissions, les avis des critiques. Une **application web** de téléchargement, transcription, visualisation des épisodes. Une **documentation** pour comprendre comment installer, utiliser et modifier ces composants.
 
 ![](screenshot_lmelp.png)
+
+## Projets associés
 
 Les projets associés sont :
 
