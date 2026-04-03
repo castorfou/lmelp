@@ -1,8 +1,10 @@
 """Test suite to verify Streamlit favicon patch has been applied."""
 
+import os
 from pathlib import Path
 
 import pytest
+
 
 # Skip all tests if streamlit is not installed (e.g., in CI/CD)
 try:
@@ -13,7 +15,8 @@ except ImportError:
     STREAMLIT_AVAILABLE = False
 
 pytestmark = pytest.mark.skipif(
-    not STREAMLIT_AVAILABLE, reason="Streamlit not installed (minimal test environment)"
+    not STREAMLIT_AVAILABLE or os.getenv("CI") == "true",
+    reason="Streamlit not installed or running in CI (favicon patch not applied in CI)",
 )
 
 
@@ -41,21 +44,21 @@ class TestStreamlitPatch:
 
     def test_streamlit_favicon_exists(self, streamlit_favicon_path):
         """Test that Streamlit's favicon file exists."""
-        assert (
-            streamlit_favicon_path.exists()
-        ), f"Streamlit favicon not found: {streamlit_favicon_path}"
-        assert (
-            streamlit_favicon_path.is_file()
-        ), f"Streamlit favicon is not a file: {streamlit_favicon_path}"
+        assert streamlit_favicon_path.exists(), (
+            f"Streamlit favicon not found: {streamlit_favicon_path}"
+        )
+        assert streamlit_favicon_path.is_file(), (
+            f"Streamlit favicon is not a file: {streamlit_favicon_path}"
+        )
 
     def test_custom_favicon_exists(self, custom_favicon_path):
         """Test that our custom favicon exists."""
-        assert (
-            custom_favicon_path.exists()
-        ), f"Custom favicon not found: {custom_favicon_path}"
-        assert (
-            custom_favicon_path.is_file()
-        ), f"Custom favicon is not a file: {custom_favicon_path}"
+        assert custom_favicon_path.exists(), (
+            f"Custom favicon not found: {custom_favicon_path}"
+        )
+        assert custom_favicon_path.is_file(), (
+            f"Custom favicon is not a file: {custom_favicon_path}"
+        )
 
     def test_backup_exists_after_patch(self, backup_favicon_path):
         """Test that backup of original Streamlit favicon exists."""
@@ -63,9 +66,9 @@ class TestStreamlitPatch:
             f"Backup favicon not found: {backup_favicon_path}. "
             "Run 'python scripts/patch_streamlit_favicon.py' to create the patch."
         )
-        assert (
-            backup_favicon_path.is_file()
-        ), f"Backup favicon is not a file: {backup_favicon_path}"
+        assert backup_favicon_path.is_file(), (
+            f"Backup favicon is not a file: {backup_favicon_path}"
+        )
 
     def test_streamlit_favicon_matches_custom(
         self, streamlit_favicon_path, custom_favicon_path
@@ -134,17 +137,17 @@ class TestStreamlitPatch:
             custom_path = get_custom_favicon_path()
 
             # Verify the path exists
-            assert (
-                custom_path.exists()
-            ), f"get_custom_favicon_path() returned non-existent path: {custom_path}"
-            assert (
-                custom_path.is_file()
-            ), f"get_custom_favicon_path() returned path is not a file: {custom_path}"
+            assert custom_path.exists(), (
+                f"get_custom_favicon_path() returned non-existent path: {custom_path}"
+            )
+            assert custom_path.is_file(), (
+                f"get_custom_favicon_path() returned path is not a file: {custom_path}"
+            )
 
             # Verify it's the right file (favicon-32x32.png)
-            assert (
-                custom_path.name == "favicon-32x32.png"
-            ), f"Expected filename 'favicon-32x32.png', got: {custom_path.name}"
+            assert custom_path.name == "favicon-32x32.png", (
+                f"Expected filename 'favicon-32x32.png', got: {custom_path.name}"
+            )
 
         finally:
             # Clean up sys.path

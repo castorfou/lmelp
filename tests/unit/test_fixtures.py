@@ -1,7 +1,9 @@
 """Tests pour le package fixtures"""
 
-import pytest
 from pathlib import Path
+
+import pytest
+
 from tests.fixtures import (
     FIXTURES_DIR,
     SAMPLE_DATA_DIR,
@@ -32,7 +34,7 @@ class TestFixturesPackage:
     def test_sample_data_dir_defined(self):
         """Test que SAMPLE_DATA_DIR est défini correctement"""
         expected_path = FIXTURES_DIR / "data"
-        assert SAMPLE_DATA_DIR == expected_path
+        assert expected_path == SAMPLE_DATA_DIR
 
     def test_load_sample_json_function_exists(self):
         """Test que la fonction load_sample_json est disponible"""
@@ -78,8 +80,6 @@ class TestFixturesPackage:
 
     def test_env_test_file_exists_and_valid(self):
         """Test que .env.test existe et contient les variables attendues"""
-        import os
-        from pathlib import Path
 
         # ARRANGE : Vérifier que le fichier .env.test existe (chemin relatif)
         project_root = get_project_root()
@@ -90,15 +90,17 @@ class TestFixturesPackage:
         content = env_test_path.read_text()
 
         # ASSERT : Vérifier que les variables principales sont présentes
+        azure_api_key_line = (
+            "AZURE_API_KEY=test-azure-api-key-12345"  # pragma: allowlist secret
+        )
         assert "TEST_MODE=true" in content
         assert "RSS_LMELP_URL=https://example.com/test-rss-feed.xml" in content
-        assert "AZURE_API_KEY=test-azure-api-key-12345" in content
+        assert azure_api_key_line in content
         assert "AZURE_ENDPOINT=https://test-azure-openai.openai.azure.com" in content
         assert "DB_NAME=test_lmelp_db" in content
 
     def test_env_test_variables_consistency_with_sample_config(self):
         """Test que .env.test est cohérent avec sample_config.json"""
-        from pathlib import Path
 
         # ARRANGE : Charger les deux sources de configuration
         config_data = load_sample_json("sample_config.json")
@@ -142,7 +144,8 @@ class TestFixturesPackage:
     def test_manual_load_env_test_with_dotenv(self):
         """Test : charger manuellement .env.test avec load_dotenv() comme dans config.py"""
         import os
-        from dotenv import load_dotenv, find_dotenv
+
+        from dotenv import find_dotenv, load_dotenv
 
         # ARRANGE : Sauvegarder la valeur actuelle si elle existe
         original_value = os.getenv("TEST_VALIDATION_KEY")
@@ -173,6 +176,7 @@ class TestFixturesPackage:
         """Test robustesse load_env_test() pour CI/CD (indépendant du working directory)"""
         import os
         import tempfile
+
         from tests.conftest import load_env_test
 
         # ARRANGE : Sauvegarder working directory actuel et variables
@@ -192,9 +196,9 @@ class TestFixturesPackage:
                 result = load_env_test()
 
                 # ASSERT : Doit fonctionner même depuis un autre répertoire
-                assert (
-                    result == True
-                ), "load_env_test() doit réussir depuis n'importe quel répertoire"
+                assert result, (
+                    "load_env_test() doit réussir depuis n'importe quel répertoire"
+                )
 
                 # Vérifier que la variable est bien chargée
                 actual_value = os.getenv("TEST_VALIDATION_KEY")
@@ -214,17 +218,16 @@ class TestFixturesPackage:
 
     def test_github_actions_workflow_exists(self):
         """Test que le workflow GitHub Actions pour T007 existe et est valide"""
-        from pathlib import Path
         import yaml
 
         # ARRANGE : Chemin vers le workflow (chemin relatif)
         project_root = get_project_root()
-        workflow_path = project_root / ".github" / "workflows" / "tests.yml"
+        workflow_path = project_root / ".github" / "workflows" / "ci.yml"
 
         # ACT & ASSERT : Le fichier doit exister
-        assert (
-            workflow_path.exists()
-        ), f"Le workflow GitHub Actions tests.yml doit exister (T007) at {workflow_path}"
+        assert workflow_path.exists(), (
+            f"Le workflow GitHub Actions ci.yml doit exister (T007) at {workflow_path}"
+        )
 
         # ACT : Lire et parser le YAML
         content = workflow_path.read_text()
@@ -233,35 +236,35 @@ class TestFixturesPackage:
         # ASSERT : Vérifier la structure du workflow
         assert "name" in workflow_config, "Le workflow doit avoir un nom"
         # Note: 'on' devient True en YAML, donc on teste les deux cas
-        assert (
-            "on" in workflow_config or True in workflow_config
-        ), "Le workflow doit avoir des triggers"
+        assert "on" in workflow_config or True in workflow_config, (
+            "Le workflow doit avoir des triggers"
+        )
         assert "jobs" in workflow_config, "Le workflow doit avoir des jobs"
 
         # Vérifier les jobs principaux
         jobs = workflow_config["jobs"]
-        assert "test" in jobs, "Le job 'test' doit exister"
+        assert "tests" in jobs, "Le job 'tests' doit exister"
 
-        # Vérifier que le job test utilise Ubuntu
-        test_job = jobs["test"]
+        # Vérifier que le job tests utilise Ubuntu
+        test_job = jobs["tests"]
         assert test_job["runs-on"] == "ubuntu-latest", "Doit utiliser ubuntu-latest"
 
         # Vérifier les étapes critiques
         steps = test_job["steps"]
         step_names = [step.get("name", step.get("uses", "")) for step in steps]
 
-        assert any(
-            "checkout" in name.lower() for name in step_names
-        ), "Doit avoir checkout"
-        assert any(
-            "python" in name.lower() for name in step_names
-        ), "Doit configurer Python"
+        assert any("checkout" in name.lower() for name in step_names), (
+            "Doit avoir checkout"
+        )
+        assert any("python" in name.lower() for name in step_names), (
+            "Doit configurer Python"
+        )
 
         # Vérifier qu'il y a une étape qui lance pytest
         run_commands = [step.get("run", "") for step in steps if "run" in step]
-        assert any(
-            "pytest" in cmd for cmd in run_commands
-        ), "Doit lancer pytest dans une étape run"
+        assert any("pytest" in cmd for cmd in run_commands), (
+            "Doit lancer pytest dans une étape run"
+        )
 
     def test_load_sample_episode_json(self):
         """Test le chargement du fichier sample_episode.json"""
@@ -271,15 +274,15 @@ class TestFixturesPackage:
         # ASSERT
         assert isinstance(data, dict), "Le fichier doit contenir un dictionnaire"
         assert "episodes" in data, "Le fichier doit avoir une section 'episodes'"
-        assert (
-            "test_scenarios" in data
-        ), "Le fichier doit avoir une section 'test_scenarios'"
-        assert (
-            "date_formats" in data
-        ), "Le fichier doit avoir une section 'date_formats'"
-        assert (
-            "validation_data" in data
-        ), "Le fichier doit avoir une section 'validation_data'"
+        assert "test_scenarios" in data, (
+            "Le fichier doit avoir une section 'test_scenarios'"
+        )
+        assert "date_formats" in data, (
+            "Le fichier doit avoir une section 'date_formats'"
+        )
+        assert "validation_data" in data, (
+            "Le fichier doit avoir une section 'validation_data'"
+        )
 
         # Vérifier la structure des épisodes
         episodes = data["episodes"]
@@ -337,22 +340,22 @@ class TestFixturesPackage:
 
         for scenario_name, scenario in scenarios.items():
             episode_id = scenario["episode_id"]
-            assert (
-                episode_id in episode_ids
-            ), f"Le scénario '{scenario_name}' référence un épisode inexistant: {episode_id}"
+            assert episode_id in episode_ids, (
+                f"Le scénario '{scenario_name}' référence un épisode inexistant: {episode_id}"
+            )
 
             # Vérifier la cohérence des flags avec les données réelles
             episode = next(ep for ep in episodes if ep["_id"] == episode_id)
 
             if scenario["has_transcription"]:
-                assert (
-                    episode["transcription"] is not None
-                ), f"Le scénario '{scenario_name}' dit qu'il y a une transcription mais elle est null"
+                assert episode["transcription"] is not None, (
+                    f"Le scénario '{scenario_name}' dit qu'il y a une transcription mais elle est null"
+                )
 
             if scenario["has_audio"]:
-                assert (
-                    episode["audio_rel_filename"] is not None
-                ), f"Le scénario '{scenario_name}' dit qu'il y a un audio mais le filename est null"
+                assert episode["audio_rel_filename"] is not None, (
+                    f"Le scénario '{scenario_name}' dit qu'il y a un audio mais le filename est null"
+                )
 
     def test_load_sample_transcription_txt(self):
         """Test que le fichier sample_transcription.txt peut être chargé"""
@@ -408,16 +411,16 @@ class TestFixturesPackage:
 
         transcription_lower = transcription.lower()
         for element in required_elements:
-            assert (
-                element in transcription_lower
-            ), f"L'élément '{element}' devrait être présent dans la transcription"
+            assert element in transcription_lower, (
+                f"L'élément '{element}' devrait être présent dans la transcription"
+            )
 
         # Vérifier qu'il y a des noms d'éditeurs
         editeurs = ["Gallimard", "Minuit", "Lattès"]
         found_editeurs = [editeur for editeur in editeurs if editeur in transcription]
-        assert (
-            len(found_editeurs) > 0
-        ), "Au moins un éditeur connu devrait être mentionné"
+        assert len(found_editeurs) > 0, (
+            "Au moins un éditeur connu devrait être mentionné"
+        )
 
     def test_load_sample_rss_feed_xml(self):
         """Test : charger le fichier RSS exemple"""
@@ -427,9 +430,9 @@ class TestFixturesPackage:
         # ASSERT : Contenu XML valide
         assert rss_content is not None, "Le contenu RSS ne doit pas être None"
         assert len(rss_content) > 0, "Le contenu RSS ne doit pas être vide"
-        assert (
-            "<?xml" in rss_content
-        ), "Le fichier doit commencer par une déclaration XML"
+        assert "<?xml" in rss_content, (
+            "Le fichier doit commencer par une déclaration XML"
+        )
         assert "<rss" in rss_content, "Le fichier doit contenir une balise RSS"
         assert "</rss>" in rss_content, "Le fichier doit se terminer par </rss>"
 
@@ -450,15 +453,15 @@ class TestFixturesPackage:
         ]
 
         for element in required_elements:
-            assert (
-                element in rss_content
-            ), f"L'élément '{element}' doit être présent dans le RSS"
+            assert element in rss_content, (
+                f"L'élément '{element}' doit être présent dans le RSS"
+            )
 
         # Vérifier qu'il y a plusieurs épisodes
         episode_count = rss_content.count("<item>")
-        assert (
-            episode_count >= 5
-        ), f"Il devrait y avoir au moins 5 épisodes, trouvés: {episode_count}"
+        assert episode_count >= 5, (
+            f"Il devrait y avoir au moins 5 épisodes, trouvés: {episode_count}"
+        )
 
     def test_sample_rss_feed_test_scenarios(self):
         """Test : vérifier que le RSS contient les scénarios de test nécessaires"""
@@ -476,9 +479,9 @@ class TestFixturesPackage:
         assert "18:45" in rss_content, "Doit contenir un épisode de ~18 minutes"
 
         # Contenu non-audio (pour test de filtrage)
-        assert (
-            "video/mp4" in rss_content
-        ), "Doit contenir un élément vidéo pour tester le filtrage"
+        assert "video/mp4" in rss_content, (
+            "Doit contenir un élément vidéo pour tester le filtrage"
+        )
         assert "audio/mpeg" in rss_content, "Doit contenir des éléments audio normaux"
 
         # Différents types de contenu
