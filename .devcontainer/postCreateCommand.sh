@@ -203,9 +203,9 @@ setup_github() {
 
         # choisir le protocole: SSH si possible, sinon HTTPS
         if ssh -o BatchMode=yes -T git@github.com 2>&1 | grep -iq "successfully authenticated"; then
-            remote_url="git@github.com:castorfou/PyFoundry.git"
+            remote_url="git@github.com:castorfou/lmelp.git"
         else
-            remote_url="https://github.com/castorfou/PyFoundry.git"
+            remote_url="https://github.com/castorfou/lmelp.git"
         fi
 
         echo "Configuration du remote GitHub : $remote_url"
