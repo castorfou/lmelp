@@ -303,9 +303,10 @@ config_zsh() {
 patch_streamlit_favicon() {
     echo "Patch du favicon Streamlit..."
 
-    # Le venv doit être activé pour que le script trouve Streamlit
-    if [ -f ".venv/bin/activate" ]; then
-        source .venv/bin/activate
+    VENV_HOME="/home/vscode/.venv"
+    if [ -f "$VENV_HOME/bin/activate" ]; then
+        source "$VENV_HOME/bin/activate"
+        cd $WORKSPACE_FOLDER
         if python ui/assets/favicons/scripts/patch_streamlit_favicon.py; then
             echo "✅ Favicon Streamlit patché"
         else

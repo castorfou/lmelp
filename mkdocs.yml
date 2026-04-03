@@ -1,6 +1,7 @@
 site_name: lmelp
 site_description: Documentation des APIs du repo lmelp
 site_url: https://castorfou.github.io/lmelp
+repo_url: https://github.com/castorfou/lmelp
 
 use_directory_urls: true
 
