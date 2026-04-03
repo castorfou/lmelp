@@ -15,11 +15,11 @@
 sur le mot `Ctrl-d` autant de fois que le nombre de variable à remplacer 💡
 
 ## 📋 multicurseur sur chaque ligne d'un texte
-(pour inserer un > par ex en debut de ligne) ➡️  
+(pour inserer un > par ex en debut de ligne) ➡️
 selection du texte puis `Shift-Alt-i` 👉
 
 ## 🙈 cacher un repertoire du workspace (par exemple __pycache__)
-ouvrir settings.json : `Ctrl-Shift-p` et taper Preferences: Open Settings (JSON) ⚙️  
+ouvrir settings.json : `Ctrl-Shift-p` et taper Preferences: Open Settings (JSON) ⚙️
 ajouter une entree dans __`files.exclude`__ ➕
 
 ```
@@ -39,7 +39,7 @@ ajouter une entree dans __`files.exclude`__ ➕
 And that seemed to be that. When there is a selection Ctrl-C will copy without sending SIGINT and if there is no selection VS Code sends a SIGINT 💡
 
 ## 🔌 ajouter des sources pour pylance
-ouvrir settings.json : `Ctrl-Shift-p` et taper Preferences: Open Settings (JSON) ⚙️  
+ouvrir settings.json : `Ctrl-Shift-p` et taper Preferences: Open Settings (JSON) ⚙️
 ajouter une entree dans __`python.analysis.extraPaths`__ ➕
 
 ```
@@ -50,9 +50,9 @@ ajouter une entree dans __`python.analysis.extraPaths`__ ➕
 
 ## 🐍 tester un petit code python en REPL
 
-[doc vscode native REPL](https://code.visualstudio.com/docs/python/run#_native-repl) 🔗  
+[doc vscode native REPL](https://code.visualstudio.com/docs/python/run#_native-repl) 🔗
 
-> You can open the Native REPL via the Command Palette (Ctrl+Shift+P) by searching for Python: **Start Native REPL**. Furthermore, you can send code to the Native REPL via **Smart Send** (Shift+Enter) and Run Selection/Line in Python REPL by setting `"python.REPL.sendToNativeREPL": true` in your settings.json file. 🚀  
+> You can open the Native REPL via the Command Palette (Ctrl+Shift+P) by searching for Python: **Start Native REPL**. Furthermore, you can send code to the Native REPL via **Smart Send** (Shift+Enter) and Run Selection/Line in Python REPL by setting `"python.REPL.sendToNativeREPL": true` in your settings.json file. 🚀
 
 ca fait tourner un notebook Untitled-1.ipnb juste a cote. 🔍
 
@@ -74,14 +74,14 @@ ca fait tourner un notebook Untitled-1.ipnb juste a cote. 🔍
 3. **extensions**: les extensions installees localement qui m'interessent pour ce projet, `Manage > Add to devcontainer.json`, et en sauvant je rebuilde le container 🔧
 4. **requirements**: les lib python necessaires pour ce projet 📌
 5. **postCommand.sh**: j'installe cmake et dbus (pour supprimer la mise en veille), la locale fr_FR.UTF-8 pour la conversion de dates, les libs python, pre-commit et le safe.directory git (car les utilisateurs host et docker sont differents) ⚡
-6. **runArgs**: 🚀  
-   1. `--network=host` pour acceder au container depuis le host (pour streamlit) 🌐  
-   2. `--label com.centurylinklabs.watchtower.enable=false` pour exclure le container de la mise a jour watchtower 🚫  
+6. **runArgs**: 🚀
+   1. `--network=host` pour acceder au container depuis le host (pour streamlit) 🌐
+   2. `--label com.centurylinklabs.watchtower.enable=false` pour exclure le container de la mise a jour watchtower 🚫
    3. `--env CONTAINER_NAME=vscode-dev-container-lmelp` pour retrouver le nom du container depuis un script execute depuis host 🆔
 7. **forwardPorts** pour acceder a streamlit 🔀
 8. **shutdownAction** a "none" pour empecher que le container ne s'arrete a la sortie de vscode (utile pour lancer les scripts ou streamlit) 🛑
 
-A chaque modification, faire un `Dev Containers: Rebuild Container`. 
+A chaque modification, faire un `Dev Containers: Rebuild Container`.
 
 Depuis Windows+WSL, il faut activer `Dev>Containers: Execute in WSL`, cela utilisera le docker de WSL et pas le docker Windows (que je n'ai pas) 🐳
 

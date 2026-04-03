@@ -10,7 +10,7 @@ Everything is in `.devcontainer`
 
 make modifications in `.devcontainer/requirements.txt`
 
-to apply modifications 
+to apply modifications
 
 ```bash
 source .venv/bin/activate

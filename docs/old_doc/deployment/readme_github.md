@@ -42,7 +42,7 @@ Le projet dispose de tests automatiques configurés via GitHub Actions dans `.gi
 tests/
 ├── unit/                    # Tests unitaires par module
 │   ├── test_config.py      # Tests nbs/config.py (97% couverture)
-│   ├── test_mongo.py       # Tests nbs/mongo.py (98% couverture) 
+│   ├── test_mongo.py       # Tests nbs/mongo.py (98% couverture)
 │   ├── test_llm.py         # Tests nbs/llm.py (100% couverture)
 │   ├── test_rss.py         # Tests nbs/rss.py (100% couverture)
 │   └── test_fixtures.py    # Tests infrastructure données
@@ -69,7 +69,7 @@ pytest --cov=nbs --cov-report=term-missing
 # Tests spécifiques
 pytest tests/unit/test_config.py -v
 
-# Rapport HTML de couverture  
+# Rapport HTML de couverture
 pytest --cov=nbs --cov-report=html
 # Voir htmlcov/index.html
 ```
@@ -79,7 +79,7 @@ pytest --cov=nbs --cov-report=html
 - **Total** : 124 tests (104 unitaires + 11 intégration + 9 UI)
 - **Couverture modules testés** : 98.75% moyenne
   - `config.py` : 97%
-  - `llm.py` : 100% 
+  - `llm.py` : 100%
   - `mongo.py` : 98%
   - `rss.py` : 100%
 - **Statut** : ✅ Tous les tests passent

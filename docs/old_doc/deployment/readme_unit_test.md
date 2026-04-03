@@ -89,10 +89,10 @@ def test_example_function(self, monkeypatch):
     # ARRANGE : Préparer les données et mocks
     test_value = "example"
     monkeypatch.setenv("TEST_VAR", test_value)
-    
+
     # ACT : Exécuter la fonction à tester
     result = function_to_test()
-    
+
     # ASSERT : Vérifier les résultats
     assert result == expected_value
 ```
@@ -116,7 +116,7 @@ monkeypatch.setattr("module.real_function", mock_function)
 ```python
 class TestConfigModule:
     """Tests pour le module de configuration"""
-    
+
     def test_specific_feature(self, monkeypatch):
         # Test spécifique
         pass
@@ -139,10 +139,10 @@ def test_save_entity():
 def test_save_entity(mock_get_collection):
     mock_collection = Mock()
     mock_get_collection.return_value = mock_collection
-    
+
     entity = Entity("test")
     entity.save()
-    
+
     mock_collection.insert_one.assert_called_once()
 ```
 
@@ -190,12 +190,12 @@ from nbs.mongo_episode import MongoEpisode
 ```python
 class TestMongoEpisodeWithML:
     """Tests nécessitant du mocking ML complet"""
-    
+
     def setup_method(self):
         """Mocking précoce pour chaque test"""
         # Déjà fait au niveau module, mais on peut renforcer
         pass
-    
+
     def test_transcription_without_torch(self):
         """Test de transcription sans installer PyTorch"""
         # Le module est déjà mocké, on peut tester la logique
@@ -233,9 +233,9 @@ def test_config_without_env(self, monkeypatch):
 def test_database_connection(mock_client):
     mock_db = Mock()
     mock_client.return_value = {"test_db": mock_db}
-    
+
     collection = get_collection("localhost", "test_db", "test_coll")
-    
+
     mock_client.assert_called_once_with("mongodb://localhost:27017/")
 ```
 
@@ -247,11 +247,11 @@ def test_database_connection(mock_client):
 @pytest.fixture
 def test_environment():
     """Environnement de test isolé"""
-    
-@pytest.fixture  
+
+@pytest.fixture
 def mock_mongodb():
     """Mock complet de MongoDB"""
-    
+
 @pytest.fixture
 def test_config():
     """Configuration de test standard"""
@@ -396,7 +396,7 @@ from unittest.mock import Mock
 
 # Mock AVANT imports (dans l'ordre de découverte des erreurs)
 sys.modules['torch'] = Mock()
-sys.modules['transformers'] = Mock() 
+sys.modules['transformers'] = Mock()
 sys.modules['dbus'] = Mock()
 sys.modules['llama_index'] = Mock()
 sys.modules['google.generativeai'] = Mock()

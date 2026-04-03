@@ -10,19 +10,19 @@ To use Gemini or Search, I followed these steps 😎
 
 ## Create a Google project🌟
 
-Set it up on [Google Cloud Console](https://console.cloud.google.com) 🖥️.  
+Set it up on [Google Cloud Console](https://console.cloud.google.com) 🖥️.
 My project is named `lmelp` 🔒 (please verify if this info is sensitive).
 
 ## Dashboard📊
 
-Check out an [overview](https://console.cloud.google.com/home/dashboard) of your project. 🔍  
+Check out an [overview](https://console.cloud.google.com/home/dashboard) of your project. 🔍
 I have pinned a few awesome products that might be really useful 💪
 
 ![](img/consolegooglecloud-pinnedproducts.png)
 
 ## API key🔑
 
-From the dashboard, navigate to generate your API key 🚀:  
+From the dashboard, navigate to generate your API key 🚀:
 Dashboard > APIs & Services > [Credentials](https://console.cloud.google.com/apis/credentials) 👉
 
 ![](img/APIs-Credentials-Keys.png)

@@ -28,7 +28,7 @@ from config import get_RSS_URL
 ### 📁 `ui/` - Interface Streamlit
 **Pattern** : Fonction centralisée add_to_sys_path()
 ```python
-# ✅ Dans ui/pages/*.py  
+# ✅ Dans ui/pages/*.py
 from ui_tools import add_to_sys_path
 add_to_sys_path()
 from mongo_episode import Episodes
@@ -57,7 +57,7 @@ from nbs.mongo import get_collection
 
 ```
 tests/unit/test_config.py     ← teste nbs/config.py
-tests/unit/test_mongo.py      ← teste nbs/mongo.py  
+tests/unit/test_mongo.py      ← teste nbs/mongo.py
 tests/unit/test_llm.py        ← teste nbs/llm.py
 ```
 
