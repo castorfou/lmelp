@@ -113,7 +113,7 @@
 
     // Configuration du shell et de l'environnement
     "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
-    "postStartCommand": "echo '🚀 lmelp - Environnement prêt!'",
+    "postStartCommand": "bash .devcontainer/scripts/post_start.sh",
 
     // Utilisateur non-root pour la sécurité
     "remoteUser": "vscode",
