@@ -35,21 +35,40 @@ Coupables identifiés dans l'ordre d'exécution :
 +    -o Dpkg::Use-Pty=0 upgrade || {
 ```
 
-## Ce qui reste à tester / corriger
+## Cette session (2026-04-03, suite)
 
-- **`uv sync`** dans `create_python_environment()` : ajouter `--no-progress`
-  ou positionner `UV_NO_PROGRESS=1` dans `containerEnv` du `devcontainer.json`
+Problèmes constatés après les corrections précédentes :
+- Le script allait jusqu'au bout, mais l'affichage était très moche
+- Impossible de configurer `gh` (authentification GitHub)
 
-```bash
-# Option A : dans le script
-uv sync --active --all-extras --no-progress
+### Fix 1 — affichage moche : suppression du wrapper awk
 
-# Option B : dans devcontainer.json containerEnv
-"UV_NO_PROGRESS": "1"
+`exec > >(awk '{ print strftime("[%H:%M:%S]"), $0; fflush() }' | tee ...)` remplacé par
+`exec > >(tee /tmp/postCreate_full.log) 2>&1`
+
+L'`awk` ajoutait `[HH:MM:SS]` sur chaque ligne et cassait les séquences ANSI
+(output de `zsh-in-docker`, emojis, couleurs). Le log reste capturé dans
+`/tmp/postCreate_full.log`, sans dénaturer l'affichage.
+
+```diff
+-exec > >(awk '{ print strftime("[%H:%M:%S]"), $0; fflush() }' | tee /tmp/postCreate_full.log) 2>&1
++exec > >(tee /tmp/postCreate_full.log) 2>&1
 ```
 
-## Note sur gh auth login
+### Fix 2 — gh auth : montage de ~/.config/gh depuis le host
 
-`gh auth login` n'est **pas** la cause du blocage — c'est juste là que le terminal
-était déjà cassé et rendait l'interaction impossible. Le call a été remplacé par un
-simple message demandant à l'utilisateur de le faire manuellement après le build.
+`postCreateCommand` et `postStartCommand` sont non-interactifs dans VS Code —
+`gh auth login` (qui nécessite un navigateur ou un prompt) ne peut pas y fonctionner.
+
+Solution : monter `~/.config/gh` depuis le host dans `devcontainer.json`, identique
+aux montages `.gitconfig` et `.ssh` déjà en place.
+
+```diff
++        "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,consistency=cached"
+```
+
+Le container hérite ainsi automatiquement de l'authentification GitHub du host.
+
+**Prérequis :** être authentifié sur le host (`gh auth login`) avant le rebuild.
+
+## État après rebuild (à compléter)

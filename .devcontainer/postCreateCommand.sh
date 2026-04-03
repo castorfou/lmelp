@@ -4,9 +4,9 @@
 # =============================================================================
 set -e
 
-# Capture toute la sortie (stdout+stderr) dans un fichier horodaté
+# Capture toute la sortie (stdout+stderr) dans un fichier de log
 # Après le build : cat /tmp/postCreate_full.log
-exec > >(awk '{ print strftime("[%H:%M:%S]"), $0; fflush() }' | tee /tmp/postCreate_full.log) 2>&1
+exec > >(tee /tmp/postCreate_full.log) 2>&1
 
 PYTHON_VERSION="3.11"
 trace() { echo "[TRACE] $*"; }
