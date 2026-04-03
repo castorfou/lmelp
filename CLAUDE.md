@@ -272,6 +272,8 @@ Le projet utilise des hooks pre-commit:
 - `nbdev_clean` - Nettoie les outputs des notebooks
 - `black` - Formatage Python
 - `black-jupyter` - Formatage notebooks
+- `ruff` - Linting et formatage
+- `detect-secrets` - Détection de secrets dans le code
 
 ```bash
 # Installer les hooks
@@ -279,6 +281,26 @@ pre-commit install
 
 # Lancer manuellement
 pre-commit run --all-files
+```
+
+#### Faux positifs detect-secrets
+
+`detect-secrets` bloque les commits si une valeur ressemble à un secret (clé API, token...). Dans les tests, des valeurs factices comme `test-azure-api-key-12345` peuvent déclencher ce hook.
+
+**Problème :** le `# pragma: allowlist secret` doit être sur la **même ligne** que la valeur. Mais ruff/black reformatent les assertions longues et séparent la valeur du pragma, ce qui casse la protection.
+
+**Solution :** extraire la valeur dans une variable — le formatter ne peut pas séparer la string de son commentaire de fin de ligne :
+
+```python
+# ✅ Correct — pragma résiste au reformatage
+azure_key = "AZURE_API_KEY=test-azure-api-key-12345"  # pragma: allowlist secret
+assert azure_key in content
+
+# ❌ À éviter — le formatter peut séparer la string du pragma
+assert (
+    "AZURE_API_KEY=test-azure-api-key-12345"  # pragma: allowlist secret
+    in content  # ← pragma sur la mauvaise ligne après reformatage
+)
 ```
 
 ### Système Vibe (développement assisté LLM)
@@ -381,10 +403,30 @@ date = format_date_french(french_date_string)
 ```bash
 # Via devcontainer (recommandé)
 # Ou manuel:
-pip install -r .devcontainer/requirements.txt
+uv sync --active --all-extras
+```
 
-# Tests uniquement:
-pip install -r tests/requirements.txt
+### Gestion des dépendances avec uv
+
+Le projet utilise **uv** comme gestionnaire de paquets. Le devcontainer dispose d'un venv préactivé à `/home/vscode/.venv`.
+
+**Toujours utiliser `--active`** avec `uv run` et `uv sync` pour utiliser ce venv existant — sans ce flag, uv crée un nouveau `.venv` local dans le répertoire du projet.
+
+```bash
+# Ajouter une dépendance principale
+uv add --active <package>
+
+# Ajouter une dépendance de développement
+uv add --active --optional dev <package>
+
+# Synchroniser l'environnement
+uv sync --active --all-extras
+
+# Lancer une commande dans l'environnement
+uv run --active pytest tests/
+
+# Lancer un outil one-shot (sans --active, uvx gère son propre env isolé)
+uvx <tool> [args]
 ```
 
 ## Ressources et documentation
