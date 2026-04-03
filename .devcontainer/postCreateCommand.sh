@@ -4,7 +4,12 @@
 # =============================================================================
 set -e
 
+# Capture toute la sortie (stdout+stderr) dans un fichier horodaté
+# Après le build : cat /tmp/postCreate_full.log
+exec > >(awk '{ print strftime("[%H:%M:%S]"), $0; fflush() }' | tee /tmp/postCreate_full.log) 2>&1
+
 PYTHON_VERSION="3.11"
+trace() { echo "[TRACE] $*"; }
 
 echo "🚀 Configuration de l'environnement lmelp"
 echo "=================================================================="
@@ -26,24 +31,36 @@ update_system() {
     echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian stable main" \
         | sudo tee /etc/apt/sources.list.d/yarn.list > /dev/null
 
+    trace " apt-get update..."
     sudo apt-get update -qq
+    trace " apt-get update terminé"
 
     # Options dpkg pour éviter les prompts de configuration
+    trace " apt-get upgrade..."
     sudo apt-get -y -qq -o Dpkg::Options::="--force-confdef" \
-        -o Dpkg::Options::="--force-confnew" upgrade || {
+        -o Dpkg::Options::="--force-confnew" \
+        -o Dpkg::Options::="--force-unsafe-io" \
+        -o Dpkg::Use-Pty=0 upgrade || {
         echo "⚠️  'apt upgrade' a échoué ; continuer sans interrompre le postCreateCommand"
         return 0
     }
+    trace " apt-get upgrade terminé"
 
     echo "Système mis à jour"
 }
 
 # Install locales françaises et ffmpeg
 install_locales() {
-    sudo apt install -y locales
+    trace " apt install locales..."
+    sudo apt install -y -qq -o Dpkg::Use-Pty=0 locales
+    trace " apt install locales terminé"
     sudo sed -i 's/^# *\(fr_FR.UTF-8\)/\1/' /etc/locale.gen
+    trace " dpkg-reconfigure locales..."
     sudo dpkg-reconfigure locales -f noninteractive
-    sudo apt install -y ffmpeg
+    trace " dpkg-reconfigure locales terminé"
+    trace " apt install ffmpeg..."
+    sudo apt install -y -qq -o Dpkg::Use-Pty=0 ffmpeg
+    trace " apt install ffmpeg terminé"
 }
 
 # outil pour ajouter une ligne dans .zshrc si elle n'existe pas déjà
@@ -88,7 +105,7 @@ create_python_environment() {
     source "$VENV_HOME/bin/activate"
     echo "Installation des dépendances..."
     # Utiliser --active pour cibler l'environnement virtuel activé (hors du dossier projet)
-    uv sync --active --all-extras
+    uv sync --active --all-extras --no-progress
 
     echo "Environnement Python configuré"
 
@@ -221,22 +238,9 @@ setup_github() {
         if command -v gh &> /dev/null; then
             echo "Configuration de l'authentification GitHub..."
             if ! gh auth status &>/dev/null; then
-                echo "🔐 Authentification GitHub requise pour push/pull"
-                echo "Lancement de l'authentification..."
-                echo ""
-                echo "ℹ️  Note : Vous devrez appuyer sur Entrée pour 'ouvrir' le navigateur."
-                echo "   Le navigateur ne s'ouvrira pas (limitation devcontainer connue)."
-                echo "   → Entrez manuellement l'URL et le code dans votre navigateur host."
-                echo ""
-                gh auth login --git-protocol https --web
-
-                # Configuration du credential helper après authentification (local au projet)
-                if gh auth status &>/dev/null; then
-                    echo "Configuration du credential helper Git..."
-                    git config credential.helper ""
-                    git config credential."https://github.com".helper "!gh auth git-credential"
-                    echo "✅ Credential helper configuré"
-                fi
+                echo "⚠️  Authentification GitHub non effectuée (contexte non-interactif)"
+                echo "   → Lancez manuellement dans le terminal après le build :"
+                echo "      gh auth login --git-protocol https --web"
             else
                 echo "✅ Déjà authentifié sur GitHub"
             fi
@@ -278,7 +282,9 @@ config_zsh() {
     cd ~
     rm -rf .oh-my-zsh
 
-    sudo apt install -y fonts-powerline
+    trace " apt install fonts-powerline..."
+    sudo apt install -y -o Dpkg::Use-Pty=0 fonts-powerline
+    trace " apt install fonts-powerline terminé"
 
     # get last version at https://github.com/deluan/zsh-in-docker
     sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.1/zsh-in-docker.sh)" -- \
