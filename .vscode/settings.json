@@ -1,31 +1,25 @@
 {
-    "python.analysis.extraPaths": [
-        "./nbs"
-    ],
-    "files.watcherExclude": {
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true,
-        "**/node_modules/*/**": true
-    },
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true,
-        "**/Thumbs.db": true,
-        "**/__pycache__": true,
-        "**/.ipynb_checkpoints": true,
-        "**/.venv": true,
-    },
-    "markdown.extension.toc.updateOnSave": true,
-	"remote.autoForwardPorts": false,    
-    "github-actions.workflows.pinned.workflows": [
-        ".github/workflows/ci.yml",
-        "dynamic/pages/pages-build-deployment"
-    ],
-    // https://code.visualstudio.com/docs/python/run#_native-repl
-    "python.REPL.sendToNativeREPL": true,
-    "terminal.integrated.suggest.cdPath": "off",
-    "terminal.integrated.suggest.inlineSuggestion": "off",
+     "files.exclude": {
+          "**/*.egg-info": true,
+          "**/.*_cache": true,
+          "site": true
+     },
+     "terminal.integrated.defaultProfile.linux": "zsh",
+     "python.terminal.activateEnvironment": false,
+     "python.terminal.activateEnvInCurrentTerminal": false,
+     "editor.formatOnSave": true,
+     "editor.tabSize": 4,
+     "editor.rulers": [
+          100
+     ],
+     "terminal.integrated.shellIntegration.enabled": false,
+     "terminal.integrated.suggest.cdPath": "off",
+     "[json]": {
+          "editor.formatOnSave": false,
+          "editor.defaultFormatter": null
+     },
+     "[jsonc]": {
+          "editor.formatOnSave": false,
+          "editor.defaultFormatter": null
+     }
 }
