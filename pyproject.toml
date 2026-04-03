@@ -19,20 +19,59 @@ classifiers = [
 ]
 
 dependencies = [
+    # Jupyter
     "ipykernel",
     "ipywidgets",
-    "python-dotenv",
-    "gitpython",
+    # Data
     "pandas",
     "numpy",
     "matplotlib",
+    "plotly",
+    "rich",
+    # Web / RSS
+    "feedparser",
+    "beautifulsoup4",
+    "lxml",
+    "html5lib",
+    "requests",
+    # Database
+    "pymongo",
+    # Config
+    "python-dotenv",
+    "gitpython",
+    # Audio / ML
+    "transformers",
+    "accelerate",
+    "pydub",
+    "soundfile",
+    # LLM / AI
+    "llama-index-core",
+    "llama-index-llms-openai",
+    "llama-index-embeddings-openai",
+    "llama-index-llms-azure-openai",
+    "llama-index-embeddings-azure-openai",
+    "llama-index-llms-huggingface-api",
+    "llama-index-llms-vertex",
+    "google-generativeai",
+    "google-search-results",
+    "smolagents[litellm]",
+    # UI
+    "streamlit",
+    "streamlit-extras",
+    "streamlit-card",
+    # Utils
+    "thefuzz",
 ]
 
 [project.optional-dependencies]
 dev = [
     "cruft",
+    "virtualenv",
     "pre-commit",
-    "pytest",
+    "pytest>=7.0",
+    "pytest-mock>=3.10",
+    "pytest-env>=0.8",
+    "pytest-cov>=4.0",
     "ruff",
     "mypy",
     "mkdocs>=1.5.0",
@@ -44,7 +83,7 @@ dev = [
     "mkdocs-awesome-nav",
     "pymdown-extensions",
     "mkdocs-rtd-dropdown",
-    "nbdev>=2.4.6"
+    "nbdev>=2.4.6",
 ]
 
 [project.urls]
