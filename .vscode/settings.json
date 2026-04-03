@@ -1,4 +1,6 @@
 {
+     "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
+     "python.venvPath": "/home/vscode",
      "files.exclude": {
           "**/*.egg-info": true,
           "**/.*_cache": true,

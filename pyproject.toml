@@ -147,6 +147,8 @@ ignore = [
     "E501",   # Line too long (black/ruff format s'en occupe)
     "B905",   # zip() sans strict= (Python 3.10+)
     "RET504", # Assign + return -> return direct (parfois moins lisible)
+    "N806",   # Variable in function should be lowercase (DB_HOST, DB_NAME conventions)
+    "E741",   # Ambiguous variable name (l, O, I — usage courant en data science)
 ]
 
 [tool.ruff.format]
@@ -169,6 +171,7 @@ classmethod-decorators = ["classmethod", "pydantic.validator"]
 [tool.ruff.lint.per-file-ignores]
 # Règles spécifiques par type de fichier
 "notebooks/*.py" = ["E402", "F401", "F841"]  # Imports, unused vars OK en notebooks
+"nbs/*.ipynb" = ["I001", "E402", "F401", "F841"]  # black-jupyter gère l'ordre des imports
 "scripts/*.py" = ["T201"]                    # print() OK dans les scripts
 "tests/*.py" = ["S101", "PLR2004"]          # assert OK, magic values OK en tests
 

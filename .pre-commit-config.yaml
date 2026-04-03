@@ -75,7 +75,7 @@ repos:
     - id: black-jupyter
       language_version: python3
       files: \.ipynb$
-      args: [--line-length=140]
+      args: [--line-length=140, --target-version=py311]
 
 # Configuration globale
 default_stages: [pre-commit]

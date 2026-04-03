@@ -244,9 +244,9 @@ Add to README.md:
 
 After CI/CD is configured:
 
-1. [Configure Portainer on NAS](portainer-guide.md) (to be created)
-2. [Setup reverse proxy](nas-deployment.md) (to be created)
-3. [Configure monitoring](troubleshooting.md) (to be created)
+1. Configure Portainer on NAS (portainer-guide.md — to be created)
+2. Setup reverse proxy (nas-deployment.md — to be created)
+3. Configure monitoring (troubleshooting.md — to be created)
 
 ## References
 

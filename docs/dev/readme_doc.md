@@ -1,14 +1,14 @@
 # Documentation MkDocs — Guide
 
-- [📦 Dépendances](#-dépendances)
-- [⚙️ Configuration mkdocs.yml](#️-configuration-mkdocsyml)
-- [📝 Fichiers de doc API](#-fichiers-de-doc-api)
-- [✏️ Modifier les docstrings](#️-modifier-les-docstrings)
-- [🖥️ Lancer le serveur de développement](#️-lancer-le-serveur-de-développement)
-- [🏗️ Générer la documentation statique](#️-générer-la-documentation-statique)
-- [🤖 Déploiement automatique GitHub Actions](#-déploiement-automatique-github-actions)
+- [Dépendances](#dependances)
+- [Configuration mkdocs.yml](#configuration-mkdocsyml)
+- [Fichiers de doc API](#fichiers-de-doc-api)
+- [Modifier les docstrings](#modifier-les-docstrings)
+- [Lancer le serveur de développement](#lancer-le-serveur-de-developpement)
+- [Générer la documentation statique](#generer-la-documentation-statique)
+- [Déploiement automatique GitHub Actions](#deploiement-automatique-github-actions)
 
-## 📦 Dépendances
+## Dependances
 
 Les dépendances de documentation sont dans `pyproject.toml` sous `[project.optional-dependencies] dev` :
 
@@ -26,7 +26,7 @@ Installation :
 uv sync --active --all-extras
 ```
 
-## ⚙️ Configuration mkdocs.yml
+## Configuration mkdocsyml
 
 Le fichier `mkdocs.yml` à la racine du projet configure MkDocs. Points clés :
 
@@ -53,7 +53,7 @@ exclude_docs: |
 
 La navigation est gérée automatiquement par `awesome-nav` via des fichiers `.nav.yml` dans chaque sous-répertoire de `docs/`.
 
-## 📝 Fichiers de doc API
+## Fichiers de doc API
 
 Les modules Python sont dans `nbs/` et documentés dans `docs/api/`. Chaque fichier utilise la directive mkdocstrings avec le chemin complet du module :
 
@@ -67,7 +67,7 @@ Les modules Python sont dans `nbs/` et documentés dans `docs/api/`. Chaque fich
 
 **Note :** nbdev_docs a été abandonné (il repose sur Quarto, incompatible avec MkDocs). Les fichiers `docs/api/*.md` sont maintenus manuellement. Voir `docs/api/README.md` pour le workflow d'ajout d'un nouveau module.
 
-## ✏️ Modifier les docstrings
+## Modifier les docstrings
 
 Prompt utile pour générer des docstrings Google style :
 
@@ -80,7 +80,7 @@ de sortie s'il y a lieu.
 
 **Important :** les modules Python dans `nbs/` sont générés depuis les notebooks Jupyter via `nbdev_export`. Ne jamais éditer les `.py` directement — éditer le notebook correspondant puis lancer `nbdev_export`.
 
-## 🖥️ Lancer le serveur de développement
+## Lancer le serveur de developpement
 
 ```bash
 uv run --active mkdocs serve
@@ -88,7 +88,7 @@ uv run --active mkdocs serve
 
 Accessible sur http://127.0.0.1:8000.
 
-## 🏗️ Générer la documentation statique
+## Generer la documentation statique
 
 ```bash
 uv run --active mkdocs build
@@ -96,7 +96,7 @@ uv run --active mkdocs build
 
 Le site est généré dans `site/`.
 
-## 🤖 Déploiement automatique GitHub Actions
+## Deploiement automatique GitHub Actions
 
 Le workflow `.github/workflows/docs.yml` se déclenche automatiquement à chaque push sur `main` si des fichiers dans `docs/**` ou `mkdocs.yml` changent.
 

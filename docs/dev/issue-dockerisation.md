@@ -661,23 +661,13 @@ Guide de déploiement sur PC local :
 - Commandes docker-compose
 - Accès à l'application
 
-#### ✅ Créer `docs/deployment/nas-deployment.md`
+#### ✅ Créer `docs/deployment/nas-deployment.md` (non créé)
 
-Guide de déploiement sur NAS Synology :
-- Configuration Portainer
-- Variables d'environnement
-- Webhook configuration
-- Reverse proxy Application Portal
-- Troubleshooting spécifique NAS
+Guide de déploiement sur NAS Synology.
 
-#### ✅ Créer `docs/deployment/update-guide.md`
+#### ✅ Créer `docs/deployment/update-guide.md` (non créé)
 
-Guide de mise à jour :
-- Mise à jour automatique (webhook)
-- Mise à jour manuelle locale
-- Mise à jour vers version spécifique
-- Rollback vers version précédente
-- Gestion des migrations de données
+Guide de mise à jour.
 
 #### ✅ Créer `docs/deployment/troubleshooting.md`
 
@@ -710,7 +700,7 @@ Accéder à http://localhost:8501
 
 ### 🖥️ Déploiement NAS Synology
 
-voir [Guide de déploiement NAS](docs/deployment/nas-deployment.md)
+voir Guide de déploiement NAS (à créer)
 
 Déploiement automatique via Portainer + GitHub Actions webhook.
 
@@ -722,7 +712,7 @@ Images disponibles sur GitHub Container Registry :
 
 ### 🔄 Mise à jour
 
-voir [Guide de mise à jour](docs/deployment/update-guide.md)
+voir Guide de mise à jour (à créer)
 ```
 
 #### ✅ Créer `docs/deployment/batch-processing.md`
@@ -1013,7 +1003,6 @@ lmelp/
 
 ## Références
 
-- [Configuration MongoDB existante](../mongo.md)
 - [Documentation Portainer](https://docs.portainer.io/)
 - [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
 - [Synology Application Portal](https://kb.synology.com/en-global/DSM/help/DSM/AdminCenter/application_appportal_config)
