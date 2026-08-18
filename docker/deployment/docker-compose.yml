@@ -37,6 +37,13 @@ services:
       - AUDIO_BASE_PATH=/app/audios
       # Mode (web by default)
       - LMELP_MODE=web
+      # Propriétaire des fichiers écrits sur les volumes (audios, db, logs)
+      # IMPORTANT : mettre l'UID/GID de VOTRE utilisateur sur l'hôte
+      # (trouvez les vôtres avec `id -u` / `id -g`), pour éviter des
+      # fichiers root:root sur les volumes bind-mountés. Défaut : 1000
+      # (premier utilisateur non-root sur la plupart des distros Linux).
+      - PUID=1000  # ← À CHANGER selon votre environnement (ex: 1027 sur NAS)
+      - PGID=1000  # ← À CHANGER selon votre environnement
     # Note: Pas de dépendance depends_on car MongoDB est externe
     # Note: Pas de network personnalisé car on se connecte à MongoDB externe
     deploy:
