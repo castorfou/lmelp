@@ -4,6 +4,36 @@
 
 set -e
 
+# Le conteneur démarre en root pour pouvoir remapper l'utilisateur non-root
+# "appuser" vers l'UID/GID de l'hôte (PUID/PGID, cf. issue #105 : l'UID
+# cible diffère selon la machine, ex. 1000 sur laptop vs 1027 sur NAS) et
+# chowner les volumes bind-mountés en conséquence, avant de dropper les
+# privilèges via gosu. Ce bloc ne s'exécute donc qu'à la première passe
+# (root) ; après le "exec gosu appuser", "id -u" ne vaut plus 0 et ce bloc
+# est sauté.
+if [ "$(id -u)" = "0" ]; then
+    PUID=${PUID:-1000}
+    PGID=${PGID:-1000}
+
+    CURRENT_UID=$(id -u appuser)
+    CURRENT_GID=$(id -g appuser)
+
+    if [ "$PUID" != "$CURRENT_UID" ] || [ "$PGID" != "$CURRENT_GID" ]; then
+        groupmod -o -g "$PGID" appuser
+        usermod -o -u "$PUID" appuser
+    fi
+
+    # chown -R inconditionnel à chaque démarrage : corrige automatiquement
+    # les fichiers déjà root:root d'avant ce fix (migration transparente au
+    # premier redémarrage du conteneur). Un chown conditionné à la
+    # propriété du répertoire racine seul serait trompeur : ce répertoire
+    # peut déjà appartenir à PUID:PGID (bind mount créé par l'hôte) alors
+    # que des fichiers à l'intérieur sont encore root:root.
+    chown -R "$PUID:$PGID" /app/audios /app/db /app/logs
+
+    exec gosu appuser "$0" "$@"
+fi
+
 # Mode d'execution : web (Streamlit) ou batch (scripts)
 MODE=${LMELP_MODE:-web}
 

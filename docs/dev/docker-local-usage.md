@@ -135,12 +135,14 @@ L'application Streamlit est accessible sur le port 8501 de votre machine hôte.
 
 Les scripts configurent automatiquement :
 
-| Variable  | Valeur               | Description                                              |
-| --------- | -------------------- | -------------------------------------------------------- |
-| `DB_HOST` | `172.17.0.1`         | Adresse du bridge Docker pour accéder au MongoDB du hôte |
-| `DB_NAME` | `masque_et_la_plume` | Nom de la base de données                                |
-| `DB_LOGS` | `true`               | Active les logs MongoDB                                  |
-| Port      | `8501:8501`          | Port de l'interface web                                  |
+| Variable  | Valeur               | Description                                                                             |
+| --------- | -------------------- | ----------------------------------------------------------------------------------------- |
+| `DB_HOST` | `172.17.0.1`         | Adresse du bridge Docker pour accéder au MongoDB du hôte                                |
+| `DB_NAME` | `masque_et_la_plume` | Nom de la base de données                                                                |
+| `DB_LOGS` | `true`               | Active les logs MongoDB                                                                  |
+| `PUID`    | `1000` (défaut)      | UID de votre utilisateur hôte — évite des fichiers `root:root` sur les volumes (`id -u`) |
+| `PGID`    | `1000` (défaut)      | GID de votre utilisateur hôte (`id -g`)                                                  |
+| Port      | `8501:8501`          | Port de l'interface web                                                                  |
 
 ## 🐛 Dépannage
 

@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     ffmpeg \
     locales \
+    gosu \
     && sed -i '/fr_FR.UTF-8/s/^# //g' /etc/locale.gen \
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
     && locale-gen fr_FR.UTF-8 en_US.UTF-8 \
@@ -41,6 +42,16 @@ RUN uv export --frozen --no-dev --no-emit-project --format requirements-txt -o r
 FROM base AS runtime
 
 WORKDIR /app
+
+# Non-root user (default UID/GID, overridable at runtime via PUID/PGID
+# in entrypoint.sh — see issue #105). These ARGs only set the baked-in
+# default; the actual UID/GID used at container startup can differ.
+ARG APP_UID=1000
+ARG APP_GID=1000
+RUN groupadd -g "$APP_GID" appuser \
+    && useradd -u "$APP_UID" -g appuser -m -d /home/appuser -s /bin/bash appuser
+
+ENV HOME=/home/appuser
 
 # Copy Python packages from builder
 COPY --from=builder /usr/local /usr/local

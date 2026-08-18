@@ -47,6 +47,11 @@ DB_HOST=172.17.0.1              # Linux
 
 # Pour NAS avec MongoDB dans un autre conteneur Docker :
 # DB_HOST=mongo  # Nom du conteneur MongoDB
+
+# Propriétaire des fichiers sur les volumes (audios, db, logs) - évite des
+# fichiers root:root sur l'hôte. Trouvez vos UID/GID avec `id -u` / `id -g`.
+PUID=1000  # ← Remplacer par votre UID (ex: 1027 sur NAS)
+PGID=1000  # ← Remplacer par votre GID
 ```
 
 **Vérifier que MongoDB est accessible :**
@@ -183,6 +188,25 @@ pymongo.errors.ServerSelectionTimeoutError: connection refused
    ```
 
 3. **Firewall** : Vérifiez que le port 27017 n'est pas bloqué
+
+### Fichiers root:root sur les volumes (audios, db, logs)
+
+Depuis [#105](https://github.com/castorfou/lmelp/issues/105), le conteneur
+tourne sous un utilisateur non-root dont l'UID/GID sont configurables via
+`PUID`/`PGID` dans votre `.env` (défaut : `1000`/`1000` si non défini).
+
+**Si vous avez déjà des fichiers `root:root` sur vos volumes** (créés avant
+ce fix, ou avec un `PUID`/`PGID` mal configuré) : un simple redémarrage du
+conteneur suffit à corriger leur propriété — le conteneur ajuste
+automatiquement les permissions vers `PUID`/`PGID` à chaque démarrage.
+
+```bash
+# 1. Vérifiez/ajustez PUID et PGID dans votre .env (id -u / id -g)
+# 2. Redémarrez le conteneur
+docker restart lmelp-app
+# 3. Vérifiez côté hôte que les fichiers appartiennent bien à votre utilisateur
+ls -la data/audios/
+```
 
 ### Erreur "manifest unknown"
 
