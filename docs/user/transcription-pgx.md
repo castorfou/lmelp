@@ -128,7 +128,8 @@ diagnostic s'exécute **automatiquement** au chargement (et via le bouton
 
 1. **Machine joignable** — le port SSH répond.
 2. **Authentification SSH (clé dédiée)** — une vraie connexion est testée (pas juste le
-   port ouvert).
+   port ouvert). En cas d'échec, le détail SSH réel (stderr de la tentative) est affiché
+   entre parenthèses pour en identifier la cause précise (voir [Dépannage](#depannage)).
 3. **Répertoire audio distant** — `PGX_REMOTE_AUDIO_ROOT` existe sur PGX.
 4. **Répertoire transcriptions distant** — `PGX_REMOTE_TRANSCRIPTION_ROOT` existe sur PGX.
 
@@ -150,7 +151,7 @@ défaut — utile si ce dernier est en lecture seule, par exemple dans un devcon
 Ensuite, ouvrez un épisode sans transcription et cliquez sur
 **▶️ Lancer la transcription** pour un premier essai bout-en-bout.
 
-## Dépannage
+## Dépannage {#depannage}
 
 ### "PGX injoignable"
 
@@ -158,6 +159,28 @@ Ensuite, ouvrez un épisode sans transcription et cliquez sur
   tenté, elle doit être allumée manuellement au préalable.
 - Vérifiez la page **PGX** de l'interface Streamlit pour un diagnostic rapide de
   disponibilité.
+
+### "Authentification SSH (clé dédiée)" échoue malgré une clé bien déployée
+
+Depuis la checklist de diagnostic de la page **PGX**, le message affiché pour cette étape
+inclut désormais le **détail SSH réel** (stderr de la tentative de connexion), entre
+parenthèses après le message générique — utile pour distinguer une clé effectivement
+absente d'`authorized_keys` d'une tout autre cause :
+
+- `Permissions ... are too open` / `UNPROTECTED PRIVATE KEY FILE!` : la clé privée
+  pointée par `PGX_SSH_KEY_PATH` a des permissions trop ouvertes (ex: `777` au lieu de
+  `600`) — ssh l'ignore alors silencieusement et retombe sur une authentification par mot
+  de passe, qui échoue. Rencontré en déploiement Docker sur NAS Synology : un mécanisme
+  externe au conteneur (probablement une resynchronisation ACL DSM sur le volume partagé)
+  réapplique périodiquement de mauvaises permissions sur le fichier de clé — voir
+  [castorfou/docker-lmelp#61](https://github.com/castorfou/docker-lmelp/issues/61) pour le
+  correctif infra (watchdog qui réapplique `chmod 600`). Si le déploiement ne dispose pas
+  de ce watchdog, un `chmod 600` manuel sur le volume suffit à débloquer la situation.
+- `Host key verification failed` / avertissement de clé d'hôte : voir la section dédiée
+  plus bas.
+- Un stderr vide malgré l'échec (aucun détail entre parenthèses) : le message générique
+  reste alors le seul indice — vérifiez bien le contenu d'`authorized_keys` sur PGX dans ce
+  cas précis.
 
 ### Échec de l'envoi ou du rapatriement du fichier (`scp`)
 

@@ -505,6 +505,73 @@ class TestExtractWhisperPgx:
             assert result == "ok"
 
 
+class TestCheckSshAuth:
+    """Tests pour _check_ssh_auth : le message de détail doit inclure le stderr réel de
+    ssh en cas d'échec, pour que la cause exacte (permissions de clé, host key changée,
+    etc.) soit diagnosticable depuis l'UI au lieu du même message générique à chaque fois."""
+
+    def test_failure_with_stderr_includes_it_in_detail(self):
+        from nbs.pgx import _check_ssh_auth
+
+        with patch(
+            "nbs.pgx.subprocess.run",
+            return_value=MagicMock(
+                returncode=255,
+                stdout="",
+                stderr="Permissions 0777 for '/app/keys/pgx_lmelp_ed25519' are too open.\n",
+            ),
+        ):
+            ok, detail = _check_ssh_auth(
+                host="thinkstationpgx-d7ba.local",
+                user="f279814",
+                key_path="/keys/pgx_id_ed25519",
+            )
+
+            assert ok is False
+            assert "authorized_keys" in detail
+            assert (
+                "Permissions 0777 for '/app/keys/pgx_lmelp_ed25519' are too open."
+                in detail
+            )
+
+    def test_failure_with_empty_stderr_keeps_generic_message(self):
+        from nbs.pgx import _check_ssh_auth
+
+        with patch(
+            "nbs.pgx.subprocess.run",
+            return_value=MagicMock(returncode=255, stdout="", stderr=""),
+        ):
+            ok, detail = _check_ssh_auth(
+                host="thinkstationpgx-d7ba.local",
+                user="f279814",
+                key_path="/keys/pgx_id_ed25519",
+            )
+
+            assert ok is False
+            assert detail == (
+                "Échec de l'authentification — vérifiez que la clé publique est bien "
+                "dans authorized_keys sur PGX"
+            )
+
+    def test_success_ignores_stderr(self):
+        from nbs.pgx import _check_ssh_auth
+
+        with patch(
+            "nbs.pgx.subprocess.run",
+            return_value=MagicMock(
+                returncode=0, stdout="ok\n", stderr="Warning: some noise\n"
+            ),
+        ):
+            ok, detail = _check_ssh_auth(
+                host="thinkstationpgx-d7ba.local",
+                user="f279814",
+                key_path="/keys/pgx_id_ed25519",
+            )
+
+            assert ok is True
+            assert detail == "Authentification réussie avec la clé dédiée"
+
+
 class TestRunPgxDiagnostics:
     """Tests pour run_pgx_diagnostics() : checklist de vérifications affichée par la page
     Streamlit PGX (joignabilité, authentification SSH, répertoires distants)."""
@@ -573,8 +640,10 @@ class TestRunPgxDiagnostics:
             results = run_pgx_diagnostics()
 
             statuses = {r["name"]: r["status"] for r in results}
+            details = {r["name"]: r["detail"] for r in results}
             assert statuses["Machine joignable"] == "ok"
             assert statuses["Authentification SSH (clé dédiée)"] == "fail"
+            assert "denied" in details["Authentification SSH (clé dédiée)"]
             assert statuses["Répertoire audio distant"] == "skipped"
             assert statuses["Répertoire transcriptions distant"] == "skipped"
 

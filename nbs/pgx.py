@@ -213,13 +213,14 @@ def _check_ssh_auth(*, host: str, user: str, key_path: str) -> tuple[bool, str]:
         return False, "Timeout lors de la tentative d'authentification"
     if completed.returncode == 0 and "ok" in completed.stdout:
         return True, "Authentification réussie avec la clé dédiée"
-    return (
-        False,
-        (
-            "Échec de l'authentification — vérifiez que la clé publique est bien "
-            "dans authorized_keys sur PGX"
-        ),
+    base_message = (
+        "Échec de l'authentification — vérifiez que la clé publique est bien "
+        "dans authorized_keys sur PGX"
     )
+    stderr_detail = completed.stderr.strip()
+    if stderr_detail:
+        return False, f"{base_message} (détail SSH : {stderr_detail})"
+    return False, base_message
 
 
 def _check_remote_dir_exists(
