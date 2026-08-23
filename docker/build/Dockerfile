@@ -5,12 +5,14 @@
 FROM python:3.11-slim AS base
 
 # Install system dependencies and locales (French and English)
+# openssh-client: ssh/scp/ssh-keygen, requis par le pipeline de transcription PGX (nbs/pgx.py)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     git \
     ffmpeg \
     locales \
     gosu \
+    openssh-client \
     && sed -i '/fr_FR.UTF-8/s/^# //g' /etc/locale.gen \
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
     && locale-gen fr_FR.UTF-8 en_US.UTF-8 \
@@ -70,7 +72,7 @@ COPY scripts/ /app/scripts/
 COPY .streamlit/ /app/.streamlit/
 
 # Create directories for volumes
-RUN mkdir -p /app/audios /app/db /app/logs
+RUN mkdir -p /app/audios /app/db /app/logs /app/keys
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
