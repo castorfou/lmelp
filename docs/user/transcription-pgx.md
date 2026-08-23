@@ -42,7 +42,7 @@ Toutes les variables suivantes doivent être définies dans `.env` (voir
 
 | Variable                        | Description                                                          | Exemple                                                       |
 | -------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `PGX_HOST`                      | Nom d'hôte ou IP de la station PGX                                   | `thinkstationpgx-d7ba.local`                                  |
+| `PGX_HOST`                      | IP de la station PGX (**IP directe recommandée**, voir note ci-dessous) | `192.168.50.151`                                            |
 | `PGX_USER`                      | Utilisateur SSH sur PGX                                              | `f279814`                                                     |
 | `PGX_SSH_KEY_PATH`              | Chemin vers la clé privée SSH dédiée                                 | `/app/keys/pgx_lmelp_ed25519` (déploiement Docker)             |
 | `PGX_REMOTE_AUDIO_ROOT`         | Répertoire distant surveillé par le service de transcription sur PGX | `/home/f279814/git/whisper-docker/docker/data/audios`         |
@@ -58,7 +58,16 @@ Optionnelles (valeurs par défaut entre parenthèses) :
 Sur PGX, les fichiers audio envoyés par lmelp sont attendus sous
 `PGX_REMOTE_AUDIO_ROOT/<année>/` et la transcription correspondante est cherchée sous
 `PGX_REMOTE_TRANSCRIPTION_ROOT/<année>/<nom_du_fichier>.txt` — organisation à adapter selon
-la configuration du service de transcription installé sur PGX.
+la configuration du service de transcription installé sur PGX. Le répertoire année est créé
+automatiquement sur PGX s'il n'existe pas encore.
+
+!!! warning "Utiliser une IP directe, pas un nom `.local`"
+    Le nom mDNS (`thinkstationpgx-d7ba.local` par exemple) peut résoudre vers des adresses
+    **différentes** selon l'endroit d'où la requête part (résolveur DNS local, cache mDNS,
+    configuration réseau spécifique à une machine) — un même nom a pu pointer vers deux IP
+    différentes selon qu'on interroge depuis le host ou depuis un conteneur sur cette même
+    machine. Utilisez toujours l'**IP directe** de PGX pour `PGX_HOST`, idéalement une IP
+    fixe (réservation DHCP côté routeur) pour qu'elle ne change pas dans le temps.
 
 ## Clé SSH dédiée {#cle-ssh-dediee}
 
@@ -113,16 +122,30 @@ cat ~/.ssh/pgx_lmelp_ed25519.pub | ssh votre_utilisateur@thinkstationpgx-d7ba.lo
 
 ## Vérifier la configuration
 
-Avec PGX allumée, vérifiez la connectivité réseau et SSH depuis la machine qui exécute
-lmelp :
+Avec PGX allumée, ouvrez la page **PGX** de l'interface Streamlit : une checklist de
+diagnostic s'exécute **automatiquement** au chargement (et via le bouton
+**🔄 Relancer les vérifications**), avec un statut 🟢/🔴/⚪ par étape :
+
+1. **Machine joignable** — le port SSH répond.
+2. **Authentification SSH (clé dédiée)** — une vraie connexion est testée (pas juste le
+   port ouvert).
+3. **Répertoire audio distant** — `PGX_REMOTE_AUDIO_ROOT` existe sur PGX.
+4. **Répertoire transcriptions distant** — `PGX_REMOTE_TRANSCRIPTION_ROOT` existe sur PGX.
+
+Chaque étape court-circuite les suivantes si elle échoue (inutile de tester
+l'authentification si injoignable, par exemple).
+
+Pour un diagnostic manuel en ligne de commande, depuis la machine qui exécute lmelp :
 
 ```bash
-ping -c 3 thinkstationpgx-d7ba.local
-ssh -i "$PGX_SSH_KEY_PATH" -o IdentitiesOnly=yes "$PGX_USER@$PGX_HOST" echo ok
+ping -c 3 "$PGX_HOST"
+ssh -i "$PGX_SSH_KEY_PATH" -o IdentitiesOnly=yes \
+    -o UserKnownHostsFile=/tmp/lmelp_pgx_known_hosts \
+    "$PGX_USER@$PGX_HOST" echo ok
 ```
 
-Ou, plus simplement, ouvrez la page **PGX** de l'interface Streamlit et cliquez sur
-**🔄 Vérifier la disponibilité de PGX**.
+(`UserKnownHostsFile` pointe vers un fichier temporaire, pas le `~/.ssh/known_hosts` par
+défaut — utile si ce dernier est en lecture seule, par exemple dans un devcontainer.)
 
 Ensuite, ouvrez un épisode sans transcription et cliquez sur
 **▶️ Lancer la transcription** pour un premier essai bout-en-bout.
@@ -150,6 +173,17 @@ Ensuite, ouvrez un épisode sans transcription et cliquez sur
 - Vérifiez que le service de transcription tourne bien sur PGX et surveille effectivement
   `PGX_REMOTE_AUDIO_ROOT`.
 - Pour un épisode particulièrement long, augmentez `PGX_TRANSCRIPTION_TIMEOUT_S`.
+
+### "WARNING: POSSIBLE DNS SPOOFING DETECTED" ou avertissement de clé d'hôte changée
+
+- Le plus souvent bénin sur un réseau local que vous contrôlez : la clé d'hôte de PGX a
+  changé (réinstallation, reconfiguration de `sshd`), ou `PGX_HOST` était configuré avec un
+  nom `.local` qui a résolu vers une IP différente entre deux connexions (voir l'avertissement
+  plus haut sur l'IP directe).
+- Si l'avertissement apparaît en dehors du pipeline lmelp (ex: en testant manuellement), et
+  que `~/.ssh/known_hosts` est en lecture seule (devcontainer), utilisez un fichier
+  temporaire : `-o UserKnownHostsFile=/tmp/un_fichier` avec `-o
+  StrictHostKeyChecking=accept-new` pour contourner sans modifier le fichier par défaut.
 
 ## Voir aussi
 
