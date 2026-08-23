@@ -203,7 +203,7 @@ classmethod-decorators = ["classmethod", "pydantic.validator"]
     "ERA001", "F541", "W291", "W293",
 ]
 "scripts/*.py" = ["T201"]                    # print() OK dans les scripts
-"tests/*.py" = ["S101", "PLR2004"]          # assert OK, magic values OK en tests
+"tests/**/*.py" = ["S101", "PLR2004", "E721"]  # assert/valeurs magiques/type() == OK en tests
 
 # Configuration MyPy - Vérification de types statique
 [tool.mypy]
