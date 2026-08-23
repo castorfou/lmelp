@@ -9,23 +9,21 @@ Ce module teste les fonctionnalités de gestion des épisodes incluant :
 - Constantes et formats de date
 """
 
-import json
-
 # Configuration des variables d'environnement pour éviter les erreurs
 import os
 import sys
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from bson import ObjectId
 
+
 os.environ.setdefault("AUDIO_PATH", "/tmp/test_audio")
 
 # Configuration du path pour les imports relatifs (compatible GitHub Actions)
-import sys
 from pathlib import Path
+
 
 nbs_path = Path(__file__).parent.parent.parent / "nbs"
 if str(nbs_path) not in sys.path:
@@ -178,7 +176,6 @@ class TestPreventSleep:
 
         # Assert que la fonction est correctement décorée
         assert callable(test_function)
-        assert hasattr(test_function, "__call__")
 
     def test_prevent_sleep_with_mock_dbus(self):
         """Test du décorateur avec mock D-Bus"""
@@ -217,10 +214,11 @@ class TestExtractWhisper:
         mock_pipe = MagicMock()
         mock_pipe.return_value = mock_result
 
-        with patch("nbs.mongo_episode.pipeline", return_value=mock_pipe), patch(
-            "nbs.mongo_episode.AutoModelForSpeechSeq2Seq"
-        ) as mock_model, patch("nbs.mongo_episode.AutoProcessor") as mock_processor:
-
+        with (
+            patch("nbs.mongo_episode.pipeline", return_value=mock_pipe),
+            patch("nbs.mongo_episode.AutoModelForSpeechSeq2Seq"),
+            patch("nbs.mongo_episode.AutoProcessor"),
+        ):
             from nbs.mongo_episode import extract_whisper
 
             result = extract_whisper("/path/to/test.mp3")
@@ -234,14 +232,12 @@ class TestExtractWhisper:
         mock_pipe = MagicMock()
         mock_pipe.return_value = {"text": "test"}
 
-        with patch("nbs.mongo_episode.torch") as mock_torch, patch(
-            "nbs.mongo_episode.AutoModelForSpeechSeq2Seq"
-        ) as mock_model, patch(
-            "nbs.mongo_episode.AutoProcessor"
-        ) as mock_processor, patch(
-            "nbs.mongo_episode.pipeline", return_value=mock_pipe
+        with (
+            patch("nbs.mongo_episode.torch") as mock_torch,
+            patch("nbs.mongo_episode.AutoModelForSpeechSeq2Seq"),
+            patch("nbs.mongo_episode.AutoProcessor"),
+            patch("nbs.mongo_episode.pipeline", return_value=mock_pipe),
         ):
-
             mock_torch.cuda.is_available.return_value = True
             mock_torch.float16 = "float16"
             mock_torch.float32 = "float32"
@@ -488,19 +484,14 @@ class TestEpisodeSetTranscription:
         mock_collection = MagicMock()
         mock_collection.find_one.return_value = None  # episode n'existe pas en DB
 
-        from nbs.mongo_episode import WhisperCppError
-
-        with patch(
-            "nbs.mongo_episode.get_collection", return_value=mock_collection
-        ), patch(
-            "nbs.mongo_episode.get_audio_path", return_value="/tmp/test_audio/"
-        ), patch(
-            "nbs.mongo_episode.os.path.exists", return_value=False
-        ), patch(
-            "nbs.mongo_episode.extract_whisper_cpp",
-            side_effect=WhisperCppError("no whisper.cpp"),
-        ), patch(
-            "nbs.mongo_episode.extract_whisper", return_value="transcription text"
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.get_audio_path", return_value="/tmp/test_audio/"),
+            patch("nbs.mongo_episode.os.path.exists", return_value=False),
+            patch(
+                "nbs.mongo_episode.extract_whisper_pgx",
+                return_value="transcription text",
+            ),
         ):
             from nbs.mongo_episode import Episode
 
@@ -520,6 +511,7 @@ class TestEpisodeSetTranscription:
 
             # download_audio doit avoir été appelé
             episode.download_audio.assert_called_once()
+            assert episode.transcription == "transcription text"
 
     def test_set_transcription_audio_rel_filename_none_no_url_returns_gracefully(
         self, mock_get_db_vars, sample_episode_data
@@ -544,6 +536,135 @@ class TestEpisodeSetTranscription:
 
             episode.download_audio.assert_called_once()
 
+    def test_set_transcription_calls_extract_whisper_pgx_as_primary_path(
+        self, mock_get_db_vars, sample_episode_data
+    ):
+        """set_transcription() appelle extract_whisper_pgx (pas whisper.cpp local) et persiste le résultat"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.get_audio_path", return_value="/tmp/test_audio/"),
+            patch("nbs.mongo_episode.os.path.exists", return_value=False),
+            patch(
+                "nbs.mongo_episode.extract_whisper_pgx", return_value="texte pgx"
+            ) as mock_extract_pgx,
+            patch("nbs.mongo_episode.extract_whisper_cpp") as mock_extract_cpp,
+            patch("builtins.open", MagicMock()),
+        ):
+            from nbs.mongo_episode import Episode
+
+            episode = Episode(
+                date=sample_episode_data["date"], titre=sample_episode_data["titre"]
+            )
+            episode.audio_rel_filename = "2024/episode.mp3"
+
+            episode.set_transcription(verbose=True, keep_cache=False)
+
+            mock_extract_pgx.assert_called_once()
+            # Pas de fallback automatique vers whisper.cpp local
+            mock_extract_cpp.assert_not_called()
+            assert episode.transcription == "texte pgx"
+            mock_collection.update_one.assert_called_once_with(
+                {"_id": episode.get_oid()},
+                {"$set": {"transcription": "texte pgx"}},
+            )
+
+    def test_set_transcription_pgx_error_returns_gracefully_without_update(
+        self, mock_get_db_vars, sample_episode_data
+    ):
+        """set_transcription() ne plante pas et ne met pas à jour Mongo si PGX échoue"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        from pgx import PgxError
+
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.get_audio_path", return_value="/tmp/test_audio/"),
+            patch("nbs.mongo_episode.os.path.exists", return_value=False),
+            patch(
+                "nbs.mongo_episode.extract_whisper_pgx",
+                side_effect=PgxError("PGX injoignable"),
+            ),
+        ):
+            from nbs.mongo_episode import Episode
+
+            episode = Episode(
+                date=sample_episode_data["date"], titre=sample_episode_data["titre"]
+            )
+            episode.audio_rel_filename = "2024/episode.mp3"
+
+            # Ne doit pas lever d'exception
+            episode.set_transcription(verbose=True, keep_cache=False)
+
+            assert episode.transcription is None
+            mock_collection.update_one.assert_not_called()
+
+    def test_set_transcription_forwards_on_progress_to_extract_whisper_pgx(
+        self, mock_get_db_vars, sample_episode_data
+    ):
+        """set_transcription() propage on_progress à extract_whisper_pgx"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.get_audio_path", return_value="/tmp/test_audio/"),
+            patch("nbs.mongo_episode.os.path.exists", return_value=False),
+            patch(
+                "nbs.mongo_episode.extract_whisper_pgx", return_value="texte"
+            ) as mock_extract_pgx,
+            patch("builtins.open", MagicMock()),
+        ):
+            from nbs.mongo_episode import Episode
+
+            episode = Episode(
+                date=sample_episode_data["date"], titre=sample_episode_data["titre"]
+            )
+            episode.audio_rel_filename = "2024/episode.mp3"
+            progress_callback = MagicMock()
+
+            episode.set_transcription(
+                verbose=True, keep_cache=False, on_progress=progress_callback
+            )
+
+            _, kwargs = mock_extract_pgx.call_args
+            assert kwargs["on_progress"] is progress_callback
+
+    def test_set_transcription_pgx_error_notifies_on_progress(
+        self, mock_get_db_vars, sample_episode_data
+    ):
+        """set_transcription() notifie on_progress avec le message d'erreur PGX"""
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        from pgx import PgxError
+
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.get_audio_path", return_value="/tmp/test_audio/"),
+            patch("nbs.mongo_episode.os.path.exists", return_value=False),
+            patch(
+                "nbs.mongo_episode.extract_whisper_pgx",
+                side_effect=PgxError("PGX injoignable"),
+            ),
+        ):
+            from nbs.mongo_episode import Episode
+
+            episode = Episode(
+                date=sample_episode_data["date"], titre=sample_episode_data["titre"]
+            )
+            episode.audio_rel_filename = "2024/episode.mp3"
+            progress_callback = MagicMock()
+
+            episode.set_transcription(
+                verbose=True, keep_cache=False, on_progress=progress_callback
+            )
+
+            progress_callback.assert_called_once_with("PGX injoignable")
+
 
 @patch("nbs.mongo_episode.get_DB_VARS", return_value=("localhost", "test_db", "logs"))
 class TestEpisodeCRUDOperations:
@@ -555,10 +676,10 @@ class TestEpisodeCRUDOperations:
         mock_collection.find_one.return_value = None  # Épisode n'existe pas
         mock_collection.insert_one.return_value.inserted_id = ObjectId()
 
-        with patch(
-            "nbs.mongo_episode.get_collection", return_value=mock_collection
-        ), patch("nbs.mongo_episode.mongolog") as mock_mongolog:
-
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.mongolog") as mock_mongolog,
+        ):
             from nbs.mongo_episode import Episode
 
             episode = Episode(
@@ -587,10 +708,10 @@ class TestEpisodeCRUDOperations:
         mock_collection = MagicMock()
         mock_collection.find_one.return_value = None
 
-        with patch(
-            "nbs.mongo_episode.get_collection", return_value=mock_collection
-        ), patch("nbs.mongo_episode.mongolog") as mock_mongolog:
-
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.mongolog") as mock_mongolog,
+        ):
             from nbs.mongo_episode import Episode
 
             episode = Episode(
@@ -608,10 +729,10 @@ class TestEpisodeCRUDOperations:
         mock_collection = MagicMock()
         mock_collection.find_one.return_value = None
 
-        with patch(
-            "nbs.mongo_episode.get_collection", return_value=mock_collection
-        ), patch("nbs.mongo_episode.mongolog") as mock_mongolog:
-
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.mongolog") as mock_mongolog,
+        ):
             from nbs.mongo_episode import Episode
 
             episode = Episode(
@@ -743,9 +864,9 @@ class TestMaskedField:
 
             # Le premier argument de find() devrait contenir le filtre
             first_call_query = find_calls[0][0][0] if find_calls[0][0] else {}
-            assert (
-                "$or" in first_call_query or "masked" in first_call_query
-            ), "Query should filter masked episodes"
+            assert "$or" in first_call_query or "masked" in first_call_query, (
+                "Query should filter masked episodes"
+            )
 
     def test_episodes_get_entries_with_include_masked_true(self):
         """Test que get_entries(include_masked=True) inclut les épisodes masqués"""
@@ -783,13 +904,13 @@ class TestMaskedField:
             if isinstance(first_call_query, dict) and first_call_query:
                 assert (
                     "masked" not in first_call_query
-                    or first_call_query.get("masked") != False
+                    or first_call_query.get("masked") is not False
                 ), "Query should NOT filter masked episodes when include_masked=True"
 
             # Vérifier qu'on a bien 3 résultats
-            assert (
-                len(episodes.oid_episodes) == 3
-            ), "Should return all episodes including masked ones"
+            assert len(episodes.oid_episodes) == 3, (
+                "Should return all episodes including masked ones"
+            )
 
 
 @patch("nbs.mongo_episode.get_DB_VARS", return_value=("localhost", "test_db", "logs"))
@@ -814,9 +935,10 @@ class TestRSSEpisodeFromFeedEntry:
         mock_collection = MagicMock()
         mock_collection.find_one.return_value = None
 
-        with patch(
-            "nbs.mongo_episode.get_collection", return_value=mock_collection
-        ), patch("nbs.mongo_episode.locale"):
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.locale"),
+        ):
             from nbs.mongo_episode import RSS_episode
 
             entry = self._make_feed_entry(
@@ -831,9 +953,10 @@ class TestRSSEpisodeFromFeedEntry:
         mock_collection = MagicMock()
         mock_collection.find_one.return_value = None
 
-        with patch(
-            "nbs.mongo_episode.get_collection", return_value=mock_collection
-        ), patch("nbs.mongo_episode.locale"):
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.locale"),
+        ):
             from nbs.mongo_episode import RSS_episode
 
             entry = self._make_feed_entry(

@@ -15,6 +15,7 @@ services:
       - lmelp-audios:/app/audios
       - lmelp-db-backup:/app/db
       - lmelp-logs:/app/logs
+      - lmelp-keys:/app/keys
     # Note: env_file is not used for Git Repository deployment
     # Variables are passed via Portainer's stack.env file
     environment:
@@ -35,6 +36,13 @@ services:
       - RSS_LMELP_URL=https://radiofrance-podcast.net/podcast09/rss_14007.xml
       # Paths
       - AUDIO_BASE_PATH=/app/audios
+      # PGX (transcription automatisée) - voir docs/user/transcription-pgx.md
+      # Décommentez et configurez pour activer la transcription automatisée via PGX
+      # - PGX_HOST=thinkstationpgx-d7ba.local
+      # - PGX_USER=your_pgx_username
+      # - PGX_SSH_KEY_PATH=/app/keys/pgx_lmelp_ed25519  # clé générée automatiquement si absente
+      # - PGX_REMOTE_AUDIO_ROOT=/home/your_pgx_username/git/whisper-docker/docker/data/audios
+      # - PGX_REMOTE_TRANSCRIPTION_ROOT=/home/your_pgx_username/git/whisper-docker/docker/data/transcriptions
       # Mode (web by default)
       - LMELP_MODE=web
       # Propriétaire des fichiers écrits sur les volumes (audios, db, logs)
@@ -70,3 +78,5 @@ volumes:
     name: lmelp-db-backup
   lmelp-logs:
     name: lmelp-logs
+  lmelp-keys:
+    name: lmelp-keys

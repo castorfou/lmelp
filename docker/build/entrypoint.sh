@@ -29,9 +29,20 @@ if [ "$(id -u)" = "0" ]; then
     # propriété du répertoire racine seul serait trompeur : ce répertoire
     # peut déjà appartenir à PUID:PGID (bind mount créé par l'hôte) alors
     # que des fichiers à l'intérieur sont encore root:root.
-    chown -R "$PUID:$PGID" /app/audios /app/db /app/logs
+    chown -R "$PUID:$PGID" /app/audios /app/db /app/logs /app/keys
 
     exec gosu appuser "$0" "$@"
+fi
+
+# Génère la clé SSH dédiée PGX si elle n'existe pas encore (persistée sur le volume
+# /app/keys) : une clé stable dans le temps, jamais intégrée à l'image. Non bloquant :
+# une erreur ici ne doit pas empêcher le démarrage de l'app (ex: PGX_SSH_KEY_PATH non
+# défini pour un déploiement qui n'utilise pas la transcription PGX).
+if [ -n "$PGX_SSH_KEY_PATH" ]; then
+    PYTHONPATH=/app/nbs python3 -c "
+from pgx import ensure_pgx_ssh_key
+ensure_pgx_ssh_key('${PGX_SSH_KEY_PATH}')
+" || echo "[lmelp] Avertissement: échec de la génération de la clé SSH PGX"
 fi
 
 # Mode d'execution : web (Streamlit) ou batch (scripts)

@@ -2,34 +2,36 @@
 
 # %% auto #0
 __all__ = [
+    "AUDIO_TYPES",
     "DATE_FORMAT",
     "LOG_DATE_FORMAT",
-    "RSS_DUREE_MINI_MINUTES",
     "RSS_DATE_FORMAT",
-    "AUDIO_TYPES",
+    "RSS_DUREE_MINI_MINUTES",
     "WEB_DATE_FORMAT",
-    "WhisperCppError",
-    "prevent_sleep",
-    "extract_whisper_cpp",
-    "extract_whisper",
-    "extract_whisper_long",
     "Episode",
+    "Episodes",
     "RSS_episode",
     "WEB_episode",
-    "Episodes",
+    "WhisperCppError",
+    "extract_whisper",
+    "extract_whisper_cpp",
+    "extract_whisper_long",
+    "prevent_sleep",
 ]
 
 # %% py mongo helper episodes.ipynb #b2391a04
-import torch
-from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
-from pydub import AudioSegment
-import tempfile
 import os
-import soundfile as sf
-import subprocess
 import shutil
+import subprocess
+import tempfile
 import urllib.request
 from pathlib import Path
+
+import soundfile as sf
+import torch
+from pydub import AudioSegment
+from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+
 
 # from datasets import load_dataset
 
@@ -41,8 +43,9 @@ try:
 except ImportError:
     DBUS_AVAILABLE = False
 
+from collections.abc import Callable
 from functools import wraps
-from typing import Callable, Any, Optional, Tuple
+from typing import Any, Optional
 
 
 class WhisperCppError(RuntimeError):
@@ -104,9 +107,10 @@ def _ensure_whisper_model() -> Path:
         tmp_path = Path(tmp.name)
 
     try:
-        with urllib.request.urlopen(model_url) as response, open(
-            tmp_path, "wb"
-        ) as dest:
+        with (
+            urllib.request.urlopen(model_url) as response,
+            open(tmp_path, "wb") as dest,
+        ):
             shutil.copyfileobj(response, dest)
         tmp_path.replace(model_path)
     except Exception as exc:  # pragma: no cover - dépend d'Internet
@@ -198,8 +202,8 @@ def _ensure_user_writable(path: Path) -> None:
 
 
 def extract_whisper_cpp(
-    mp3_filename: str, *, timeout_s: Optional[int] = None
-) -> Tuple[str, Optional[str]]:
+    mp3_filename: str, *, timeout_s: int | None = None
+) -> tuple[str, str | None]:
     """Exécute whisper.cpp via Docker et retourne la transcription ainsi que le fichier log."""
     audio_path = Path(mp3_filename).expanduser()
     if not audio_path.exists():
@@ -210,10 +214,8 @@ def extract_whisper_cpp(
     script_path = _get_whisper_cpp_script()
     if not script_path.exists():
         raise WhisperCppError(
-            (
-                f"Script whisper.cpp introuvable: {script_path}."
-                " Définissez WHISPER_CPP_SCRIPT si nécessaire."
-            )
+            f"Script whisper.cpp introuvable: {script_path}."
+            " Définissez WHISPER_CPP_SCRIPT si nécessaire."
         )
 
     if shutil.which("docker") is None:
@@ -246,7 +248,7 @@ def extract_whisper_cpp(
             f"whisper.cpp a échoué (code {exc.returncode}). {combined_output}"
         ) from exc
 
-    log_path: Optional[str] = None
+    log_path: str | None = None
     for line in completed.stdout.splitlines():
         if line.startswith("LOG_FILE="):
             log_path = line.split("=", 1)[1].strip()
@@ -260,7 +262,7 @@ def extract_whisper_cpp(
 
     _ensure_user_writable(transcript_path)
 
-    with open(transcript_path, "r") as file:
+    with open(transcript_path) as file:
         transcript_text = file.read()
 
     return transcript_text, log_path
@@ -392,16 +394,17 @@ def extract_whisper_long(
 
 
 # %% py mongo helper episodes.ipynb #9e06b30c
-from bson import ObjectId
-from mongo import get_collection, get_DB_VARS, mongolog
-from datetime import datetime
-import requests
-from typing import Dict, List, Optional, Union
-from llm import get_azure_llm
-from llama_index.core.llms import ChatMessage
 import json
-import os
-from config import get_audio_path, AUDIO_PATH
+from datetime import datetime
+
+import requests
+from bson import ObjectId
+from config import AUDIO_PATH, get_audio_path
+from llama_index.core.llms import ChatMessage
+from llm import get_azure_llm
+from mongo import get_collection, get_DB_VARS, mongolog
+from pgx import PgxError, extract_whisper_pgx
+
 
 DATE_FORMAT: str = "%Y-%m-%dT%H:%M:%S"
 LOG_DATE_FORMAT: str = "%d %b %Y %H:%M"
@@ -430,11 +433,11 @@ class Episode:
 
         if self.exists():
             episode = self.collection.find_one({"titre": self.titre, "date": self.date})
-            self.description: Optional[str] = episode.get("description")
-            self.url_telechargement: Optional[str] = episode.get("url")
-            self.audio_rel_filename: Optional[str] = episode.get("audio_rel_filename")
-            self.transcription: Optional[str] = episode.get("transcription")
-            self.type: Optional[str] = episode.get("type")
+            self.description: str | None = episode.get("description")
+            self.url_telechargement: str | None = episode.get("url")
+            self.audio_rel_filename: str | None = episode.get("audio_rel_filename")
+            self.transcription: str | None = episode.get("transcription")
+            self.type: str | None = episode.get("type")
             self.duree: int = episode.get("duree", -1)
             self.masked: bool = episode.get("masked", False)
         else:
@@ -490,8 +493,7 @@ class Episode:
             date_doc_str = cls.get_string_from_date(document.get("date"), DATE_FORMAT)
             instance = cls(date=date_doc_str, titre=document.get("titre"))
             return instance
-        else:
-            return None
+        return None
 
     def exists(self) -> bool:
         """Vérifie si l'épisode existe dans la base de données.
@@ -531,12 +533,11 @@ class Episode:
                 }
             )
             return 1
-        else:
-            print(
-                f"Episode du {Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} deja existant"
-            )
-            mongolog("update", self.collection.name, message_log)
-            return 0
+        print(
+            f"Episode du {Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} deja existant"
+        )
+        mongolog("update", self.collection.name, message_log)
+        return 0
 
     def update_date(self, new_date: datetime) -> None:
         """Met à jour la date de l'épisode dans la base de données.
@@ -557,7 +558,7 @@ class Episode:
         self.collection.delete_one({"titre": self.titre, "date": self.date})
         mongolog("delete", self.collection.name, message_log)
 
-    def get_oid(self) -> Optional[ObjectId]:
+    def get_oid(self) -> ObjectId | None:
         """Récupère l'identifiant Mongo (_id) de l'épisode.
 
         Returns:
@@ -566,8 +567,7 @@ class Episode:
         document = self.collection.find_one({"titre": self.titre, "date": self.date})
         if document:
             return document["_id"]
-        else:
-            return None
+        return None
 
     @staticmethod
     def get_date_from_string(date: str, DATE_FORMAT: str = DATE_FORMAT) -> datetime:
@@ -583,7 +583,7 @@ class Episode:
         return datetime.strptime(date, DATE_FORMAT)
 
     @staticmethod
-    def get_string_from_date(date: datetime, format: Optional[str] = None) -> str:
+    def get_string_from_date(date: datetime, format: str | None = None) -> str:
         """Convertit un objet datetime en chaîne de caractères.
 
         Args:
@@ -595,8 +595,7 @@ class Episode:
         """
         if format is not None:
             return date.strftime(format)
-        else:
-            return date.strftime(DATE_FORMAT)
+        return date.strftime(DATE_FORMAT)
 
     @staticmethod
     def format_duration(seconds: int) -> str:
@@ -668,8 +667,13 @@ class Episode:
             if verbose:
                 print(f"Le fichier {full_filename} existe déjà. Ignoré.")
 
-    def set_transcription(self, verbose: bool = False, keep_cache: bool = True) -> None:
-        """Extrait l'audio en privilégiant whisper.cpp puis en basculant sur Hugging Face si nécessaire."""
+    def set_transcription(
+        self,
+        verbose: bool = False,
+        keep_cache: bool = True,
+        on_progress: Callable[[str], None] | None = None,
+    ) -> None:
+        """Récupère la transcription via le pipeline PGX (réveil, envoi, attente, rapatriement)."""
         if self.transcription is not None:
             if verbose:
                 print("Transcription existe deja")
@@ -685,7 +689,7 @@ class Episode:
         if os.path.exists(cache_transcription_filename):
             if verbose:
                 print(f"Transcription cachee trouvee: {cache_transcription_filename}")
-            with open(cache_transcription_filename, "r") as file:
+            with open(cache_transcription_filename) as file:
                 self.transcription = file.read()
             self.collection.update_one(
                 {"_id": self.get_oid()},
@@ -693,26 +697,16 @@ class Episode:
             )
             return
 
-        transcription_text: Optional[str] = None
-        log_path: Optional[str] = None
-
         try:
-            transcription_text, log_path = extract_whisper_cpp(mp3_fullfilename)
+            transcription_text = extract_whisper_pgx(
+                mp3_fullfilename, year=str(self.date.year), on_progress=on_progress
+            )
+        except PgxError as exc:
             if verbose:
-                message = "Transcription whisper.cpp terminée."
-                if log_path:
-                    message += f" Log: {log_path}"
-                print(message)
-        except WhisperCppError as exc:
-            if verbose:
-                print(
-                    f"whisper.cpp indisponible ({exc}). Lancement du fallback Hugging Face."
-                )
-
-        if transcription_text is None:
-            if verbose:
-                print("Transcription via extract_whisper en cours...")
-            transcription_text = extract_whisper(mp3_fullfilename)
+                print(f"Transcription PGX indisponible: {exc}")
+            if on_progress:
+                on_progress(str(exc))
+            return
 
         self.transcription = transcription_text
         if keep_cache:
@@ -722,7 +716,7 @@ class Episode:
             {"_id": self.get_oid()}, {"$set": {"transcription": self.transcription}}
         )
 
-    def to_dict(self) -> Dict[str, Union[str, datetime, int, None, bool]]:
+    def to_dict(self) -> dict[str, str | datetime | int | None | bool]:
         """Convertit l'épisode en dictionnaire.
 
         Returns:
@@ -741,7 +735,7 @@ class Episode:
             "masked": self.masked,
         }
 
-    def get_all_auteurs(self) -> List[str]:
+    def get_all_auteurs(self) -> list[str]:
         """Extrait la liste de tous les auteurs mentionnés dans la transcription.
 
         Notes:
@@ -801,10 +795,11 @@ Voici cette transcription : {self.transcription} ",
 
 
 # %% py mongo helper episodes.ipynb #bb02afd7
-from feedparser.util import FeedParserDict
-from transformers import pipeline
 import locale
 from datetime import datetime
+
+from feedparser.util import FeedParserDict
+
 
 RSS_DUREE_MINI_MINUTES: int = 15
 RSS_DATE_FORMAT: str = (
@@ -875,10 +870,9 @@ class RSS_episode(Episode):
                 + int(duree_parts[1]) * 60
                 + int(duree_parts[2])
             )
-        elif len(duree_parts) == 2:
+        if len(duree_parts) == 2:
             return int(duree_parts[0]) * 60 + int(duree_parts[1])
-        else:
-            return int(duree_parts[0])
+        return int(duree_parts[0])
 
     def keep(self) -> int:
         """
@@ -893,11 +887,10 @@ class RSS_episode(Episode):
         """
         if (self.duree > RSS_DUREE_MINI_MINUTES * 60) and (self.type == "livres"):
             return super().keep()
-        else:
-            print(
-                f"Episode du {Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} ignored: Duree: {self.duree}, Type: {self.type}"
-            )
-            return 0
+        print(
+            f"Episode du {Episode.get_string_from_date(self.date, format=LOG_DATE_FORMAT)} ignored: Duree: {self.duree}, Type: {self.type}"
+        )
+        return 0
 
     @staticmethod
     def set_titre(description: str) -> str:
@@ -920,12 +913,11 @@ class RSS_episode(Episode):
 
 
 # %% py mongo helper episodes.ipynb #921c54af
-import requests
-from bs4 import BeautifulSoup
-import json
-import locale
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Any, Optional
+
+from bs4 import BeautifulSoup
+
 
 WEB_DATE_FORMAT: str = (
     "%d %b %Y"  # '26 août 2024', '20 oct. 2024', '22 sept. 2024', etc.
@@ -947,7 +939,7 @@ class WEB_episode(Episode):
     @staticmethod
     def parse_web_date(
         web_date: str, web_date_format: str = WEB_DATE_FORMAT
-    ) -> Optional[datetime]:
+    ) -> datetime | None:
         """Convertit une date en français extraite d'une page web en un objet datetime.
 
         Corrige les abréviations non standard pour certains mois (exemple : "fév." devient "févr.", "juill." devient "juil.").
@@ -986,7 +978,7 @@ class WEB_episode(Episode):
             return None
 
     @staticmethod
-    def get_audio_url(url: str) -> Optional[str]:
+    def get_audio_url(url: str) -> str | None:
         """Récupère l'URL du fichier audio (.m4a ou .mp3) à partir de la page d'un épisode.
 
         Recherche dans une balise <script> contenant la clé "contentUrl".
@@ -1010,11 +1002,11 @@ class WEB_episode(Episode):
         if script_tag:
             try:
                 json_text: str = script_tag.string  # type: ignore
-                json_data: Dict[str, Any] = json.loads(json_text)
-                audio_url: Optional[str] = None
+                json_data: dict[str, Any] = json.loads(json_text)
+                audio_url: str | None = None
                 for item in json_data.get("@graph", []):
                     if item.get("@type") == "RadioEpisode":
-                        main_entity: Dict[str, Any] = item.get("mainEntity", {})
+                        main_entity: dict[str, Any] = item.get("mainEntity", {})
                         audio_url = main_entity.get("contentUrl")
                         break
                 return audio_url
@@ -1026,7 +1018,7 @@ class WEB_episode(Episode):
         return None
 
     @classmethod
-    def from_webpage_entry(cls, dict_web_episode: Dict[str, Any]) -> "WEB_episode":
+    def from_webpage_entry(cls, dict_web_episode: dict[str, Any]) -> "WEB_episode":
         """Crée une instance de WEB_episode à partir d'un dictionnaire représentant une entrée de page web.
 
         Le dictionnaire doit contenir les clés : 'title', 'url', 'description', 'date', 'duration'.
@@ -1038,7 +1030,7 @@ class WEB_episode(Episode):
         Returns:
             WEB_episode: Une instance de WEB_episode initialisée avec les données fournies.
         """
-        date_web: Optional[datetime] = cls.parse_web_date(dict_web_episode["date"])
+        date_web: datetime | None = cls.parse_web_date(dict_web_episode["date"])
         date_web_str: str = cls.get_string_from_date(
             date_web, DATE_FORMAT
         )  # DATE_FORMAT doit être défini en amont
@@ -1069,7 +1061,8 @@ class WEB_episode(Episode):
 
 
 # %% py mongo helper episodes.ipynb #f88988a7
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 
 class Episodes:
@@ -1156,9 +1149,8 @@ class Episodes:
                 "$or": [{"masked": {"$ne": True}}, {"masked": {"$exists": False}}]
             }
             return self.collection.count_documents(masked_filter)
-        else:
-            # Compter tous les épisodes
-            return self.collection.estimated_document_count()
+        # Compter tous les épisodes
+        return self.collection.estimated_document_count()
 
     def get_missing_transcriptions(self):
         """

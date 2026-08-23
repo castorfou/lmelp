@@ -61,6 +61,10 @@ install_locales() {
     # trace " apt install ffmpeg..."
     sudo apt install -y -qq -o Dpkg::Use-Pty=0 ffmpeg
     # trace " apt install ffmpeg terminé"
+    # trace " apt install ping nslookup..."
+    sudo apt install -y -qq -o Dpkg::Use-Pty=0 dnsutils iputils-ping
+    # trace " apt install ping nslookup terminé"
+
 }
 
 # outil pour ajouter une ligne dans .zshrc si elle n'existe pas déjà

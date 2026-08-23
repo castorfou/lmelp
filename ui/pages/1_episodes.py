@@ -1,23 +1,27 @@
-import streamlit as st
-import sys
 import os
+import sys
 from pathlib import Path
+
+import streamlit as st
+
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from ui_tools import add_to_sys_path
 
+
 add_to_sys_path()
 
-from mongo_episode import Episodes, Episode
-import pandas as pd
-from bson import ObjectId
-
 import locale
+
+import pandas as pd
 import plotly.express as px
+from bson import ObjectId
+from mongo_episode import Episode, Episodes
+
 
 # Définir la locale en français
 locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
-from date_utils import DATE_FORMAT, format_date
+from date_utils import format_date
 
 
 @st.cache_data  # 👈 Add the caching decorator
@@ -104,7 +108,7 @@ def afficher_un_episode(episodes_df):
                     )
 
                     # Supprimer le fichier cache si existe
-                    from mongo_episode import get_audio_path, AUDIO_PATH
+                    from mongo_episode import AUDIO_PATH, get_audio_path
 
                     mp3_fullfilename = (
                         get_audio_path(AUDIO_PATH, year="") + episode.audio_rel_filename
@@ -116,14 +120,21 @@ def afficher_un_episode(episodes_df):
                         os.remove(cache_transcription_filename)
                         st.success(f"Cache supprimé: {cache_transcription_filename}")
 
-                with st.spinner(
-                    "Transcription en cours... Cela peut prendre plusieurs minutes."
-                ):
+                with st.status("Transcription PGX en cours…", expanded=True) as status:
                     # Relancer la transcription
                     episode.transcription = None  # Réinitialiser l'attribut
-                    episode.set_transcription(verbose=True)
-                    st.success("✅ Transcription terminée avec succès!")
-                    st.rerun()
+                    episode.set_transcription(
+                        verbose=True, on_progress=lambda msg: st.write(msg)
+                    )
+                    if episode.transcription:
+                        status.update(label="Transcription terminée", state="complete")
+                        st.success("✅ Transcription terminée avec succès!")
+                        st.rerun()
+                    else:
+                        status.update(label="Échec de la transcription", state="error")
+                        st.error(
+                            "❌ La transcription a échoué — voir le détail ci-dessus."
+                        )
 
             # Afficher la transcription dans un expander pour ne pas prendre trop de place
             with st.expander("📝 Voir la transcription", expanded=False):
@@ -133,13 +144,20 @@ def afficher_un_episode(episodes_df):
 
             # Bouton pour lancer la transcription
             if st.button("▶️ Lancer la transcription", key="launch_transcription"):
-                with st.spinner(
-                    "Transcription en cours... Cela peut prendre plusieurs minutes."
-                ):
+                with st.status("Transcription PGX en cours…", expanded=True) as status:
                     episode = Episode.from_oid(ObjectId(episode_data["_id"]))
-                    episode.set_transcription(verbose=True)
-                    st.success("✅ Transcription terminée avec succès!")
-                    st.rerun()
+                    episode.set_transcription(
+                        verbose=True, on_progress=lambda msg: st.write(msg)
+                    )
+                    if episode.transcription:
+                        status.update(label="Transcription terminée", state="complete")
+                        st.success("✅ Transcription terminée avec succès!")
+                        st.rerun()
+                    else:
+                        status.update(label="Échec de la transcription", state="error")
+                        st.error(
+                            "❌ La transcription a échoué — voir le détail ci-dessus."
+                        )
     else:
         st.write("Aucun épisode trouvé pour cette date.")
 

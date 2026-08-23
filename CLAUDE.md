@@ -7,7 +7,7 @@
 ### Fonctionnalités principales
 
 - **Récupération automatique** des épisodes depuis les flux RSS
-- **Téléchargement et transcription** audio avec Whisper (OpenAI)
+- **Téléchargement et transcription** audio automatisée via une station GPU dédiée (PGX)
 - **Extraction structurée** d'informations (auteurs, livres, critiques, avis) via LLMs
 - **Interface web Streamlit** pour parcourir et gérer le contenu
 - **Base de données MongoDB** avec modèle de données bien défini
@@ -51,7 +51,8 @@
 │   ├── mongo_avis_critique.py    # Entité Avis Critique
 │   ├── rss.py                    # Traitement flux RSS
 │   ├── web.py                    # Web scraping
-│   ├── whisper.py                # Transcription audio
+│   ├── whisper.py                # Transcription audio locale (legacy, non utilisée par défaut)
+│   ├── pgx.py                    # Pipeline de transcription automatisé via PGX (codé en .py, pas de notebook)
 │   ├── llm.py                    # Utilitaires LLM
 │   ├── date_utils.py             # Formatage dates
 │   └── *.ipynb                   # Notebooks sources (30+ fichiers)
@@ -65,7 +66,8 @@
 │       ├── 1_episodes.py         # Gestion des épisodes
 │       ├── 2_auteurs.py          # Gestion des auteurs
 │       ├── 3_livres.py           # Gestion des livres
-│       └── 4_avis_critiques.py   # Gestion des avis critiques
+│       ├── 4_avis_critiques.py   # Gestion des avis critiques
+│       └── 5_pgx.py              # Statut et configuration de la station PGX
 │
 ├── tests/                        # Suite de tests (72%+ couverture)
 │   ├── unit/                     # Tests unitaires (14 fichiers)
@@ -155,6 +157,29 @@
 **Editeur** - Maisons d'édition
 - `nom`: Nom de l'éditeur
 
+## Transcription automatisée (PGX)
+
+La transcription des épisodes repose sur une station GPU dédiée sur le réseau local
+(surnommée **PGX**). Un service de transcription y tourne en permanence : il surveille un
+répertoire, transcrit tout fichier audio qui y est déposé, et écrit le résultat dans un
+répertoire de sortie. `nbs/pgx.py` (module autonome, **codé directement en `.py`**, sans
+notebook source contrairement au reste de `nbs/`) implémente le pipeline complet :
+vérification de disponibilité → envoi de l'audio par `scp` → attente de la transcription →
+rapatriement. `Episode.set_transcription()` (`nbs/mongo_episode.py:657`) appelle
+`extract_whisper_pgx()` comme chemin **unique** — pas de repli automatique vers le
+whisper.cpp/Hugging Face local (`nbs/mongo_episode.py`/`nbs/whisper.py`), conservé en legacy
+mais non branché par défaut.
+
+PGX doit être **allumée manuellement** : aucun réveil à distance n'est tenté (Wi-Fi
+uniquement, mise en veille système désactivée pour la stabilité GPU). La page Streamlit
+`ui/pages/5_pgx.py` affiche une checklist de diagnostic (joignabilité, authentification SSH,
+répertoires distants) et la clé SSH publique dédiée à déployer sur PGX. Configuration via les
+variables d'environnement `PGX_HOST` (IP directe recommandée, la résolution mDNS `.local`
+peut varier selon l'environnement), `PGX_USER`, `PGX_SSH_KEY_PATH` (clé générée
+automatiquement au démarrage du conteneur si absente), `PGX_REMOTE_AUDIO_ROOT`,
+`PGX_REMOTE_TRANSCRIPTION_ROOT` — voir `.env.example` et `docs/user/transcription-pgx.md`
+pour le guide complet.
+
 ## Points d'entrée et commandes importantes
 
 ### Interface web
@@ -231,6 +256,13 @@ SEARCH_ENGINE_ID=...
 
 # Chemins
 AUDIO_BASE_PATH=./audios
+
+# PGX (transcription automatisée, voir docs/user/transcription-pgx.md)
+PGX_HOST=...
+PGX_USER=...
+PGX_SSH_KEY_PATH=...
+PGX_REMOTE_AUDIO_ROOT=...
+PGX_REMOTE_TRANSCRIPTION_ROOT=...
 ```
 
 ### Environnement de développement
