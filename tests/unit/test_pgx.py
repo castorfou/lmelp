@@ -666,3 +666,109 @@ class TestRunPgxDiagnostics:
             assert statuses["Authentification SSH (clé dédiée)"] == "ok"
             assert statuses["Répertoire audio distant"] == "fail"
             assert statuses["Répertoire transcriptions distant"] == "ok"
+
+
+class TestGetPgxConfigMissingVars:
+    """Tests pour get_pgx_config_missing_vars : liste les variables d'environnement PGX
+    absentes d'un dict de config (retourné par get_pgx_config()), pour permettre à l'UI
+    de désactiver les actions PGX sans risquer un crash réseau (host=None) en amont."""
+
+    def _full_config(self):
+        return {
+            "host": "thinkstationpgx-d7ba.local",
+            "user": "f279814",
+            "key_path": "/keys/pgx_id_ed25519",
+            "remote_audio_root": "/remote/audios",
+            "remote_transcription_root": "/remote/transcriptions",
+        }
+
+    def test_returns_empty_list_when_all_present(self):
+        from nbs.pgx import get_pgx_config_missing_vars
+
+        assert get_pgx_config_missing_vars(self._full_config()) == []
+
+    def test_returns_env_var_name_for_missing_host(self):
+        from nbs.pgx import get_pgx_config_missing_vars
+
+        config = self._full_config()
+        config["host"] = None
+
+        assert get_pgx_config_missing_vars(config) == ["PGX_HOST"]
+
+    def test_returns_env_var_name_for_empty_string_value(self):
+        from nbs.pgx import get_pgx_config_missing_vars
+
+        config = self._full_config()
+        config["key_path"] = ""
+
+        assert get_pgx_config_missing_vars(config) == ["PGX_SSH_KEY_PATH"]
+
+    def test_returns_all_missing_var_names(self):
+        from nbs.pgx import get_pgx_config_missing_vars
+
+        config = self._full_config()
+        config["remote_audio_root"] = None
+        config["remote_transcription_root"] = None
+
+        assert get_pgx_config_missing_vars(config) == [
+            "PGX_REMOTE_AUDIO_ROOT",
+            "PGX_REMOTE_TRANSCRIPTION_ROOT",
+        ]
+
+
+class TestPgxFullyConfigured:
+    """Tests pour pgx_fully_configured : n'autorise le déclenchement d'une transcription
+    (bouton actif) que si toutes les vérifications de run_pgx_diagnostics() sont "ok"."""
+
+    def test_empty_diagnostics_is_not_ready(self):
+        from nbs.pgx import pgx_fully_configured
+
+        assert pgx_fully_configured([]) is False
+
+    def test_all_ok_is_ready(self):
+        from nbs.pgx import pgx_fully_configured
+
+        diagnostics = [
+            {"name": "Machine joignable", "status": "ok", "detail": ""},
+            {"name": "Authentification SSH (clé dédiée)", "status": "ok", "detail": ""},
+            {"name": "Répertoire audio distant", "status": "ok", "detail": ""},
+            {"name": "Répertoire transcriptions distant", "status": "ok", "detail": ""},
+        ]
+
+        assert pgx_fully_configured(diagnostics) is True
+
+    def test_one_fail_is_not_ready(self):
+        from nbs.pgx import pgx_fully_configured
+
+        diagnostics = [
+            {"name": "Machine joignable", "status": "ok", "detail": ""},
+            {
+                "name": "Authentification SSH (clé dédiée)",
+                "status": "fail",
+                "detail": "",
+            },
+            {"name": "Répertoire audio distant", "status": "skipped", "detail": ""},
+            {
+                "name": "Répertoire transcriptions distant",
+                "status": "skipped",
+                "detail": "",
+            },
+        ]
+
+        assert pgx_fully_configured(diagnostics) is False
+
+    def test_one_skipped_is_not_ready(self):
+        from nbs.pgx import pgx_fully_configured
+
+        diagnostics = [
+            {"name": "Machine joignable", "status": "ok", "detail": ""},
+            {"name": "Authentification SSH (clé dédiée)", "status": "ok", "detail": ""},
+            {"name": "Répertoire audio distant", "status": "skipped", "detail": ""},
+            {
+                "name": "Répertoire transcriptions distant",
+                "status": "skipped",
+                "detail": "",
+            },
+        ]
+
+        assert pgx_fully_configured(diagnostics) is False

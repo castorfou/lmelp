@@ -42,7 +42,10 @@ st.write(f"Avis tbd")
 
 import locale
 
+from config import get_pgx_config
+from date_utils import format_date
 from mongo_episode import Episodes
+from pgx import get_pgx_config_missing_vars, pgx_fully_configured, run_pgx_diagnostics
 
 episodes = Episodes()
 
@@ -73,23 +76,50 @@ if st.button("🔄 Rafraîchir Episodes"):
         finally:
             sys.stdout = old_stdout
         output = buf.getvalue()
-        if output:
-            st.expander("Output de la mise à jour").code(output, language="bash")
     nb_episodes_after = episodes.len_total_entries()
-    if nb_episodes_after > nb_episodes:
-        st.success(f"{nb_episodes_after - nb_episodes} episodes mis à jour !")
+    st.session_state["refresh_episodes_result"] = {
+        "output": output,
+        "nb_new": nb_episodes_after - nb_episodes,
+    }
+
+if st.session_state.get("refresh_episodes_result"):
+    refresh_result = st.session_state["refresh_episodes_result"]
+    if refresh_result["nb_new"] > 0:
+        st.success(f"{refresh_result['nb_new']} episodes mis à jour !")
     else:
         st.warning("Pas de nouveaux épisodes aujourd'hui")
+    if refresh_result["output"]:
+        st.expander("Output de la mise à jour").code(
+            refresh_result["output"], language="bash"
+        )
 
 episodes.get_missing_transcriptions()
 if len(episodes) > 0:
-    if st.button("📥 Télécharger transcriptions "):
+    pgx_config = get_pgx_config()
+    missing_pgx_vars = get_pgx_config_missing_vars(pgx_config)
+    if missing_pgx_vars:
+        pgx_ready = False
+    else:
+        if "pgx_diagnostics" not in st.session_state:
+            st.session_state["pgx_diagnostics"] = run_pgx_diagnostics()
+        pgx_ready = pgx_fully_configured(st.session_state["pgx_diagnostics"])
+
+    if not pgx_ready:
+        st.warning(
+            "⚠️ PGX n'est pas encore correctement configurée/joignable — consultez la "
+            "page PGX pour le diagnostic avant de lancer une transcription."
+        )
+        st.page_link("pages/5_pgx.py", label="Aller à la page PGX", icon="🖥️")
+
+    if st.button("📥 Télécharger transcriptions ", disabled=not pgx_ready):
         with st.spinner("Téléchargement des transcriptions en cours..."):
             # Exécuter le script get_one_transcription.py situé dans le dossier scripts
             episodes.get_missing_transcriptions()
             if len(episodes) > 0:
                 # on prend le dernier
                 episode = episodes[-1]
+                titre = episode.titre
+                date_str = format_date(episode.date)
 
                 # Capturer la sortie de la fonction
                 buf = io.StringIO()
@@ -99,14 +129,27 @@ if len(episodes) > 0:
                     episode.set_transcription(verbose=True)
                 finally:
                     sys.stdout = old_stdout
-                output = buf.getvalue()
-                if output:
-                    st.expander("Output du telechargement").code(
-                        output, language="None"
-                    )
                 episodes.get_missing_transcriptions()
+                st.session_state["transcription_download_result"] = {
+                    "titre": titre,
+                    "date_str": date_str,
+                    "success": episode.transcription is not None,
+                    "output": buf.getvalue(),
+                }
             else:
                 st.warning("Il n'y a pas d'episodes sans transcriptions")
+
+if st.session_state.get("transcription_download_result"):
+    download_result = st.session_state["transcription_download_result"]
+    label = f"{download_result['titre']} ({download_result['date_str']})"
+    if download_result["success"]:
+        st.success(f"✅ Transcription récupérée : {label}")
+    else:
+        st.error(f"❌ Échec de la transcription : {label}")
+    if download_result["output"]:
+        st.expander("Output du téléchargement").code(
+            download_result["output"], language="None"
+        )
 
 
 def affiche_episodes(episodes=episodes):
@@ -121,7 +164,7 @@ def affiche_episodes(episodes=episodes):
 # Définir la locale en français
 
 locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
-from date_utils import DATE_FORMAT, format_date
+from date_utils import DATE_FORMAT
 
 
 def affiche_last_date(episodes=episodes):
