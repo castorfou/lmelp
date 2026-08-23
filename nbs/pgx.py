@@ -321,6 +321,27 @@ def run_pgx_diagnostics() -> list[dict]:
     return results
 
 
+def get_pgx_config_missing_vars(config: dict) -> list[str]:
+    """Noms des variables d'environnement PGX absentes dans `config` (dict retourné par
+    get_pgx_config()) — permet à l'UI de désactiver les actions PGX sans déclencher un
+    diagnostic réseau voué à planter (ex: host=None)."""
+    env_var_names = {
+        "host": "PGX_HOST",
+        "user": "PGX_USER",
+        "key_path": "PGX_SSH_KEY_PATH",
+        "remote_audio_root": "PGX_REMOTE_AUDIO_ROOT",
+        "remote_transcription_root": "PGX_REMOTE_TRANSCRIPTION_ROOT",
+    }
+    return [env_name for key, env_name in env_var_names.items() if not config.get(key)]
+
+
+def pgx_fully_configured(diagnostics: list[dict]) -> bool:
+    """True uniquement si run_pgx_diagnostics() a retourné une liste non vide où toutes
+    les vérifications sont "ok" — utilisé par l'UI pour n'autoriser le déclenchement
+    d'une transcription que lorsque PGX est réellement prête."""
+    return bool(diagnostics) and all(r["status"] == "ok" for r in diagnostics)
+
+
 def extract_whisper_pgx(
     mp3_filename: str,
     *,

@@ -11,7 +11,12 @@ from ui_tools import add_to_sys_path
 add_to_sys_path()
 
 from config import get_pgx_config
-from pgx import PgxError, ensure_pgx_ssh_key, run_pgx_diagnostics
+from pgx import (
+    PgxError,
+    ensure_pgx_ssh_key,
+    get_pgx_config_missing_vars,
+    run_pgx_diagnostics,
+)
 
 
 st.write("### Configuration PGX")
@@ -25,17 +30,7 @@ host = pgx_config["host"]
 user = pgx_config["user"]
 key_path = pgx_config["key_path"]
 
-missing = [
-    name
-    for name, value in [
-        ("PGX_HOST", host),
-        ("PGX_USER", user),
-        ("PGX_SSH_KEY_PATH", key_path),
-        ("PGX_REMOTE_AUDIO_ROOT", pgx_config["remote_audio_root"]),
-        ("PGX_REMOTE_TRANSCRIPTION_ROOT", pgx_config["remote_transcription_root"]),
-    ]
-    if not value
-]
+missing = get_pgx_config_missing_vars(pgx_config)
 
 if missing:
     st.warning(

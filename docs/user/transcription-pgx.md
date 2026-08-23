@@ -5,8 +5,15 @@ local (surnommée **PGX**). Un service de transcription tourne en permanence sur
 station : il surveille un répertoire, transcrit automatiquement tout fichier audio qui y
 est déposé, et écrit le résultat dans un répertoire de sortie.
 
-Depuis l'interface Streamlit (page **Épisodes**), le bouton **▶️ Lancer la transcription**
-(ou **🔄 Relancer la transcription**) déclenche l'intégralité du pipeline :
+Depuis l'interface Streamlit (page d'accueil ou page **Épisodes**), les boutons
+**📥 Télécharger transcriptions**, **▶️ Lancer la transcription** et **🔄 Relancer la
+transcription** sont **désactivés** tant que la checklist de la page **PGX** n'est pas
+entièrement verte (machine joignable, authentification SSH, répertoires distants) — un
+message invite alors à consulter cette page pour le diagnostic avant de réessayer, plutôt
+que de laisser échouer une transcription vouée à l'échec avec une erreur SSH brute.
+
+Une fois PGX prête, le bouton **▶️ Lancer la transcription** (ou **🔄 Relancer la
+transcription**) déclenche l'intégralité du pipeline :
 
 1. Vérification que PGX est joignable sur le réseau.
 2. Envoi du fichier audio vers PGX par `scp`.

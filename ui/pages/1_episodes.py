@@ -16,7 +16,9 @@ import locale
 import pandas as pd
 import plotly.express as px
 from bson import ObjectId
+from config import get_pgx_config
 from mongo_episode import Episode, Episodes
+from pgx import get_pgx_config_missing_vars, pgx_fully_configured, run_pgx_diagnostics
 
 
 # Définir la locale en français
@@ -70,6 +72,18 @@ def afficher_episodes(episodes_df):
     st.dataframe(episodes_df, width="stretch")
 
 
+def _pgx_ready() -> bool:
+    """True si PGX est configurée et entièrement joignable (checklist verte) — sinon les
+    boutons de transcription sont désactivés plutôt que de laisser échouer avec un
+    message d'erreur SSH brut."""
+    pgx_config = get_pgx_config()
+    if get_pgx_config_missing_vars(pgx_config):
+        return False
+    if "pgx_diagnostics" not in st.session_state:
+        st.session_state["pgx_diagnostics"] = run_pgx_diagnostics()
+    return pgx_fully_configured(st.session_state["pgx_diagnostics"])
+
+
 def afficher_un_episode(episodes_df):
     # Widget de sélection de date
     episodes_df = episodes_df.copy()
@@ -89,6 +103,15 @@ def afficher_un_episode(episodes_df):
         st.write(f"**Durée**: {episode_data['duree (min)']} minutes")
         st.write(f"**Description**: {episode_data['description']}")
 
+        pgx_ready = _pgx_ready()
+        if not pgx_ready:
+            st.warning(
+                "⚠️ PGX n'est pas encore correctement configurée/joignable — "
+                "consultez la page PGX pour le diagnostic avant de lancer une "
+                "transcription."
+            )
+            st.page_link("pages/5_pgx.py", label="Aller à la page PGX", icon="🖥️")
+
         # Afficher la transcription si elle existe
         if pd.notna(episode_data["transcription"]) and episode_data["transcription"]:
             # Bouton pour relancer la transcription (AVANT la transcription)
@@ -96,6 +119,7 @@ def afficher_un_episode(episodes_df):
                 "🔄 Relancer la transcription",
                 key="relaunch_transcription",
                 type="primary",
+                disabled=not pgx_ready,
             ):
                 with st.spinner("Suppression de la transcription et du cache..."):
                     # Récupérer l'objet Episode complet
@@ -143,7 +167,11 @@ def afficher_un_episode(episodes_df):
             st.warning("⚠️ Aucune transcription disponible pour cet épisode")
 
             # Bouton pour lancer la transcription
-            if st.button("▶️ Lancer la transcription", key="launch_transcription"):
+            if st.button(
+                "▶️ Lancer la transcription",
+                key="launch_transcription",
+                disabled=not pgx_ready,
+            ):
                 with st.status("Transcription PGX en cours…", expanded=True) as status:
                     episode = Episode.from_oid(ObjectId(episode_data["_id"]))
                     episode.set_transcription(
