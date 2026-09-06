@@ -965,3 +965,48 @@ class TestRSSEpisodeFromFeedEntry:
             result = RSS_episode.from_feed_entry(entry)
 
             assert result.url_telechargement == "https://proxycast.rf.fr/episode.m4a"
+
+    def test_from_feed_entry_converts_summer_time_offset_to_utc(self, mock_get_db_vars):
+        """from_feed_entry() convertit une date RSS en heure d'été (+0200) vers l'UTC réel.
+
+        Régression pour issue #114 : la date RSS était stockée sans conversion UTC,
+        provoquant des doublons d'épisodes avec back-office-lmelp (~2h d'écart).
+        """
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.locale"),
+        ):
+            from nbs.mongo_episode import RSS_episode
+
+            entry = self._make_feed_entry(
+                "audio/mpeg", "https://proxycast.rf.fr/episode.mp3"
+            )
+            entry.published = "Sun, 06 Sep 2026 10:12:40 +0200"
+            result = RSS_episode.from_feed_entry(entry)
+
+            assert result.date == datetime(2026, 9, 6, 8, 12, 40)
+
+    def test_from_feed_entry_converts_winter_time_offset_to_utc(self, mock_get_db_vars):
+        """from_feed_entry() convertit une date RSS en heure d'hiver (+0100) vers l'UTC réel.
+
+        Vérifie que la conversion n'est pas codée en dur pour un offset unique.
+        """
+        mock_collection = MagicMock()
+        mock_collection.find_one.return_value = None
+
+        with (
+            patch("nbs.mongo_episode.get_collection", return_value=mock_collection),
+            patch("nbs.mongo_episode.locale"),
+        ):
+            from nbs.mongo_episode import RSS_episode
+
+            entry = self._make_feed_entry(
+                "audio/mpeg", "https://proxycast.rf.fr/episode.mp3"
+            )
+            entry.published = "Sun, 18 Jan 2026 10:12:40 +0100"
+            result = RSS_episode.from_feed_entry(entry)
+
+            assert result.date == datetime(2026, 1, 18, 9, 12, 40)
