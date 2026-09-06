@@ -20,18 +20,16 @@ __all__ = [
 ]
 
 # %% py mongo helper episodes.ipynb #b2391a04
-import os
-import shutil
-import subprocess
+import torch
+from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+from pydub import AudioSegment
 import tempfile
+import os
+import soundfile as sf
+import subprocess
+import shutil
 import urllib.request
 from pathlib import Path
-
-import soundfile as sf
-import torch
-from pydub import AudioSegment
-from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
-
 
 # from datasets import load_dataset
 
@@ -43,9 +41,9 @@ try:
 except ImportError:
     DBUS_AVAILABLE = False
 
-from collections.abc import Callable
 from functools import wraps
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
+from collections.abc import Callable
 
 
 class WhisperCppError(RuntimeError):
@@ -394,17 +392,16 @@ def extract_whisper_long(
 
 
 # %% py mongo helper episodes.ipynb #9e06b30c
-import json
-from datetime import datetime
-
-import requests
 from bson import ObjectId
-from config import AUDIO_PATH, get_audio_path
-from llama_index.core.llms import ChatMessage
-from llm import get_azure_llm
 from mongo import get_collection, get_DB_VARS, mongolog
-from pgx import PgxError, extract_whisper_pgx
-
+from datetime import datetime
+import requests
+from typing import Dict, List, Union
+from llm import get_azure_llm
+from llama_index.core.llms import ChatMessage
+import json
+from config import get_audio_path, AUDIO_PATH
+from pgx import extract_whisper_pgx, PgxError
 
 DATE_FORMAT: str = "%Y-%m-%dT%H:%M:%S"
 LOG_DATE_FORMAT: str = "%d %b %Y %H:%M"
@@ -795,11 +792,9 @@ Voici cette transcription : {self.transcription} ",
 
 
 # %% py mongo helper episodes.ipynb #bb02afd7
-import locale
-from datetime import datetime
-
 from feedparser.util import FeedParserDict
-
+import locale
+from datetime import UTC, datetime
 
 RSS_DUREE_MINI_MINUTES: int = 15
 RSS_DATE_FORMAT: str = (
@@ -833,7 +828,8 @@ class RSS_episode(Episode):
         """
         locale.setlocale(locale.LC_TIME, "en_US.UTF-8")
         date_rss: datetime = datetime.strptime(feed_entry.published, RSS_DATE_FORMAT)
-        date_rss_str: str = cls.get_string_from_date(date_rss, DATE_FORMAT)
+        date_rss_utc: datetime = date_rss.astimezone(UTC)
+        date_rss_str: str = cls.get_string_from_date(date_rss_utc, DATE_FORMAT)
         inst = cls(
             date=date_rss_str,
             titre=feed_entry.title,
@@ -913,11 +909,9 @@ class RSS_episode(Episode):
 
 
 # %% py mongo helper episodes.ipynb #921c54af
-from datetime import datetime
-from typing import Any, Optional
-
 from bs4 import BeautifulSoup
-
+from datetime import datetime
+from typing import Optional, Any
 
 WEB_DATE_FORMAT: str = (
     "%d %b %Y"  # '26 août 2024', '20 oct. 2024', '22 sept. 2024', etc.
@@ -1061,8 +1055,8 @@ class WEB_episode(Episode):
 
 
 # %% py mongo helper episodes.ipynb #f88988a7
-from collections.abc import Iterator
 from typing import Any
+from collections.abc import Iterator
 
 
 class Episodes:

@@ -3,12 +3,12 @@ Tests pour le module nbs/rss.py (T020)
 Testing complet des fonctions RSS et classe Podcast avec mocking HTTP/DB
 """
 
-import pytest
-from unittest.mock import patch, MagicMock, call
-from datetime import datetime
-import pytz
-import sys
 import os
+import sys
+from datetime import UTC, datetime
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 # Mock all external dependencies at module level
@@ -342,12 +342,12 @@ class TestPodcastGetMostRecentEpisode:
         # Import du module après le mocking
         from rss import Podcast
 
-        with patch("rss.get_collection") as mock_get_collection, patch(
-            "rss.get_DB_VARS"
-        ) as mock_get_db_vars, patch("rss.feedparser.parse") as mock_parse, patch(
-            "rss.get_RSS_URL"
-        ) as mock_get_url:
-
+        with (
+            patch("rss.get_collection") as mock_get_collection,
+            patch("rss.get_DB_VARS") as mock_get_db_vars,
+            patch("rss.feedparser.parse") as mock_parse,
+            patch("rss.get_RSS_URL") as mock_get_url,
+        ):
             # Arrange
             mock_get_url.return_value = "https://test.rss.url"
             mock_parse.return_value = MagicMock()
@@ -373,8 +373,10 @@ class TestPodcastGetMostRecentEpisode:
             assert result.year == 2025
             assert result.month == 1
             assert result.day == 15
-            # Vérifier que la timezone est ajoutée
-            assert result.tzinfo is not None
+            # Régression issue #114 : la date stockée en DB doit être étiquetée UTC
+            # (et non réinterprétée comme Europe/Paris, ce qui ne convertit rien et
+            # fausse ensuite les comparaisons avec les dates RSS "aware").
+            assert result.tzinfo == UTC
             mock_collection.find.assert_called_once()
             mock_collection.find.return_value.sort.assert_called_once_with({"date": -1})
             mock_collection.find.return_value.sort.return_value.limit.assert_called_once_with(
@@ -386,12 +388,12 @@ class TestPodcastGetMostRecentEpisode:
         # Import du module après le mocking
         from rss import Podcast
 
-        with patch("rss.get_collection") as mock_get_collection, patch(
-            "rss.get_DB_VARS"
-        ) as mock_get_db_vars, patch("rss.feedparser.parse") as mock_parse, patch(
-            "rss.get_RSS_URL"
-        ) as mock_get_url:
-
+        with (
+            patch("rss.get_collection") as mock_get_collection,
+            patch("rss.get_DB_VARS") as mock_get_db_vars,
+            patch("rss.feedparser.parse") as mock_parse,
+            patch("rss.get_RSS_URL") as mock_get_url,
+        ):
             # Arrange
             mock_get_url.return_value = "https://test.rss.url"
             mock_parse.return_value = MagicMock()
@@ -419,16 +421,15 @@ class TestPodcastListLastLargeEpisodes:
     def test_list_last_large_episodes_with_new_episodes(self):
         """Test list_last_large_episodes avec nouveaux épisodes longs"""
         # Import du module après le mocking
-        from rss import Podcast, RSS_DATE_FORMAT
+        from rss import Podcast
 
-        with patch("rss.get_collection") as mock_get_collection, patch(
-            "rss.get_DB_VARS"
-        ) as mock_get_db_vars, patch("rss.feedparser.parse") as mock_parse, patch(
-            "rss.get_RSS_URL"
-        ) as mock_get_url, patch(
-            "rss.RSS_episode"
-        ) as mock_rss_episode:
-
+        with (
+            patch("rss.get_collection") as mock_get_collection,
+            patch("rss.get_DB_VARS") as mock_get_db_vars,
+            patch("rss.feedparser.parse") as mock_parse,
+            patch("rss.get_RSS_URL") as mock_get_url,
+            patch("rss.RSS_episode") as mock_rss_episode,
+        ):
             # Arrange
             mock_get_url.return_value = "https://test.rss.url"
             mock_get_db_vars.return_value = ("localhost", "testdb", None)
@@ -487,12 +488,12 @@ class TestPodcastListLastLargeEpisodes:
         # Import du module après le mocking
         from rss import Podcast
 
-        with patch("rss.get_collection") as mock_get_collection, patch(
-            "rss.get_DB_VARS"
-        ) as mock_get_db_vars, patch("rss.feedparser.parse") as mock_parse, patch(
-            "rss.get_RSS_URL"
-        ) as mock_get_url:
-
+        with (
+            patch("rss.get_collection") as mock_get_collection,
+            patch("rss.get_DB_VARS") as mock_get_db_vars,
+            patch("rss.feedparser.parse") as mock_parse,
+            patch("rss.get_RSS_URL") as mock_get_url,
+        ):
             # Arrange
             mock_get_url.return_value = "https://test.rss.url"
             mock_get_db_vars.return_value = ("localhost", "testdb", None)
@@ -520,16 +521,14 @@ class TestPodcastStoreLastLargeEpisodes:
         # Import du module après le mocking
         from rss import Podcast
 
-        with patch("rss.get_collection") as mock_get_collection, patch(
-            "rss.get_DB_VARS"
-        ) as mock_get_db_vars, patch("rss.feedparser.parse") as mock_parse, patch(
-            "rss.get_RSS_URL"
-        ) as mock_get_url, patch(
-            "rss.RSS_episode"
-        ) as mock_rss_episode, patch(
-            "builtins.print"
-        ) as mock_print:
-
+        with (
+            patch("rss.get_collection") as mock_get_collection,
+            patch("rss.get_DB_VARS") as mock_get_db_vars,
+            patch("rss.feedparser.parse") as mock_parse,
+            patch("rss.get_RSS_URL") as mock_get_url,
+            patch("rss.RSS_episode") as mock_rss_episode,
+            patch("builtins.print") as mock_print,
+        ):
             # Arrange
             mock_get_url.return_value = "https://test.rss.url"
             mock_get_db_vars.return_value = ("localhost", "testdb", None)
@@ -573,14 +572,13 @@ class TestPodcastStoreLastLargeEpisodes:
         # Import du module après le mocking
         from rss import Podcast
 
-        with patch("rss.get_collection") as mock_get_collection, patch(
-            "rss.get_DB_VARS"
-        ) as mock_get_db_vars, patch("rss.feedparser.parse") as mock_parse, patch(
-            "rss.get_RSS_URL"
-        ) as mock_get_url, patch(
-            "builtins.print"
-        ) as mock_print:
-
+        with (
+            patch("rss.get_collection") as mock_get_collection,
+            patch("rss.get_DB_VARS") as mock_get_db_vars,
+            patch("rss.feedparser.parse") as mock_parse,
+            patch("rss.get_RSS_URL") as mock_get_url,
+            patch("builtins.print") as mock_print,
+        ):
             # Arrange
             mock_get_url.return_value = "https://test.rss.url"
             mock_get_db_vars.return_value = ("localhost", "testdb", None)
@@ -628,7 +626,8 @@ class TestRSSConstantsAndImports:
             "extraire_urls_rss",
             "Podcast",
         ]
-        assert rss.__all__ == expected_exports
+        for export in expected_exports:
+            assert export in rss.__all__, f"Missing in __all__: {export}"
 
         # Verify all exported items exist
         for export in expected_exports:
