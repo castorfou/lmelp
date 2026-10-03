@@ -190,30 +190,17 @@ git push origin --delete feature/ma-nouvelle-fonctionnalite
 
 ## Configuration Portainer auto-update
 
-### Via Watchtower intégré
+Après chaque push sur `main`, le workflow `.github/workflows/docker-publish.yml` publie l'image, puis appelle l'API HTTP de Watchtower sur le NAS :
+`POST https://watchtower.ascot63.synology.me/v1/update?image=ghcr.io/castorfou/lmelp`.
+Watchtower pull la nouvelle image et redémarre les conteneurs concernés en moins d'une minute.
 
-Si Portainer a Watchtower configuré globalement, aucune config nécessaire.
+Prérequis :
 
-**Vérifier la configuration :**
+- conteneurs labellisés `com.centurylinklabs.watchtower.enable=true` (stack `lmelp-stack`) ;
+- secret GitHub `WATCHTOWER_TOKEN` : le token de l'API Watchtower (configuration dans [castorfou/dockers](https://github.com/castorfou/dockers)).
 
-```bash
-# Voir si Watchtower tourne
-docker ps | grep watchtower
-
-# Voir les logs Watchtower
-docker logs -f <watchtower-container-id>
-```
-
-### Via webhook Portainer
-
-**Pour des updates instantanées (optionnel) :**
-
-1. Dans Portainer : **Stacks** → **lmelp** → **Webhooks** → **Create webhook**
-2. Copier l'URL du webhook
-3. Dans GitHub : **Settings** → **Secrets** → **Actions** → **New secret**
-   - Name: `PORTAINER_WEBHOOK_URL`
-   - Value: URL copiée
-4. Le workflow GitHub Actions triggera automatiquement le webhook
+Le job échoue si le token est refusé (401), si aucun conteneur n'utilise l'image (`scanned=0`) ou si la mise à jour échoue.
+Sans appel CI, Watchtower vérifie les images une fois par semaine.
 
 ## Troubleshooting
 
@@ -253,8 +240,8 @@ sudo systemctl start mongod
 
 **Causes possibles :**
 
-1. **Watchtower non configuré** : Configurer Watchtower ou utiliser webhook
-2. **Délai de polling** : Watchtower vérifie toutes les 6h par défaut
+1. **Étape Watchtower en échec** : voir le job dans l'onglet Actions (401 : `WATCHTOWER_TOKEN` invalide ; `scanned=0` : conteneur non labellisé ou nom d'image différent)
+2. **Délai de polling** : sans appel CI, Watchtower ne vérifie qu'une fois par semaine
 3. **Image tag incorrect** : Vérifier que le compose utilise `:latest`
 
 **Solutions :**
