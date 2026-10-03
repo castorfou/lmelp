@@ -36,29 +36,10 @@ The workflow is defined in `.github/workflows/docker-publish.yml`.
 - **Purpose**: Authenticate to GitHub Container Registry
 - **Configuration**: None needed - automatically available
 
-### Optional Secrets
-
-#### `PORTAINER_WEBHOOK_URL`
-- **Description**: Webhook URL from Portainer for auto-deployment
-- **Purpose**: Trigger automatic deployment on NAS when new image is pushed
-- **Required**: Only if you want auto-deployment on NAS
-
-**How to configure:**
-
-1. **Get webhook URL from Portainer:**
-   - Open Portainer web UI
-   - Navigate to your lmelp stack
-   - Go to "Webhooks" section
-   - Create a new webhook
-   - Copy the webhook URL (format: `https://portainer.your-nas.com/api/webhooks/xxx`)
-
-2. **Add to GitHub:**
-   - Go to your repository: https://github.com/castorfou/lmelp
-   - Click `Settings` → `Secrets and variables` → `Actions`
-   - Click `New repository secret`
-   - Name: `PORTAINER_WEBHOOK_URL`
-   - Value: Paste the webhook URL from Portainer
-   - Click `Add secret`
+#### `WATCHTOWER_TOKEN`
+- **Description**: Token of the Watchtower HTTP API running on the NAS (configured in [castorfou/dockers](https://github.com/castorfou/dockers))
+- **Purpose**: After pushing the image on `main`, the workflow calls `POST https://watchtower.ascot63.synology.me/v1/update?image=ghcr.io/castorfou/lmelp`; Watchtower pulls the image and restarts the container
+- **Configuration**: `gh secret set WATCHTOWER_TOKEN -R castorfou/lmelp` (value: `WT_API_TOKEN` of the Watchtower stack)
 
 ## Permissions
 
@@ -177,14 +158,14 @@ Cache is automatically managed by GitHub Actions.
 1. Check repository settings
 2. Ensure packages are enabled for the repository
 
-### Portainer webhook not triggered
+### NAS not updated after the build
 
-**Cause**: `PORTAINER_WEBHOOK_URL` secret not configured or incorrect
+**Cause**: the "Mise à jour sur le NAS (Watchtower)" step failed
 
 **Solution**:
-1. Verify webhook URL in Portainer
-2. Check secret is correctly configured in GitHub
-3. Check workflow logs for webhook call errors
+1. `401`: `WATCHTOWER_TOKEN` secret missing or different from the NAS token
+2. `scanned=0`: no container with the `com.centurylinklabs.watchtower.enable=true` label uses `ghcr.io/castorfou/lmelp`
+3. Check the Watchtower logs on the NAS (Portainer → Containers → watchtower → Logs)
 
 ### Build takes too long
 
